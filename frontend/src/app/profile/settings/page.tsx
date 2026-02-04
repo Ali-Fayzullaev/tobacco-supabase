@@ -1,0 +1,229 @@
+'use client';
+
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { toast } from 'sonner';
+import { Eye, EyeOff, Loader2, Shield, Bell, Trash2 } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { createBrowserSupabaseClient } from '@/lib/supabase';
+
+const passwordSchema = z.object({
+  currentPassword: z.string().min(1, 'Введите текущий пароль'),
+  newPassword: z.string().min(8, 'Минимум 8 символов'),
+  confirmPassword: z.string(),
+}).refine(data => data.newPassword === data.confirmPassword, {
+  message: 'Пароли не совпадают',
+  path: ['confirmPassword'],
+});
+
+type PasswordForm = z.infer<typeof passwordSchema>;
+
+export default function SettingsPage() {
+  const { user, signOut } = useAuth();
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<PasswordForm>({
+    resolver: zodResolver(passwordSchema),
+  });
+
+  const onPasswordSubmit = async (data: PasswordForm) => {
+    setIsChangingPassword(true);
+    try {
+      const supabase = createBrowserSupabaseClient();
+      const { error } = await supabase.auth.updateUser({
+        password: data.newPassword,
+      });
+
+      if (error) throw error;
+
+      toast.success('Пароль успешно изменён');
+      reset();
+    } catch (error: any) {
+      toast.error(error.message || 'Ошибка при смене пароля');
+    } finally {
+      setIsChangingPassword(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    // Note: Account deletion typically requires backend support
+    toast.error('Для удаления аккаунта свяжитесь с поддержкой');
+    setShowDeleteConfirm(false);
+  };
+
+  return (
+    <div className="space-y-6">
+      <h1 className="text-2xl font-bold text-gray-900">Настройки</h1>
+
+      {/* Security Section */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <div className="flex items-center gap-3 mb-6">
+          <Shield className="w-5 h-5 text-gold-500" />
+          <h2 className="text-lg font-semibold text-gray-900">Безопасность</h2>
+        </div>
+
+        <form onSubmit={handleSubmit(onPasswordSubmit)} className="space-y-4 max-w-md">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Текущий пароль
+            </label>
+            <div className="relative">
+              <input
+                {...register('currentPassword')}
+                type={showCurrentPassword ? 'text' : 'password'}
+                className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500"
+              />
+              <button
+                type="button"
+                onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+              >
+                {showCurrentPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
+            </div>
+            {errors.currentPassword && (
+              <p className="text-red-500 text-xs mt-1">{errors.currentPassword.message}</p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Новый пароль
+            </label>
+            <div className="relative">
+              <input
+                {...register('newPassword')}
+                type={showNewPassword ? 'text' : 'password'}
+                className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500"
+              />
+              <button
+                type="button"
+                onClick={() => setShowNewPassword(!showNewPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+              >
+                {showNewPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
+            </div>
+            {errors.newPassword && (
+              <p className="text-red-500 text-xs mt-1">{errors.newPassword.message}</p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Подтвердите новый пароль
+            </label>
+            <input
+              {...register('confirmPassword')}
+              type="password"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500"
+            />
+            {errors.confirmPassword && (
+              <p className="text-red-500 text-xs mt-1">{errors.confirmPassword.message}</p>
+            )}
+          </div>
+
+          <button
+            type="submit"
+            disabled={isChangingPassword}
+            className="bg-gold-500 hover:bg-gold-600 text-white py-2 px-6 rounded-lg disabled:opacity-50 flex items-center gap-2"
+          >
+            {isChangingPassword && <Loader2 className="w-4 h-4 animate-spin" />}
+            Изменить пароль
+          </button>
+        </form>
+      </div>
+
+      {/* Notifications Section */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <div className="flex items-center gap-3 mb-6">
+          <Bell className="w-5 h-5 text-gold-500" />
+          <h2 className="text-lg font-semibold text-gray-900">Уведомления</h2>
+        </div>
+
+        <div className="space-y-4">
+          <label className="flex items-center justify-between py-2">
+            <div>
+              <p className="text-gray-900">Email уведомления о заказах</p>
+              <p className="text-sm text-gray-500">Статус и обновления по вашим заказам</p>
+            </div>
+            <input
+              type="checkbox"
+              defaultChecked
+              className="w-5 h-5 text-gold-500 rounded focus:ring-gold-500"
+            />
+          </label>
+
+          <label className="flex items-center justify-between py-2">
+            <div>
+              <p className="text-gray-900">Акции и скидки</p>
+              <p className="text-sm text-gray-500">Информация о специальных предложениях</p>
+            </div>
+            <input
+              type="checkbox"
+              className="w-5 h-5 text-gold-500 rounded focus:ring-gold-500"
+            />
+          </label>
+
+          <label className="flex items-center justify-between py-2">
+            <div>
+              <p className="text-gray-900">SMS уведомления</p>
+              <p className="text-sm text-gray-500">Сообщения о статусе доставки</p>
+            </div>
+            <input
+              type="checkbox"
+              defaultChecked
+              className="w-5 h-5 text-gold-500 rounded focus:ring-gold-500"
+            />
+          </label>
+        </div>
+      </div>
+
+      {/* Danger Zone */}
+      <div className="bg-white rounded-xl shadow-sm border border-red-200 p-6">
+        <div className="flex items-center gap-3 mb-6">
+          <Trash2 className="w-5 h-5 text-red-500" />
+          <h2 className="text-lg font-semibold text-red-600">Опасная зона</h2>
+        </div>
+
+        <p className="text-gray-600 mb-4">
+          Удаление аккаунта необратимо. Все ваши данные, история заказов и избранное будут удалены.
+        </p>
+
+        {!showDeleteConfirm ? (
+          <button
+            onClick={() => setShowDeleteConfirm(true)}
+            className="border border-red-300 text-red-600 hover:bg-red-50 py-2 px-6 rounded-lg"
+          >
+            Удалить аккаунт
+          </button>
+        ) : (
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleDeleteAccount}
+              className="bg-red-500 hover:bg-red-600 text-white py-2 px-6 rounded-lg"
+            >
+              Подтвердить удаление
+            </button>
+            <button
+              onClick={() => setShowDeleteConfirm(false)}
+              className="border border-gray-300 text-gray-700 py-2 px-6 rounded-lg"
+            >
+              Отмена
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

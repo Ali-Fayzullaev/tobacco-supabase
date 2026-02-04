@@ -15,7 +15,7 @@ import {
   Loader2,
   AlertTriangle
 } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '@/hooks';
 
 const navItems = [
   { href: '/admin', label: 'Дашборд', icon: LayoutDashboard },

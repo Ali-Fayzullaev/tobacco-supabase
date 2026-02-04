@@ -12,7 +12,7 @@ import {
   Loader2,
   AlertTriangle
 } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '@/hooks';
 import { useCart } from '@/hooks/useCart';
 import { formatPrice } from '@/lib/utils';
 

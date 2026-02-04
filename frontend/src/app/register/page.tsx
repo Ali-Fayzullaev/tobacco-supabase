@@ -1,14 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
 import { Eye, EyeOff, Loader2, AlertTriangle } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
+import { getSupabaseBrowserClient } from '@/lib/supabase';
 import { getMaxBirthDate } from '@/lib/utils';
 
 const registerSchema = z.object({
@@ -33,8 +32,6 @@ const registerSchema = z.object({
 type RegisterForm = z.infer<typeof registerSchema>;
 
 export default function RegisterPage() {
-  const router = useRouter();
-  const { signUp } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -49,30 +46,41 @@ export default function RegisterPage() {
 
   const onSubmit = async (data: RegisterForm) => {
     setIsSubmitting(true);
-    const result = await signUp({
+    
+    const supabase = getSupabaseBrowserClient();
+    const { data: authData, error } = await supabase.auth.signUp({
       email: data.email,
       password: data.password,
-      firstName: data.firstName,
-      lastName: data.lastName,
-      phone: data.phone,
-      birthDate: data.birthDate,
+      options: {
+        data: {
+          first_name: data.firstName,
+          last_name: data.lastName,
+          phone: data.phone,
+          birth_date: data.birthDate,
+        },
+      },
     });
 
-    setIsSubmitting(false);
-
-    if (result.success) {
-      // Проверяем нужно ли подтверждение email
-      if (result.needsEmailConfirmation) {
-        // Подтверждение включено - переходим на страницу ввода кода
-        toast.success('Проверьте вашу почту для подтверждения!');
-        router.push(`/verify-email?email=${encodeURIComponent(data.email)}`);
-      } else {
-        // Подтверждение отключено - сразу вошли
-        toast.success('Регистрация успешна! Добро пожаловать!');
-        router.push('/catalog');
+    if (error) {
+      setIsSubmitting(false);
+      let errorMessage = error.message;
+      if (error.message.includes('already registered')) {
+        errorMessage = 'Этот email уже зарегистрирован. Попробуйте войти.';
+      } else if (error.message.includes('rate limit')) {
+        errorMessage = 'Слишком много попыток. Подождите час.';
       }
+      toast.error(errorMessage);
+      return;
+    }
+
+    // Если session есть - подтверждение email отключено, сразу вошли
+    if (authData.session) {
+      toast.success('Регистрация успешна!');
+      window.location.href = '/catalog';
     } else {
-      toast.error(result.error || 'Ошибка регистрации');
+      // Нужно подтвердить email
+      toast.success('Проверьте вашу почту для подтверждения!');
+      window.location.href = `/verify-email?email=${encodeURIComponent(data.email)}`;
     }
   };
 

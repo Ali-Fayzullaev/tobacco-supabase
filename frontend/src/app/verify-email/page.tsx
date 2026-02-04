@@ -1,17 +1,16 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useState, useEffect, useRef, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { Mail, RefreshCw, CheckCircle2, AlertCircle } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
+import { Mail, RefreshCw, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { getSupabaseBrowserClient } from '@/lib/supabase';
 
-export default function VerifyEmailPage() {
+function VerifyEmailContent() {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const email = searchParams.get('email');
-  const { verifyOtp, resendOtp, isLoading } = useAuth();
+  const supabase = getSupabaseBrowserClient();
   
   // 6-значный код
   const [code, setCode] = useState(['', '', '', '', '', '']);
@@ -100,17 +99,21 @@ export default function VerifyEmailPage() {
     setIsVerifying(true);
     setError('');
 
-    const result = await verifyOtp(email, fullCode);
+    const { error } = await supabase.auth.verifyOtp({
+      email,
+      token: fullCode,
+      type: 'signup',
+    });
 
     setIsVerifying(false);
 
-    if (result.success) {
-      toast.success('Email подтверждён! Добро пожаловать!');
-      router.push('/catalog');
-    } else {
-      setError(result.error || 'Неверный код');
+    if (error) {
+      setError(error.message || 'Неверный код');
       setCode(['', '', '', '', '', '']);
       inputRefs.current[0]?.focus();
+    } else {
+      toast.success('Email подтверждён! Добро пожаловать!');
+      window.location.href = '/catalog';
     }
   };
 
@@ -118,15 +121,18 @@ export default function VerifyEmailPage() {
   const handleResend = async () => {
     if (!email || resendCooldown > 0) return;
 
-    const result = await resendOtp(email);
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email,
+    });
     
-    if (result.success) {
+    if (error) {
+      toast.error(error.message || 'Не удалось отправить код');
+    } else {
       toast.success('Новый код отправлен!');
       setResendCooldown(60);
       setCode(['', '', '', '', '', '']);
       inputRefs.current[0]?.focus();
-    } else {
-      toast.error(result.error || 'Не удалось отправить код');
     }
   };
 
@@ -229,12 +235,12 @@ export default function VerifyEmailPage() {
           {/* Resend button */}
           <button
             onClick={handleResend}
-            disabled={isLoading || resendCooldown > 0 || !email}
+            disabled={resendCooldown > 0 || !email}
             className="w-full flex items-center justify-center gap-2 px-4 py-3 
               border border-gray-300 rounded-lg text-gray-700 
               hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            <RefreshCw className={`w-5 h-5 ${isLoading ? 'animate-spin' : ''}`} />
+            <RefreshCw className="w-5 h-5" />
             {resendCooldown > 0 
               ? `Отправить код повторно (${resendCooldown}с)` 
               : 'Отправить код повторно'
@@ -253,5 +259,17 @@ export default function VerifyEmailPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function VerifyEmailPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-gold-500 animate-spin" />
+      </div>
+    }>
+      <VerifyEmailContent />
+    </Suspense>
   );
 }

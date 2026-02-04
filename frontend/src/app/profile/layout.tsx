@@ -14,7 +14,7 @@ import {
   Loader2,
   AlertTriangle
 } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '@/hooks';
 
 const navItems = [
   { href: '/profile', label: 'Профиль', icon: User },

@@ -1,14 +1,14 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
 import { Eye, EyeOff, Loader2, CheckCircle } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
+import { getSupabaseBrowserClient } from '@/lib/supabase';
 
 const loginSchema = z.object({
   email: z.string().email('Введите корректный email'),
@@ -19,10 +19,9 @@ const loginSchema = z.object({
 type LoginForm = z.infer<typeof loginSchema>;
 
 function LoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
-  const { signIn, isLoading } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isRegistered = searchParams.get('registered') === 'true';
   const redirectTo = searchParams.get('redirect') || '/catalog';
@@ -37,19 +36,34 @@ function LoginForm() {
 
   useEffect(() => {
     if (isRegistered) {
-      toast.success('Регистрация успешна! Проверьте email для подтверждения аккаунта.');
+      toast.success('Регистрация успешна!');
     }
   }, [isRegistered]);
 
   const onSubmit = async (data: LoginForm) => {
-    const result = await signIn(data.email, data.password);
+    setIsSubmitting(true);
+    
+    const supabase = getSupabaseBrowserClient();
+    const { error } = await supabase.auth.signInWithPassword({
+      email: data.email,
+      password: data.password,
+    });
 
-    if (result.success) {
-      toast.success('Добро пожаловать!');
-      router.push(redirectTo);
-    } else {
-      toast.error(result.error || 'Неверный email или пароль');
+    if (error) {
+      setIsSubmitting(false);
+      let errorMessage = error.message;
+      if (error.message.includes('Invalid login credentials')) {
+        errorMessage = 'Неверный email или пароль';
+      } else if (error.message.includes('Email not confirmed')) {
+        errorMessage = 'Email не подтверждён. Проверьте почту.';
+      }
+      toast.error(errorMessage);
+      return;
     }
+
+    toast.success('Добро пожаловать!');
+    // Редирект через window.location - полная перезагрузка страницы
+    window.location.href = redirectTo;
   };
 
   return (
@@ -141,11 +155,11 @@ function LoginForm() {
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={isSubmitting}
               className="w-full bg-gold-500 hover:bg-gold-600 text-white py-3 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              {isLoading && <Loader2 className="w-5 h-5 animate-spin" />}
-              {isLoading ? 'Вход...' : 'Войти'}
+              {isSubmitting && <Loader2 className="w-5 h-5 animate-spin" />}
+              {isSubmitting ? 'Вход...' : 'Войти'}
             </button>
           </form>
 

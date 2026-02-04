@@ -18,7 +18,7 @@ import {
   CheckCircle,
   Package
 } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '@/hooks';
 import { useCart } from '@/hooks/useCart';
 import { useOrders } from '@/hooks/useOrders';
 import { formatPrice } from '@/lib/utils';

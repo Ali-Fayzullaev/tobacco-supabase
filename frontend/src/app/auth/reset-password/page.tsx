@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
 import { Loader2, Mail, ArrowLeft } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
+import { getSupabaseBrowserClient } from '@/lib/supabase';
 
 const resetSchema = z.object({
   email: z.string().email('Введите корректный email'),
@@ -16,7 +16,7 @@ const resetSchema = z.object({
 type ResetForm = z.infer<typeof resetSchema>;
 
 function ResetPasswordForm() {
-  const { resetPassword, isLoading } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [submittedEmail, setSubmittedEmail] = useState('');
 
@@ -29,14 +29,21 @@ function ResetPasswordForm() {
   });
 
   const onSubmit = async (data: ResetForm) => {
-    const result = await resetPassword(data.email);
+    setIsLoading(true);
+    const supabase = getSupabaseBrowserClient();
+    
+    const { error } = await supabase.auth.resetPasswordForEmail(data.email, {
+      redirectTo: `${window.location.origin}/auth/update-password`,
+    });
 
-    if (result.success) {
+    setIsLoading(false);
+
+    if (error) {
+      toast.error(error.message || 'Ошибка при отправке');
+    } else {
       setSubmittedEmail(data.email);
       setIsSubmitted(true);
       toast.success('Инструкции отправлены на email');
-    } else {
-      toast.error(result.error || 'Ошибка при отправке');
     }
   };
 

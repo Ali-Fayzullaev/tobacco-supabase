@@ -34,7 +34,7 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Не проверяем сессию на страницах auth - пусть клиент сам обрабатывает
-  const authRoutes = ['/login', '/register'];
+  const authRoutes = ['/login', '/register', '/test-login', '/catalog'];
   const isAuthRoute = authRoutes.some(route => pathname.startsWith(route));
   
   if (isAuthRoute) {

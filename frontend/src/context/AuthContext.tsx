@@ -14,6 +14,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
+  updateProfile: (data: Partial<Profile>) => Promise<{ success: boolean; error?: string }>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -43,6 +44,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (user) {
       const p = await loadProfile(user.id);
       setProfile(p);
+    }
+  };
+
+  const updateProfile = async (data: Partial<Profile>) => {
+    if (!user) return { success: false, error: 'Не авторизован' };
+    
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update(data)
+        .eq('id', user.id);
+      
+      if (error) return { success: false, error: error.message };
+      
+      await refreshProfile();
+      return { success: true };
+    } catch (e: any) {
+      return { success: false, error: e.message };
     }
   };
 
@@ -95,6 +114,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isAuthenticated: !!session,
         signOut,
         refreshProfile,
+        updateProfile,
       }}
     >
       {children}
@@ -114,6 +134,7 @@ export function useAuth() {
       isAuthenticated: false,
       signOut: async () => {},
       refreshProfile: async () => {},
+      updateProfile: async () => ({ success: false, error: 'No context' }),
     };
   }
   return context;

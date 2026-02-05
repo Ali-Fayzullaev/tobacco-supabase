@@ -33,7 +33,22 @@ BEGIN
         NEW.email,
         COALESCE(NEW.raw_user_meta_data->>'first_name', ''),
         COALESCE(NEW.raw_user_meta_data->>'last_name', ''),
-        (NEW.raw_user_meta_data->>'birth_date')::DATE
+        CASE 
+            WHEN NEW.raw_user_meta_data->>'birth_date' IS NOT NULL 
+                 AND NEW.raw_user_meta_data->>'birth_date' != ''
+            THEN (NEW.raw_user_meta_data->>'birth_date')::DATE
+            ELSE NULL
+        END
+    );
+    RETURN NEW;
+EXCEPTION WHEN OTHERS THEN
+    -- Если ошибка, создаём профиль без даты рождения
+    INSERT INTO public.profiles (id, email, first_name, last_name)
+    VALUES (
+        NEW.id,
+        NEW.email,
+        COALESCE(NEW.raw_user_meta_data->>'first_name', ''),
+        COALESCE(NEW.raw_user_meta_data->>'last_name', '')
     );
     RETURN NEW;
 END;
@@ -194,6 +209,24 @@ ALTER TABLE favorites ENABLE ROW LEVEL SECURITY;
 ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE order_items ENABLE ROW LEVEL SECURITY;
 
+-- Удаляем старые политики
+DROP POLICY IF EXISTS "Users can view own profile" ON profiles;
+DROP POLICY IF EXISTS "Users can update own profile" ON profiles;
+DROP POLICY IF EXISTS "Anyone can view categories" ON categories;
+DROP POLICY IF EXISTS "Authenticated can view products" ON products;
+DROP POLICY IF EXISTS "Anyone can view product images" ON product_images;
+DROP POLICY IF EXISTS "Anyone can view product attributes" ON product_attributes;
+DROP POLICY IF EXISTS "Users manage own cart" ON cart_items;
+DROP POLICY IF EXISTS "Users manage own favorites" ON favorites;
+DROP POLICY IF EXISTS "Users view own orders" ON orders;
+DROP POLICY IF EXISTS "Users create own orders" ON orders;
+DROP POLICY IF EXISTS "Users view own order items" ON order_items;
+DROP POLICY IF EXISTS "Users create order items" ON order_items;
+DROP POLICY IF EXISTS "Admins can manage products" ON products;
+DROP POLICY IF EXISTS "Admins can manage categories" ON categories;
+DROP POLICY IF EXISTS "Admins can view all orders" ON orders;
+DROP POLICY IF EXISTS "Admins can update orders" ON orders;
+
 -- Профили: пользователь видит и редактирует только свой профиль
 CREATE POLICY "Users can view own profile" ON profiles
     FOR SELECT USING (auth.uid() = id);
@@ -272,6 +305,39 @@ CREATE POLICY "Admins can update orders" ON orders
     FOR UPDATE USING (is_admin());
 
 -- =====================================================
+-- АДМИН ФУНКЦИИ
+-- =====================================================
+
+-- Функция для получения статистики дашборда админа
+CREATE OR REPLACE FUNCTION admin_get_dashboard_stats()
+RETURNS JSON AS $$
+DECLARE
+    result JSON;
+BEGIN
+    -- Проверяем, что пользователь админ
+    IF NOT is_admin() THEN
+        RETURN json_build_object(
+            'total_orders', 0,
+            'total_revenue', 0,
+            'total_products', 0,
+            'total_users', 0,
+            'pending_orders', 0
+        );
+    END IF;
+
+    SELECT json_build_object(
+        'total_orders', (SELECT COUNT(*) FROM orders),
+        'total_revenue', (SELECT COALESCE(SUM(total_amount), 0) FROM orders WHERE status != 'cancelled'),
+        'total_products', (SELECT COUNT(*) FROM products WHERE is_active = true),
+        'total_users', (SELECT COUNT(*) FROM profiles),
+        'pending_orders', (SELECT COUNT(*) FROM orders WHERE status = 'pending')
+    ) INTO result;
+
+    RETURN result;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- =====================================================
 -- ТЕСТОВЫЕ ДАННЫЕ
 -- =====================================================
 
@@ -284,19 +350,6 @@ INSERT INTO categories (name, name_kk, slug, sort_order) VALUES
     ('Электронные сигареты', 'Электрондық темекі', 'e-cigarettes', 5)
 ON CONFLICT (slug) DO NOTHING;
 
--- Тестовые товары
-INSERT INTO products (name, name_kk, slug, description, price, brand, category_id, image_url) VALUES
-    ('Marlboro Red', 'Marlboro Red', 'marlboro-red', 'Классические сигареты Marlboro', 850, 'Marlboro', 
-     (SELECT id FROM categories WHERE slug = 'cigarettes'), 'https://placehold.co/400x400?text=Marlboro'),
-    ('Parliament Night Blue', 'Parliament Night Blue', 'parliament-night', 'Parliament с угольным фильтром', 950, 'Parliament',
-     (SELECT id FROM categories WHERE slug = 'cigarettes'), 'https://placehold.co/400x400?text=Parliament'),
-    ('Winston Blue', 'Winston Blue', 'winston-blue', 'Лёгкие сигареты Winston', 750, 'Winston',
-     (SELECT id FROM categories WHERE slug = 'cigarettes'), 'https://placehold.co/400x400?text=Winston'),
-    ('Camel Yellow', 'Camel Yellow', 'camel-yellow', 'Классический Camel', 800, 'Camel',
-     (SELECT id FROM categories WHERE slug = 'cigarettes'), 'https://placehold.co/400x400?text=Camel'),
-    ('Kent Silver', 'Kent Silver', 'kent-silver', 'Ультра лёгкие Kent', 900, 'Kent',
-     (SELECT id FROM categories WHERE slug = 'cigarettes'), 'https://placehold.co/400x400?text=Kent')
-ON CONFLICT (slug) DO NOTHING;
 
 -- Готово!
 SELECT 'База данных успешно создана!' as result;

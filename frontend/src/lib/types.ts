@@ -57,6 +57,10 @@ export interface Product {
   in_stock: boolean;
   is_active: boolean;
   is_featured: boolean;
+  is_new?: boolean;
+  is_bestseller?: boolean;
+  rating?: number;
+  reviews_count?: number;
   created_at: string;
   updated_at: string;
 }

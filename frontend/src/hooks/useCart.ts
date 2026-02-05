@@ -53,18 +53,13 @@ export function useCart() {
 
       setState(prev => ({ ...prev, isLoading: true, error: null }));
 
-      const { data, error } = await supabase
+      // Сначала получаем cart_items
+      const { data: cartData, error: cartError } = await supabase
         .from('cart_items')
-        .select(`
-          id,
-          product_id,
-          quantity,
-          product:products(name, name_kk, price, in_stock, slug, image_url, brand)
-        `)
+        .select('id, product_id, quantity')
         .eq('user_id', session.user.id);
 
-      if (error) {
-        // Таблица может не существовать
+      if (cartError || !cartData || cartData.length === 0) {
         setState({
           cartItems: [],
           isLoading: false,
@@ -75,10 +70,53 @@ export function useCart() {
         return;
       }
 
-      const cartItems = ((data || []) as unknown as CartItem[]).map(item => ({
-        ...item,
-        product: Array.isArray(item.product) ? item.product[0] : item.product,
-      }));
+      // Получаем ID всех продуктов
+      const productIds = cartData.map(item => item.product_id);
+
+      // Загружаем продукты отдельным запросом
+      const { data: productsData, error: productsError } = await supabase
+        .from('products')
+        .select('id, name, name_kk, price, in_stock, slug, image_url, brand')
+        .in('id', productIds);
+
+      if (productsError) {
+        setState({
+          cartItems: [],
+          isLoading: false,
+          error: null,
+          totalAmount: 0,
+          totalItems: 0,
+        });
+        return;
+      }
+
+      // Создаём map продуктов для быстрого доступа
+      const productsMap = new Map(
+        (productsData || []).map(p => [p.id, p])
+      );
+
+      // Собираем cartItems с продуктами
+      const cartItems: CartItem[] = cartData
+        .map(item => {
+          const product = productsMap.get(item.product_id);
+          if (!product) return null;
+          return {
+            id: item.id,
+            product_id: item.product_id,
+            quantity: item.quantity,
+            product: {
+              name: product.name,
+              name_kk: product.name_kk,
+              price: product.price,
+              in_stock: product.in_stock,
+              slug: product.slug,
+              image_url: product.image_url,
+              brand: product.brand,
+            },
+          };
+        })
+        .filter((item): item is CartItem => item !== null);
+
       const totalAmount = cartItems.reduce((sum, item) => sum + (item.product?.price || 0) * item.quantity, 0);
       const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 

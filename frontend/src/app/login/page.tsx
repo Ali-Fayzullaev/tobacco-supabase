@@ -7,8 +7,12 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
-import { Eye, EyeOff, Loader2, CheckCircle } from 'lucide-react';
+import { Eye, EyeOff, Loader2, CheckCircle, AlertTriangle, ArrowLeft } from 'lucide-react';
 import { getSupabaseBrowserClient } from '@/lib/supabase';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 
 const loginSchema = z.object({
   email: z.string().email('Введите корректный email'),
@@ -18,7 +22,7 @@ const loginSchema = z.object({
 
 type LoginForm = z.infer<typeof loginSchema>;
 
-function LoginForm() {
+function LoginFormContent() {
   const searchParams = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -62,130 +66,145 @@ function LoginForm() {
     }
 
     toast.success('Добро пожаловать!');
-    // Редирект через window.location - полная перезагрузка страницы
     window.location.href = redirectTo;
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-orange-50/30 to-white flex items-center justify-center p-4">
+      {/* Background decorations */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-orange-500/5 rounded-full blur-3xl" />
+      
+      <div className="w-full max-w-md relative z-10">
+        {/* Back Link */}
+        <Link 
+          href="/" 
+          className="inline-flex items-center gap-2 text-gray-500 hover:text-orange-500 mb-8 transition-colors"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          На главную
+        </Link>
+
         {/* Logo */}
         <div className="text-center mb-8">
-          <Link href="/" className="text-2xl font-bold text-gold-500">
-            Tobacco Shop KZ
+          <Link href="/" className="inline-flex items-center gap-2">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/25">
+              <span className="text-xl font-bold text-white">T</span>
+            </div>
+            <div>
+              <span className="text-2xl font-bold text-gray-900">Tobacco</span>
+              <span className="text-2xl font-bold text-orange-500">Shop</span>
+            </div>
           </Link>
         </div>
 
         {/* Form Card */}
-        <div className="bg-white rounded-2xl shadow-xl p-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Вход</h1>
-          <p className="text-gray-500 mb-6">Войдите для доступа к каталогу</p>
-
-          {/* Registration Success Message */}
-          {isRegistered && (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6 flex items-start gap-3">
-              <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-              <p className="text-green-700 text-sm">
-                Аккаунт создан! Проверьте email и подтвердите регистрацию, 
-                затем войдите в систему.
-              </p>
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            {/* Email */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Email
-              </label>
-              <input
-                {...register('email')}
-                type="email"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent"
-                placeholder="example@mail.com"
-              />
-              {errors.email && (
-                <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
-              )}
-            </div>
-
-            {/* Password */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Пароль
-              </label>
-              <div className="relative">
-                <input
-                  {...register('password')}
-                  type={showPassword ? 'text' : 'password'}
-                  className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent"
-                  placeholder="Введите пароль"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                </button>
+        <Card className="bg-white border-gray-200 shadow-xl">
+          <CardHeader className="text-center pb-4">
+            <CardTitle className="text-2xl text-gray-900">Вход в аккаунт</CardTitle>
+            <CardDescription className="text-gray-500">
+              Войдите для доступа к каталогу
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {/* Registration Success Message */}
+            {isRegistered && (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6 flex items-start gap-3">
+                <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                <p className="text-green-700 text-sm">
+                  Аккаунт создан! Проверьте email и подтвердите регистрацию, 
+                  затем войдите в систему.
+                </p>
               </div>
-              {errors.password && (
-                <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>
-              )}
-            </div>
+            )}
 
-            {/* Remember Me & Forgot Password */}
-            <div className="flex items-center justify-between">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  {...register('rememberMe')}
-                  type="checkbox"
-                  className="w-4 h-4 text-gold-500 border-gray-300 rounded focus:ring-gold-500"
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              {/* Email */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Email
+                </label>
+                <Input
+                  {...register('email')}
+                  type="email"
+                  className="bg-gray-50 border-gray-200 focus:border-orange-300 focus:ring-orange-500/20"
+                  placeholder="example@mail.com"
                 />
-                <span className="text-sm text-gray-600">Запомнить меня</span>
-              </label>
-              <Link
-                href="/auth/reset-password"
-                className="text-sm text-gold-600 hover:underline"
+                {errors.email && (
+                  <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
+                )}
+              </div>
+
+              {/* Password */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Пароль
+                </label>
+                <div className="relative">
+                  <Input
+                    {...register('password')}
+                    type={showPassword ? 'text' : 'password'}
+                    className="bg-gray-50 border-gray-200 focus:border-orange-300 focus:ring-orange-500/20 pr-10"
+                    placeholder="Введите пароль"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
+                </div>
+                {errors.password && (
+                  <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>
+                )}
+              </div>
+
+              {/* Remember Me & Forgot Password */}
+              <div className="flex items-center justify-between">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    {...register('rememberMe')}
+                    type="checkbox"
+                    className="w-4 h-4 rounded border-gray-300 bg-gray-50 text-orange-500 focus:ring-orange-500"
+                  />
+                  <span className="text-sm text-gray-600">Запомнить меня</span>
+                </label>
+                <Link
+                  href="/auth/reset-password"
+                  className="text-sm text-orange-500 hover:text-orange-600 transition-colors"
+                >
+                  Забыли пароль?
+                </Link>
+              </div>
+
+              {/* Submit Button */}
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full h-12 text-base bg-orange-500 hover:bg-orange-600 shadow-lg shadow-orange-500/25"
               >
-                Забыли пароль?
+                {isSubmitting && <Loader2 className="w-5 h-5 animate-spin mr-2" />}
+                {isSubmitting ? 'Вход...' : 'Войти'}
+              </Button>
+            </form>
+
+            <Separator className="my-6 bg-gray-200" />
+
+            {/* Register Link */}
+            <p className="text-center text-gray-600">
+              Нет аккаунта?{' '}
+              <Link href="/register" className="text-orange-500 hover:text-orange-600 font-medium transition-colors">
+                Зарегистрироваться
               </Link>
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full bg-gold-500 hover:bg-gold-600 text-white py-3 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-            >
-              {isSubmitting && <Loader2 className="w-5 h-5 animate-spin" />}
-              {isSubmitting ? 'Вход...' : 'Войти'}
-            </button>
-          </form>
-
-          {/* Divider */}
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-200"></div>
-            </div>
-            <div className="relative flex justify-center">
-              <span className="bg-white px-4 text-sm text-gray-400">или</span>
-            </div>
-          </div>
-
-          {/* Register Link */}
-          <p className="text-center text-gray-500">
-            Нет аккаунта?{' '}
-            <Link href="/register" className="text-gold-600 hover:underline font-medium">
-              Зарегистрироваться
-            </Link>
-          </p>
-        </div>
+            </p>
+          </CardContent>
+        </Card>
 
         {/* Age Warning */}
-        <p className="text-center text-gray-400 text-sm mt-6">
-          Доступ к сайту только для лиц старше 18 лет
-        </p>
+        <div className="flex items-center justify-center gap-2 mt-6 text-gray-500 text-sm">
+          <AlertTriangle className="h-4 w-4 text-orange-500" />
+          <span>Доступ к сайту только для лиц старше 18 лет</span>
+        </div>
       </div>
     </div>
   );
@@ -194,11 +213,11 @@ function LoginForm() {
 export default function LoginPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-gold-500 animate-spin" />
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
       </div>
     }>
-      <LoginForm />
+      <LoginFormContent />
     </Suspense>
   );
 }

@@ -16,13 +16,27 @@ import {
   Check,
   Truck,
   Shield,
-  Package
+  Package,
+  Star,
+  Share2,
+  Zap,
+  MessageSquare
 } from 'lucide-react';
+import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
+import { ReviewForm } from '@/components/ReviewForm';
+import { ReviewCard } from '@/components/ReviewCard';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/hooks';
 import { useProducts } from '@/hooks/useProducts';
 import { useCart } from '@/hooks/useCart';
 import { useFavorites } from '@/hooks/useFavorites';
-import { formatPrice } from '@/lib/utils';
+import { useReviews } from '@/hooks/useReviews';
+import { formatPrice, cn } from '@/lib/utils';
 import type { ProductFull, ProductImage, ProductAttribute } from '@/lib/types';
 
 export default function ProductPage() {
@@ -37,6 +51,22 @@ export default function ProductPage() {
   const [product, setProduct] = useState<ProductFull | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [activeTab, setActiveTab] = useState('description');
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [editingReview, setEditingReview] = useState(false);
+
+  // Reviews hook - will be initialized after product loads
+  const { 
+    reviews, 
+    stats, 
+    userReview, 
+    isLoading: isReviewsLoading,
+    fetchReviews,
+    createReview,
+    updateReview,
+    deleteReview,
+    markAsHelpful
+  } = useReviews(product?.id);
 
   const isAdult = profile?.birth_date && 
     new Date(profile.birth_date) <= new Date(new Date().setFullYear(new Date().getFullYear() - 18));
@@ -46,6 +76,13 @@ export default function ProductPage() {
       loadProduct();
     }
   }, [slug, isAuthLoading, user, isAdult]);
+
+  // Load reviews when product is loaded
+  useEffect(() => {
+    if (product?.id) {
+      fetchReviews(product.id);
+    }
+  }, [product?.id]);
 
   const loadProduct = async () => {
     const result = await getFullProduct(slug);
@@ -60,6 +97,13 @@ export default function ProductPage() {
     }
   };
 
+  const handleQuickBuy = async () => {
+    if (product) {
+      await addToCart(product.id, quantity);
+      window.location.href = '/checkout';
+    }
+  };
+
   const handleToggleFavorite = async () => {
     if (product) {
       await toggleFavorite(product.id);
@@ -70,11 +114,15 @@ export default function ProductPage() {
     ? product.images 
     : [{ id: '1', image_url: product?.image_url || '', alt_text: product?.name || '' }];
 
+  const discount = product?.old_price 
+    ? Math.round((1 - product.price / product.old_price) * 100) 
+    : 0;
+
   // Loading state
   if (isAuthLoading || isProductLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-gold-500 animate-spin" />
+        <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
       </div>
     );
   }
@@ -83,21 +131,22 @@ export default function ProductPage() {
   if (!user) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="max-w-md text-center">
-          <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <AlertTriangle className="w-10 h-10 text-red-500" />
-          </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Доступ ограничен</h1>
-          <p className="text-gray-500 mb-6">
-            Для просмотра товаров необходимо войти в систему.
-          </p>
-          <Link
-            href={`/login?redirect=/product/${slug}`}
-            className="inline-block bg-gold-500 hover:bg-gold-600 text-white py-3 px-6 rounded-lg font-medium"
-          >
-            Войти
-          </Link>
-        </div>
+        <Card className="max-w-md w-full bg-white border-gray-200 shadow-lg">
+          <CardContent className="p-8 text-center">
+            <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <AlertTriangle className="w-10 h-10 text-red-500" />
+            </div>
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">Доступ ограничен</h1>
+            <p className="text-gray-500 mb-6">
+              Для просмотра товаров необходимо войти в систему.
+            </p>
+            <Link href={`/login?redirect=/product/${slug}`}>
+              <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white">
+                Войти в аккаунт
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
       </div>
     );
   }
@@ -105,18 +154,22 @@ export default function ProductPage() {
   if (!isAdult) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="max-w-md text-center">
-          <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <AlertTriangle className="w-10 h-10 text-red-500" />
-          </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Доступ запрещён</h1>
-          <p className="text-gray-500 mb-6">
-            Продажа табачной продукции лицам младше 18 лет запрещена.
-          </p>
-          <Link href="/" className="inline-block bg-gray-100 text-gray-700 py-3 px-6 rounded-lg">
-            На главную
-          </Link>
-        </div>
+        <Card className="max-w-md w-full bg-white border-gray-200 shadow-lg">
+          <CardContent className="p-8 text-center">
+            <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <AlertTriangle className="w-10 h-10 text-red-500" />
+            </div>
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">Доступ запрещён</h1>
+            <p className="text-gray-500 mb-6">
+              Продажа табачной продукции лицам младше 18 лет запрещена законодательством РК.
+            </p>
+            <Link href="/">
+              <Button variant="outline" className="w-full border-gray-300 text-gray-700">
+                На главную
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
       </div>
     );
   }
@@ -124,112 +177,176 @@ export default function ProductPage() {
   if (!product) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Товар не найден</h1>
-          <Link href="/catalog" className="text-gold-600 hover:underline">
-            Вернуться в каталог
-          </Link>
-        </div>
+        <Card className="max-w-md w-full bg-white border-gray-200 shadow-lg">
+          <CardContent className="p-8 text-center">
+            <ShoppingCart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">Товар не найден</h1>
+            <p className="text-gray-500 mb-6">
+              Возможно, товар был удалён или перемещён.
+            </p>
+            <Link href="/catalog">
+              <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white">
+                Перейти в каталог
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
   const isFav = isFavorite(product.id);
+  const rating = stats?.average_rating || product.rating || 0;
+  const reviewsCount = stats?.total_reviews || product.reviews_count || 0;
+
+  // Handler for submitting a new review
+  const handleSubmitReview = async (data: {
+    product_id: string;
+    rating: number;
+    title?: string;
+    comment?: string;
+    pros?: string;
+    cons?: string;
+  }) => {
+    const result = editingReview && userReview 
+      ? await updateReview(userReview.id, data)
+      : await createReview(data);
+    
+    if (result) {
+      setShowReviewForm(false);
+      setEditingReview(false);
+      fetchReviews(product.id);
+    }
+    return result;
+  };
+
+  // Handler for deleting a review
+  const handleDeleteReview = async () => {
+    if (userReview) {
+      const success = await deleteReview(userReview.id);
+      if (success) {
+        fetchReviews(product.id);
+      }
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            <Link href="/" className="text-xl font-bold text-gold-500">
-              Tobacco Shop KZ
+      <Header />
+
+      {/* Breadcrumb */}
+      <div className="bg-white border-b border-gray-100">
+        <div className="container mx-auto px-4 py-3">
+          <nav className="flex items-center gap-2 text-sm">
+            <Link href="/" className="text-gray-500 hover:text-orange-600 transition-colors">
+              Главная
             </Link>
-            <nav className="hidden md:flex items-center gap-6">
-              <Link href="/catalog" className="text-gray-600 hover:text-gray-900">
-                Каталог
-              </Link>
-              <Link href="/cart" className="text-gray-600 hover:text-gray-900">
-                Корзина
-              </Link>
-              <Link href="/profile" className="text-gray-600 hover:text-gray-900">
-                Профиль
-              </Link>
-            </nav>
-          </div>
+            <ChevronRight className="h-4 w-4 text-gray-400" />
+            <Link href="/catalog" className="text-gray-500 hover:text-orange-600 transition-colors">
+              Каталог
+            </Link>
+            <ChevronRight className="h-4 w-4 text-gray-400" />
+            <span className="text-gray-900 font-medium truncate">{product.name}</span>
+          </nav>
         </div>
-      </header>
+      </div>
 
-      <div className="container mx-auto px-4 py-8">
-        {/* Breadcrumb */}
-        <nav className="mb-6">
-          <ol className="flex items-center gap-2 text-sm">
-            <li>
-              <Link href="/catalog" className="text-gray-500 hover:text-gray-700">
-                Каталог
-              </Link>
-            </li>
-            <li className="text-gray-400">/</li>
-            <li className="text-gray-900 font-medium truncate">{product.name}</li>
-          </ol>
-        </nav>
-
-        <div className="grid lg:grid-cols-2 gap-8">
+      <div className="container mx-auto px-4 py-6 lg:py-8">
+        <div className="grid lg:grid-cols-2 gap-6 lg:gap-10">
           {/* Image Gallery */}
           <div className="space-y-4">
-            <div className="relative aspect-square bg-white rounded-2xl overflow-hidden shadow-sm">
-              {images[selectedImageIndex]?.image_url ? (
-                <Image
-                  src={images[selectedImageIndex].image_url}
-                  alt={images[selectedImageIndex].alt_text || product.name}
-                  fill
-                  className="object-contain"
-                  priority
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-gray-400">
-                  Нет изображения
+            {/* Main Image */}
+            <Card className="bg-white border-gray-200 shadow-sm overflow-hidden">
+              <div className="relative aspect-square">
+                {/* Badges */}
+                <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
+                  {product.is_new && (
+                    <Badge className="bg-teal-500 hover:bg-teal-600 text-white px-3 py-1">
+                      Новинка
+                    </Badge>
+                  )}
+                  {product.is_bestseller && (
+                    <Badge className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1">
+                      Хит продаж
+                    </Badge>
+                  )}
+                  {discount > 0 && (
+                    <Badge className="bg-red-500 hover:bg-red-600 text-white px-3 py-1">
+                      -{discount}%
+                    </Badge>
+                  )}
                 </div>
-              )}
-              
-              {/* Navigation Arrows */}
-              {images.length > 1 && (
-                <>
+
+                {/* Favorite Button */}
+                <div className="absolute top-4 right-4 z-10 flex flex-col gap-2">
                   <button
-                    onClick={() => setSelectedImageIndex(i => i > 0 ? i - 1 : images.length - 1)}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-white/80 hover:bg-white rounded-full shadow-lg"
+                    onClick={handleToggleFavorite}
+                    disabled={isFavLoading}
+                    className={cn(
+                      "p-2.5 rounded-full shadow-sm transition-all hover:scale-110",
+                      isFav 
+                        ? "bg-red-50 text-red-500" 
+                        : "bg-white/90 backdrop-blur-sm text-gray-400 hover:text-red-500"
+                    )}
                   >
-                    <ChevronLeft className="w-5 h-5" />
+                    <Heart className={cn("h-5 w-5", isFav && "fill-current")} />
                   </button>
-                  <button
-                    onClick={() => setSelectedImageIndex(i => i < images.length - 1 ? i + 1 : 0)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-white/80 hover:bg-white rounded-full shadow-lg"
-                  >
-                    <ChevronRight className="w-5 h-5" />
-                  </button>
-                </>
-              )}
-            </div>
+                </div>
+
+                {images[selectedImageIndex]?.image_url ? (
+                  <Image
+                    src={images[selectedImageIndex].image_url}
+                    alt={images[selectedImageIndex].alt_text || product.name}
+                    fill
+                    className="object-contain p-6"
+                    priority
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-gray-300 bg-gray-50">
+                    <ShoppingCart className="h-20 w-20" />
+                  </div>
+                )}
+                
+                {/* Navigation Arrows */}
+                {images.length > 1 && (
+                  <>
+                    <button
+                      onClick={() => setSelectedImageIndex(i => i > 0 ? i - 1 : images.length - 1)}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-white/90 hover:bg-white rounded-full shadow-lg transition-colors"
+                    >
+                      <ChevronLeft className="w-5 h-5 text-gray-600" />
+                    </button>
+                    <button
+                      onClick={() => setSelectedImageIndex(i => i < images.length - 1 ? i + 1 : 0)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-white/90 hover:bg-white rounded-full shadow-lg transition-colors"
+                    >
+                      <ChevronRight className="w-5 h-5 text-gray-600" />
+                    </button>
+                  </>
+                )}
+              </div>
+            </Card>
 
             {/* Thumbnail Gallery */}
             {images.length > 1 && (
-              <div className="flex gap-2 overflow-x-auto pb-2">
+              <div className="flex gap-3 overflow-x-auto pb-2">
                 {images.map((img, idx) => (
                   <button
                     key={img.id}
                     onClick={() => setSelectedImageIndex(idx)}
-                    className={`relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden border-2 transition-colors ${
+                    className={cn(
+                      "relative w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden border-2 transition-all bg-white",
                       idx === selectedImageIndex 
-                        ? 'border-gold-500' 
-                        : 'border-transparent hover:border-gray-300'
-                    }`}
+                        ? 'border-orange-500 shadow-md' 
+                        : 'border-gray-200 hover:border-orange-300'
+                    )}
                   >
                     {img.image_url ? (
                       <Image
                         src={img.image_url}
                         alt={img.alt_text || ''}
                         fill
-                        className="object-cover"
+                        className="object-contain p-2"
                       />
                     ) : (
                       <div className="w-full h-full bg-gray-100" />
@@ -241,18 +358,49 @@ export default function ProductPage() {
           </div>
 
           {/* Product Info */}
-          <div className="space-y-6">
+          <div className="space-y-5">
             {/* Brand */}
             {product.brand && (
-              <p className="text-gold-600 font-medium">{product.brand}</p>
+              <Link href={`/catalog?brand=${product.brand}`}>
+                <Badge variant="outline" className="border-teal-300 text-teal-600 hover:bg-teal-50">
+                  {product.brand}
+                </Badge>
+              </Link>
             )}
 
             {/* Name */}
-            <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
+            <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">{product.name}</h1>
+
+            {/* Rating */}
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-1">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star
+                    key={star}
+                    className={cn(
+                      "h-5 w-5",
+                      star <= Math.round(rating) 
+                        ? "text-amber-400 fill-amber-400" 
+                        : "text-gray-200"
+                    )}
+                  />
+                ))}
+                <span className="ml-2 font-medium text-gray-900">{rating.toFixed(1)}</span>
+              </div>
+              {reviewsCount > 0 && (
+                <button 
+                  onClick={() => setActiveTab('reviews')}
+                  className="flex items-center gap-1 text-sm text-gray-500 hover:text-orange-600 transition-colors"
+                >
+                  <MessageSquare className="h-4 w-4" />
+                  {reviewsCount} отзывов
+                </button>
+              )}
+            </div>
 
             {/* Price */}
-            <div className="flex items-baseline gap-4">
-              <span className="text-3xl font-bold text-gold-600">
+            <div className="flex items-baseline gap-4 flex-wrap">
+              <span className="text-3xl lg:text-4xl font-bold text-orange-600">
                 {formatPrice(product.price)}
               </span>
               {product.old_price && (
@@ -260,116 +408,327 @@ export default function ProductPage() {
                   {formatPrice(product.old_price)}
                 </span>
               )}
+              {discount > 0 && (
+                <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
+                  Экономия {formatPrice(product.old_price! - product.price)}
+                </Badge>
+              )}
             </div>
 
             {/* Stock Status */}
             <div className="flex items-center gap-2">
               {product.in_stock ? (
-                <>
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span className="text-green-600">В наличии</span>
-                </>
+                <Badge className="bg-green-100 text-green-700 hover:bg-green-100 gap-1">
+                  <Check className="w-4 h-4" />
+                  В наличии
+                </Badge>
               ) : (
-                <>
-                  <AlertTriangle className="w-5 h-5 text-red-500" />
-                  <span className="text-red-600">Нет в наличии</span>
-                </>
+                <Badge variant="destructive" className="gap-1">
+                  <AlertTriangle className="w-4 h-4" />
+                  Нет в наличии
+                </Badge>
               )}
             </div>
 
+            <Separator className="bg-gray-200" />
+
             {/* Quantity & Add to Cart */}
-            <div className="flex items-center gap-4">
-              <div className="flex items-center border border-gray-200 rounded-lg">
-                <button
-                  onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                  className="p-3 hover:bg-gray-50"
-                  disabled={quantity <= 1}
-                >
-                  <Minus className="w-4 h-4" />
-                </button>
-                <span className="w-12 text-center font-medium">{quantity}</span>
-                <button
-                  onClick={() => setQuantity(q => q + 1)}
-                  className="p-3 hover:bg-gray-50"
-                >
-                  <Plus className="w-4 h-4" />
-                </button>
+            <div className="space-y-4">
+              <div className="flex items-center gap-4">
+                {/* Quantity Selector */}
+                <div className="flex items-center border border-gray-200 rounded-xl bg-white">
+                  <button
+                    onClick={() => setQuantity(q => Math.max(1, q - 1))}
+                    className="p-3 hover:bg-gray-50 transition-colors rounded-l-xl"
+                    disabled={quantity <= 1}
+                  >
+                    <Minus className="w-4 h-4 text-gray-600" />
+                  </button>
+                  <span className="w-14 text-center font-semibold text-gray-900">{quantity}</span>
+                  <button
+                    onClick={() => setQuantity(q => q + 1)}
+                    className="p-3 hover:bg-gray-50 transition-colors rounded-r-xl"
+                  >
+                    <Plus className="w-4 h-4 text-gray-600" />
+                  </button>
+                </div>
+
+                {/* Total Price */}
+                <div className="text-right">
+                  <p className="text-sm text-gray-500">Итого:</p>
+                  <p className="text-xl font-bold text-gray-900">
+                    {formatPrice(product.price * quantity)}
+                  </p>
+                </div>
               </div>
 
-              <button
-                onClick={handleAddToCart}
-                disabled={isCartLoading || !product.in_stock}
-                className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gold-500 hover:bg-gold-600 text-white rounded-lg font-medium transition-colors disabled:opacity-50"
-              >
-                {isCartLoading ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                ) : (
-                  <ShoppingCart className="w-5 h-5" />
-                )}
-                В корзину
-              </button>
-
-              <button
-                onClick={handleToggleFavorite}
-                disabled={isFavLoading}
-                className={`p-3 rounded-lg border transition-colors ${
-                  isFav 
-                    ? 'border-red-200 bg-red-50 text-red-500' 
-                    : 'border-gray-200 text-gray-500 hover:border-red-200 hover:text-red-500'
-                }`}
-              >
-                <Heart className={`w-5 h-5 ${isFav ? 'fill-current' : ''}`} />
-              </button>
+              {/* Action Buttons */}
+              <div className="flex gap-3">
+                <Button
+                  onClick={handleAddToCart}
+                  disabled={isCartLoading || !product.in_stock}
+                  className="flex-1 h-12 bg-orange-500 hover:bg-orange-600 text-white font-semibold text-base"
+                >
+                  {isCartLoading ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <ShoppingCart className="w-5 h-5 mr-2" />
+                  )}
+                  В корзину
+                </Button>
+                <Button
+                  onClick={handleQuickBuy}
+                  disabled={!product.in_stock}
+                  variant="outline"
+                  className="flex-1 h-12 border-orange-300 text-orange-600 hover:bg-orange-50 font-semibold text-base"
+                >
+                  <Zap className="w-5 h-5 mr-2" />
+                  Купить сейчас
+                </Button>
+              </div>
             </div>
+
+            <Separator className="bg-gray-200" />
 
             {/* Features */}
-            <div className="grid grid-cols-3 gap-4 py-6 border-t border-b border-gray-200">
-              <div className="text-center">
-                <Truck className="w-6 h-6 text-gold-500 mx-auto mb-2" />
-                <p className="text-sm text-gray-600">Доставка по КЗ</p>
+            <div className="grid grid-cols-3 gap-3">
+              <div className="text-center p-3 sm:p-4 bg-white rounded-xl border border-gray-100">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <Truck className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />
+                </div>
+                <p className="text-xs sm:text-sm font-medium text-gray-900">Доставка</p>
+                <p className="text-[10px] sm:text-xs text-gray-500">по всему КЗ</p>
               </div>
-              <div className="text-center">
-                <Shield className="w-6 h-6 text-gold-500 mx-auto mb-2" />
-                <p className="text-sm text-gray-600">Гарантия качества</p>
+              <div className="text-center p-3 sm:p-4 bg-white rounded-xl border border-gray-100">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
+                </div>
+                <p className="text-xs sm:text-sm font-medium text-gray-900">Гарантия</p>
+                <p className="text-[10px] sm:text-xs text-gray-500">качества</p>
               </div>
-              <div className="text-center">
-                <Package className="w-6 h-6 text-gold-500 mx-auto mb-2" />
-                <p className="text-sm text-gray-600">Оригинал 100%</p>
+              <div className="text-center p-3 sm:p-4 bg-white rounded-xl border border-gray-100">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <Package className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
+                </div>
+                <p className="text-xs sm:text-sm font-medium text-gray-900">Оригинал</p>
+                <p className="text-[10px] sm:text-xs text-gray-500">100%</p>
               </div>
             </div>
-
-            {/* Description */}
-            {product.description && (
-              <div>
-                <h2 className="font-semibold text-gray-900 mb-2">Описание</h2>
-                <p className="text-gray-600 leading-relaxed">{product.description}</p>
-              </div>
-            )}
-
-            {/* Attributes */}
-            {product.attributes && product.attributes.length > 0 && (
-              <div>
-                <h2 className="font-semibold text-gray-900 mb-3">Характеристики</h2>
-                <dl className="space-y-2">
-                  {product.attributes.map((attr: ProductAttribute) => (
-                    <div key={attr.id} className="flex justify-between py-2 border-b border-gray-100">
-                      <dt className="text-gray-500">{attr.name}</dt>
-                      <dd className="text-gray-900 font-medium">{attr.value}</dd>
-                    </div>
-                  ))}
-                </dl>
-              </div>
-            )}
           </div>
+        </div>
+
+        {/* Tabs Section */}
+        <div className="mt-8 lg:mt-10">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="w-full justify-start bg-white border border-gray-200 rounded-xl p-1 h-auto flex-wrap gap-1">
+              <TabsTrigger 
+                value="description" 
+                className="data-[state=active]:bg-orange-500 data-[state=active]:text-white rounded-lg px-4 sm:px-6 py-2 sm:py-2.5 text-sm"
+              >
+                Описание
+              </TabsTrigger>
+              <TabsTrigger 
+                value="specs" 
+                className="data-[state=active]:bg-orange-500 data-[state=active]:text-white rounded-lg px-4 sm:px-6 py-2 sm:py-2.5 text-sm"
+              >
+                Характеристики
+              </TabsTrigger>
+              <TabsTrigger 
+                value="reviews" 
+                className="data-[state=active]:bg-orange-500 data-[state=active]:text-white rounded-lg px-4 sm:px-6 py-2 sm:py-2.5 text-sm"
+              >
+                Отзывы ({reviewsCount})
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="description" className="mt-6">
+              <Card className="bg-white border-gray-200 shadow-sm">
+                <CardContent className="p-4 sm:p-6">
+                  {product.description ? (
+                    <p className="text-gray-600 leading-relaxed whitespace-pre-wrap">
+                      {product.description}
+                    </p>
+                  ) : (
+                    <p className="text-gray-500 text-center py-8">
+                      Описание товара отсутствует
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="specs" className="mt-6">
+              <Card className="bg-white border-gray-200 shadow-sm">
+                <CardContent className="p-4 sm:p-6">
+                  {product.attributes && product.attributes.length > 0 ? (
+                    <dl className="divide-y divide-gray-100">
+                      {product.attributes.map((attr: ProductAttribute) => (
+                        <div key={attr.id} className="flex justify-between py-3 sm:py-4 first:pt-0 last:pb-0">
+                          <dt className="text-gray-500 text-sm sm:text-base">{attr.name}</dt>
+                          <dd className="text-gray-900 font-medium text-sm sm:text-base">{attr.value}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  ) : (
+                    <p className="text-gray-500 text-center py-8">
+                      Характеристики не указаны
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="reviews" id="reviews" className="mt-6 space-y-6">
+              {/* Reviews Summary */}
+              <Card className="bg-white border-gray-200 shadow-sm">
+                <CardContent className="p-4 sm:p-6">
+                  <div className="flex flex-col sm:flex-row items-center gap-6 mb-6 pb-6 border-b border-gray-100">
+                    <div className="text-center">
+                      <div className="text-4xl sm:text-5xl font-bold text-gray-900">
+                        {rating > 0 ? rating.toFixed(1) : '—'}
+                      </div>
+                      <div className="flex items-center justify-center mt-2">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <Star
+                            key={star}
+                            className={cn(
+                              "h-4 w-4 sm:h-5 sm:w-5",
+                              star <= Math.round(rating) 
+                                ? "text-amber-400 fill-amber-400" 
+                                : "text-gray-200"
+                            )}
+                          />
+                        ))}
+                      </div>
+                      <p className="text-sm text-gray-500 mt-1">{reviewsCount} отзывов</p>
+                    </div>
+                    <div className="flex-1 w-full sm:w-auto">
+                      {[5, 4, 3, 2, 1].map((stars) => {
+                        const count = stats?.rating_distribution?.[stars as keyof typeof stats.rating_distribution] || 0;
+                        const percentage = reviewsCount > 0 ? (count / reviewsCount) * 100 : 0;
+                        return (
+                          <div key={stars} className="flex items-center gap-2 mb-1">
+                            <span className="text-sm text-gray-500 w-3">{stars}</span>
+                            <Star className="h-4 w-4 text-amber-400 fill-amber-400" />
+                            <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                              <div 
+                                className="h-full bg-amber-400 rounded-full transition-all"
+                                style={{ width: `${percentage}%` }}
+                              />
+                            </div>
+                            <span className="text-xs text-gray-400 w-6">{count}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Write Review Button or Edit Button */}
+                  <div className="text-center">
+                    {user ? (
+                      userReview && !editingReview ? (
+                        <div className="space-y-3">
+                          <p className="text-sm text-gray-600">Вы уже оставили отзыв</p>
+                          <div className="flex justify-center gap-3">
+                            <Button 
+                              variant="outline"
+                              onClick={() => {
+                                setEditingReview(true);
+                                setShowReviewForm(true);
+                              }}
+                              className="border-orange-300 text-orange-600 hover:bg-orange-50"
+                            >
+                              Редактировать
+                            </Button>
+                            <Button 
+                              variant="outline"
+                              onClick={handleDeleteReview}
+                              className="border-red-300 text-red-600 hover:bg-red-50"
+                            >
+                              Удалить
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <Button 
+                          onClick={() => setShowReviewForm(!showReviewForm)}
+                          className="bg-orange-500 hover:bg-orange-600 text-white"
+                        >
+                          <MessageSquare className="w-4 h-4 mr-2" />
+                          {showReviewForm ? 'Отменить' : 'Написать отзыв'}
+                        </Button>
+                      )
+                    ) : (
+                      <div className="space-y-3">
+                        <p className="text-sm text-gray-500">Войдите, чтобы оставить отзыв</p>
+                        <Link href={`/login?redirect=/product/${slug}`}>
+                          <Button className="bg-orange-500 hover:bg-orange-600 text-white">
+                            Войти
+                          </Button>
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Review Form */}
+              {showReviewForm && user && (
+                <ReviewForm
+                  productId={product.id}
+                  initialData={editingReview && userReview ? {
+                    rating: userReview.rating,
+                    title: userReview.title || '',
+                    comment: userReview.comment || '',
+                    pros: userReview.pros || '',
+                    cons: userReview.cons || '',
+                  } : undefined}
+                  onSubmit={handleSubmitReview}
+                  onCancel={() => {
+                    setShowReviewForm(false);
+                    setEditingReview(false);
+                  }}
+                  isLoading={isReviewsLoading}
+                />
+              )}
+
+              {/* Reviews List */}
+              {isReviewsLoading ? (
+                <div className="flex justify-center py-8">
+                  <Loader2 className="w-6 h-6 text-orange-500 animate-spin" />
+                </div>
+              ) : reviews.length > 0 ? (
+                <div className="space-y-4">
+                  {reviews.map((review) => (
+                    <ReviewCard
+                      key={review.id}
+                      review={review}
+                      isOwn={review.user_id === user?.id}
+                      onEdit={() => {
+                        setEditingReview(true);
+                        setShowReviewForm(true);
+                      }}
+                      onDelete={handleDeleteReview}
+                      onHelpful={() => markAsHelpful(review.id)}
+                    />
+                  ))}
+                </div>
+              ) : !showReviewForm && (
+                <Card className="bg-white border-gray-200 shadow-sm">
+                  <CardContent className="p-8 text-center">
+                    <MessageSquare className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                    <p className="text-gray-500">
+                      Пока нет отзывов. Будьте первым!
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
 
-      {/* Health Warning */}
-      <footer className="bg-slate-900 text-white py-4 mt-12">
-        <div className="container mx-auto px-4 text-center text-sm text-gray-400">
-          Минздрав предупреждает: курение вредит Вашему здоровью
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

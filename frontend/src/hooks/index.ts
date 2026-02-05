@@ -4,3 +4,4 @@ export { useProducts } from './useProducts';
 export { useOrders } from './useOrders';
 export { useFavorites } from './useFavorites';
 export { useCategories } from './useCategories';
+export { useReviews } from './useReviews';

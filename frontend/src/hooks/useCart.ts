@@ -3,21 +3,23 @@
 import { useState, useEffect, useCallback } from 'react';
 import { getSupabaseBrowserClient } from '@/lib/supabase';
 
-interface CartItem {
-  id: number;
-  product_id: number;
+export interface CartItem {
+  id: string;
+  product_id: string;
   quantity: number;
-  product_name_ru: string;
-  product_name_kk: string;
-  product_price: number;
-  product_stock: number;
-  product_slug: string;
-  primary_image_url: string | null;
-  item_total: number;
+  product: {
+    name: string;
+    name_kk: string | null;
+    price: number;
+    in_stock: boolean;
+    slug: string;
+    image_url?: string | null;
+    brand?: string | null;
+  };
 }
 
 interface CartState {
-  items: CartItem[];
+  cartItems: CartItem[];
   isLoading: boolean;
   error: string | null;
   totalAmount: number;
@@ -27,8 +29,8 @@ interface CartState {
 export function useCart() {
   const supabase = getSupabaseBrowserClient();
   const [state, setState] = useState<CartState>({
-    items: [],
-    isLoading: true,
+    cartItems: [],
+    isLoading: false,
     error: null,
     totalAmount: 0,
     totalItems: 0,
@@ -36,15 +38,11 @@ export function useCart() {
 
   // Загрузка корзины
   const loadCart = useCallback(async () => {
-    setState(prev => ({ ...prev, isLoading: true, error: null }));
-
-    const { data, error } = await supabase.rpc('get_cart');
-
-    if (error) {
-      // Если пользователь не авторизован или не взрослый
-      if (error.message.includes('Access denied') || error.code === 'PGRST301') {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
         setState({
-          items: [],
+          cartItems: [],
           isLoading: false,
           error: null,
           totalAmount: 0,
@@ -53,25 +51,51 @@ export function useCart() {
         return;
       }
 
+      setState(prev => ({ ...prev, isLoading: true, error: null }));
+
+      const { data, error } = await supabase
+        .from('cart_items')
+        .select(`
+          id,
+          product_id,
+          quantity,
+          product:products(name, name_kk, price, in_stock, slug, image_url, brand)
+        `)
+        .eq('user_id', session.user.id);
+
+      if (error) {
+        // Таблица может не существовать
+        setState({
+          cartItems: [],
+          isLoading: false,
+          error: null,
+          totalAmount: 0,
+          totalItems: 0,
+        });
+        return;
+      }
+
+      const cartItems = ((data || []) as unknown as CartItem[]).map(item => ({
+        ...item,
+        product: Array.isArray(item.product) ? item.product[0] : item.product,
+      }));
+      const totalAmount = cartItems.reduce((sum, item) => sum + (item.product?.price || 0) * item.quantity, 0);
+      const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
+      setState({
+        cartItems,
+        isLoading: false,
+        error: null,
+        totalAmount,
+        totalItems,
+      });
+    } catch (e) {
       setState(prev => ({
         ...prev,
         isLoading: false,
-        error: error.message,
+        error: null,
       }));
-      return;
     }
-
-    const items = (data || []) as CartItem[];
-    const totalAmount = items.reduce((sum, item) => sum + item.item_total, 0);
-    const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
-
-    setState({
-      items,
-      isLoading: false,
-      error: null,
-      totalAmount,
-      totalItems,
-    });
   }, [supabase]);
 
   // Загрузка при монтировании
@@ -80,80 +104,116 @@ export function useCart() {
   }, [loadCart]);
 
   // Добавление в корзину
-  const addToCart = async (productId: number, quantity: number = 1) => {
-    setState(prev => ({ ...prev, isLoading: true }));
+  const addToCart = async (productId: string, quantity: number = 1) => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        return { success: false, error: 'Необходимо войти в систему' };
+      }
 
-    const { data, error } = await supabase.rpc('add_to_cart', {
-      product_id_param: productId,
-      quantity_param: quantity,
-    });
+      setState(prev => ({ ...prev, isLoading: true }));
 
-    if (error) {
-      setState(prev => ({ ...prev, isLoading: false, error: error.message }));
+      // Проверяем, есть ли уже такой товар в корзине
+      const { data: existing } = await supabase
+        .from('cart_items')
+        .select('id, quantity')
+        .eq('user_id', session.user.id)
+        .eq('product_id', productId)
+        .single();
+
+      if (existing) {
+        // Обновляем количество
+        const { error } = await supabase
+          .from('cart_items')
+          .update({ quantity: existing.quantity + quantity })
+          .eq('id', existing.id);
+
+        if (error) throw error;
+      } else {
+        // Добавляем новый
+        const { error } = await supabase
+          .from('cart_items')
+          .insert({
+            user_id: session.user.id,
+            product_id: productId,
+            quantity,
+          });
+
+        if (error) throw error;
+      }
+
+      await loadCart();
+      return { success: true, message: 'Товар добавлен в корзину' };
+    } catch (error: any) {
+      setState(prev => ({ ...prev, isLoading: false }));
       return { success: false, error: error.message };
     }
-
-    const result = data as { success: boolean; error?: string; message?: string };
-
-    if (!result.success) {
-      setState(prev => ({ ...prev, isLoading: false, error: result.error || 'Unknown error' }));
-      return { success: false, error: result.error };
-    }
-
-    await loadCart();
-    return { success: true, message: result.message };
   };
 
   // Обновление количества
-  const updateQuantity = async (cartItemId: number, newQuantity: number) => {
-    setState(prev => ({ ...prev, isLoading: true }));
+  const updateQuantity = async (cartItemId: string, newQuantity: number) => {
+    try {
+      setState(prev => ({ ...prev, isLoading: true }));
 
-    const { data, error } = await supabase.rpc('update_cart_quantity', {
-      cart_item_id: cartItemId,
-      new_quantity: newQuantity,
-    });
+      if (newQuantity <= 0) {
+        // Удаляем
+        const { error } = await supabase
+          .from('cart_items')
+          .delete()
+          .eq('id', cartItemId);
 
-    if (error) {
-      setState(prev => ({ ...prev, isLoading: false, error: error.message }));
+        if (error) throw error;
+      } else {
+        // Обновляем
+        const { error } = await supabase
+          .from('cart_items')
+          .update({ quantity: newQuantity })
+          .eq('id', cartItemId);
+
+        if (error) throw error;
+      }
+
+      await loadCart();
+      return { success: true };
+    } catch (error: any) {
+      setState(prev => ({ ...prev, isLoading: false }));
       return { success: false, error: error.message };
     }
-
-    const result = data as { success: boolean; error?: string };
-
-    if (!result.success) {
-      setState(prev => ({ ...prev, isLoading: false, error: result.error || 'Unknown error' }));
-      return { success: false, error: result.error };
-    }
-
-    await loadCart();
-    return { success: true };
   };
 
-  // Удаление из корзины (установка количества в 0)
-  const removeItem = async (cartItemId: number) => {
+  // Удаление из корзины
+  const removeItem = async (cartItemId: string) => {
     return updateQuantity(cartItemId, 0);
   };
 
   // Очистка корзины
   const clearCart = async () => {
-    setState(prev => ({ ...prev, isLoading: true }));
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return { success: false, error: 'Not authenticated' };
 
-    const { error } = await supabase.rpc('clear_cart');
+      setState(prev => ({ ...prev, isLoading: true }));
 
-    if (error) {
-      setState(prev => ({ ...prev, isLoading: false, error: error.message }));
+      const { error } = await supabase
+        .from('cart_items')
+        .delete()
+        .eq('user_id', session.user.id);
+
+      if (error) throw error;
+
+      setState({
+        cartItems: [],
+        isLoading: false,
+        error: null,
+        totalAmount: 0,
+        totalItems: 0,
+      });
+
+      return { success: true };
+    } catch (error: any) {
+      setState(prev => ({ ...prev, isLoading: false }));
       return { success: false, error: error.message };
     }
-
-    setState({
-      items: [],
-      isLoading: false,
-      error: null,
-      totalAmount: 0,
-      totalItems: 0,
-    });
-
-    return { success: true };
   };
 
   return {

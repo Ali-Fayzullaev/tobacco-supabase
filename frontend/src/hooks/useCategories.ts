@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { getSupabaseBrowserClient } from '@/lib/supabase';
-import { Category } from '@/lib/database.types';
+import { Category } from '@/lib/types';
 
 interface CategoriesState {
   categories: Category[];
@@ -67,7 +67,7 @@ export function useCategories() {
   }, [loadCategories]);
 
   // Получить подкатегории
-  const getSubcategories = useCallback((parentId: number) => {
+  const getSubcategories = useCallback((parentId: string) => {
     return state.categories.filter(c => c.parent_id === parentId);
   }, [state.categories]);
 
@@ -77,12 +77,12 @@ export function useCategories() {
   }, [state.categories]);
 
   // Получить категорию по id
-  const getCategoryById = useCallback((id: number) => {
+  const getCategoryById = useCallback((id: string) => {
     return state.categories.find(c => c.id === id) || null;
   }, [state.categories]);
 
   // Получить хлебные крошки для категории
-  const getBreadcrumbs = useCallback((categoryId: number): Category[] => {
+  const getBreadcrumbs = useCallback((categoryId: string): Category[] => {
     const breadcrumbs: Category[] = [];
     let current = getCategoryById(categoryId);
 

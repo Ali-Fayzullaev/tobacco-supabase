@@ -78,6 +78,13 @@ export interface ProductAttribute {
   sort_order: number;
 }
 
+// Extended product type with all relations
+export interface ProductFull extends Product {
+  images?: ProductImage[];
+  attributes?: ProductAttribute[];
+  category?: Category | null;
+}
+
 export interface CartItem {
   id: string;
   user_id: string;

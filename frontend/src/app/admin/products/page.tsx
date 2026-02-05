@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { createBrowserSupabaseClient } from '@/lib/supabase';
 import { formatPrice } from '@/lib/utils';
-import type { Product, Category } from '@/lib/database.types';
+import type { Product, Category } from '@/lib/types';
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);

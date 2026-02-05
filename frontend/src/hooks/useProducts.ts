@@ -3,72 +3,70 @@
 import { useState, useCallback } from 'react';
 import { getSupabaseBrowserClient } from '@/lib/supabase';
 
-interface ProductSearchResult {
-  id: number;
-  sku: string;
+export interface ProductSearchResult {
+  id: string;
+  sku: string | null;
   slug: string;
-  name_ru: string;
-  name_kk: string;
-  description_short_ru: string | null;
+  name: string;
+  name_kk: string | null;
+  description: string | null;
   brand: string | null;
   price: number;
   old_price: number | null;
-  stock_quantity: number;
-  category_id: number | null;
-  primary_image_url: string | null;
+  in_stock: boolean;
+  category_id: string | null;
+  image_url: string | null;
   is_featured: boolean;
-  relevance_score: number;
-  total_count: number;
 }
 
 interface ProductDetail {
-  id: number;
-  sku: string;
+  id: string;
+  sku: string | null;
   slug: string;
-  name_ru: string;
-  name_kk: string;
-  description_short_ru: string | null;
-  description_short_kk: string | null;
-  description_full_ru: string | null;
-  description_full_kk: string | null;
+  name: string;
+  name_kk: string | null;
+  description: string | null;
+  description_kk: string | null;
   brand: string | null;
   price: number;
   old_price: number | null;
-  stock_quantity: number;
-  category_id: number | null;
-  category_name_ru: string | null;
+  in_stock: boolean;
+  is_active: boolean;
+  category_id: string | null;
+  category_name: string | null;
+  image_url: string | null;
   is_featured: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 interface SimilarProduct {
-  id: number;
+  id: string;
   slug: string;
-  name_ru: string;
+  name: string;
   price: number;
-  primary_image_url: string | null;
+  image_url: string | null;
 }
 
 interface ProductImage {
-  id: number;
-  product_id: number;
+  id: string;
+  product_id: string;
   image_url: string;
-  is_primary: boolean;
+  alt_text: string | null;
   sort_order: number;
 }
 
 interface ProductAttribute {
-  id: number;
-  product_id: number;
-  attribute_name_ru: string;
-  attribute_name_kk: string;
-  attribute_value_ru: string;
-  attribute_value_kk: string;
+  id: string;
+  product_id: string;
+  name: string;
+  value: string;
   sort_order: number;
 }
 
 interface SearchParams {
   query?: string;
-  categoryId?: number;
+  categoryId?: string;
   brand?: string;
   minPrice?: number;
   maxPrice?: number;
@@ -98,35 +96,103 @@ export function useProducts() {
     pageSize: 20,
   });
 
-  // Поиск товаров
+  // Поиск товаров (простой запрос без RPC)
   const searchProducts = useCallback(async (params: SearchParams = {}) => {
     setState(prev => ({ ...prev, isLoading: true, error: null }));
 
-    const { data, error } = await supabase.rpc('search_products', {
-      search_query: params.query || null,
-      category_filter: params.categoryId || null,
-      brand_filter: params.brand || null,
-      min_price: params.minPrice || null,
-      max_price: params.maxPrice || null,
-      in_stock_only: params.inStockOnly || false,
-      sort_by: params.sortBy || 'relevance',
-      page_number: params.page || 1,
-      page_size: params.pageSize || 20,
-    });
+    try {
+      const pageSize = params.pageSize || 20;
+      const page = params.page || 1;
+      const offset = (page - 1) * pageSize;
 
-    if (error) {
-      // Если пользователь не авторизован или не взрослый
-      if (error.message.includes('Access denied') || error.message.includes('user must be 18+')) {
-        setState(prev => ({
-          ...prev,
-          products: [],
-          isLoading: false,
-          error: 'ACCESS_DENIED',
-          totalCount: 0,
-        }));
-        return { success: false, error: 'ACCESS_DENIED' };
+      // Простой запрос - только базовые поля
+      let query = supabase
+        .from('products')
+        .select('*', { count: 'exact' })
+        .eq('is_active', true);
+
+      // Фильтр по категории
+      if (params.categoryId) {
+        query = query.eq('category_id', params.categoryId);
       }
 
+      // Фильтр по бренду
+      if (params.brand) {
+        query = query.eq('brand', params.brand);
+      }
+
+      // Фильтр по цене
+      if (params.minPrice) {
+        query = query.gte('price', params.minPrice);
+      }
+      if (params.maxPrice) {
+        query = query.lte('price', params.maxPrice);
+      }
+
+      // Фильтр по наличию
+      if (params.inStockOnly) {
+        query = query.eq('in_stock', true);
+      }
+
+      // Поиск по тексту
+      if (params.query) {
+        query = query.or(`name.ilike.%${params.query}%,name_kk.ilike.%${params.query}%,brand.ilike.%${params.query}%`);
+      }
+
+      // Сортировка
+      switch (params.sortBy) {
+        case 'price_asc':
+          query = query.order('price', { ascending: true });
+          break;
+        case 'price_desc':
+          query = query.order('price', { ascending: false });
+          break;
+        case 'name':
+          query = query.order('name', { ascending: true });
+          break;
+        case 'newest':
+        default:
+          query = query.order('created_at', { ascending: false });
+          break;
+      }
+
+      // Пагинация
+      query = query.range(offset, offset + pageSize - 1);
+
+      const { data, error, count } = await query;
+
+      if (error) {
+        throw error;
+      }
+
+      // Обрабатываем данные
+      const products: ProductSearchResult[] = (data || []).map((item: any) => ({
+        id: item.id,
+        sku: item.sku || null,
+        slug: item.slug,
+        name: item.name,
+        name_kk: item.name_kk,
+        description: item.description,
+        brand: item.brand,
+        price: item.price,
+        old_price: item.old_price,
+        in_stock: item.in_stock ?? true,
+        category_id: item.category_id,
+        image_url: item.image_url || null,
+        is_featured: item.is_featured || false,
+      }));
+
+      setState({
+        products,
+        isLoading: false,
+        error: null,
+        totalCount: count || 0,
+        currentPage: page,
+        pageSize,
+      });
+
+      return { success: true, data: products };
+    } catch (error: any) {
       setState(prev => ({
         ...prev,
         isLoading: false,
@@ -134,41 +200,34 @@ export function useProducts() {
       }));
       return { success: false, error: error.message };
     }
-
-    const products = (data || []) as ProductSearchResult[];
-    const totalCount = products[0]?.total_count || 0;
-
-    setState({
-      products,
-      isLoading: false,
-      error: null,
-      totalCount: Number(totalCount),
-      currentPage: params.page || 1,
-      pageSize: params.pageSize || 20,
-    });
-
-    return { success: true, data: products };
   }, [supabase]);
 
-  // Получение товара по slug
+  // Получение товара по slug (прямой запрос)
   const getProductBySlug = useCallback(async (slug: string) => {
-    const { data, error } = await supabase.rpc('get_product_by_slug', {
-      product_slug: slug,
-    });
+    const { data, error } = await supabase
+      .from('products')
+      .select(`
+        *,
+        category:categories(name, name_kk)
+      `)
+      .eq('slug', slug)
+      .eq('is_active', true)
+      .single();
 
     if (error) {
-      if (error.message.includes('Access denied')) {
-        return { success: false, error: 'ACCESS_DENIED' };
-      }
       return { success: false, error: error.message };
     }
 
-    const product = (data as ProductDetail[])?.[0] || null;
-    return { success: true, data: product };
+    const product = data ? {
+      ...data,
+      category_name: data.category?.name || null,
+    } : null;
+
+    return { success: true, data: product as ProductDetail };
   }, [supabase]);
 
   // Получение изображений товара
-  const getProductImages = useCallback(async (productId: number) => {
+  const getProductImages = useCallback(async (productId: string) => {
     const { data, error } = await supabase
       .from('product_images')
       .select('*')
@@ -183,7 +242,7 @@ export function useProducts() {
   }, [supabase]);
 
   // Получение атрибутов товара
-  const getProductAttributes = useCallback(async (productId: number) => {
+  const getProductAttributes = useCallback(async (productId: string) => {
     const { data, error } = await supabase
       .from('product_attributes')
       .select('*')
@@ -197,12 +256,19 @@ export function useProducts() {
     return { success: true, data: data as ProductAttribute[] };
   }, [supabase]);
 
-  // Получение похожих товаров
-  const getSimilarProducts = useCallback(async (productId: number, limit: number = 4) => {
-    const { data, error } = await supabase.rpc('get_similar_products', {
-      product_id_param: productId,
-      limit_count: limit,
-    });
+  // Получение похожих товаров (по категории)
+  const getSimilarProducts = useCallback(async (productId: string, categoryId: string | null, limit: number = 4) => {
+    if (!categoryId) {
+      return { success: true, data: [] as SimilarProduct[] };
+    }
+
+    const { data, error } = await supabase
+      .from('products')
+      .select('id, slug, name, price, image_url')
+      .eq('category_id', categoryId)
+      .eq('is_active', true)
+      .neq('id', productId)
+      .limit(limit);
 
     if (error) {
       return { success: false, error: error.message };
@@ -222,7 +288,7 @@ export function useProducts() {
     const [imagesResult, attributesResult, similarResult] = await Promise.all([
       getProductImages(productResult.data.id),
       getProductAttributes(productResult.data.id),
-      getSimilarProducts(productResult.data.id),
+      getSimilarProducts(productResult.data.id, productResult.data.category_id),
     ]);
 
     return {

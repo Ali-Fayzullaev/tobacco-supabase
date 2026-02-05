@@ -2,10 +2,13 @@
 
 import { useState, useCallback } from 'react';
 import { getSupabaseBrowserClient } from '@/lib/supabase';
-import { DeliveryMethod, PaymentMethod, OrderStatus } from '@/lib/database.types';
+
+type DeliveryMethod = 'courier' | 'pickup' | 'post';
+type PaymentMethod = 'kaspi' | 'card' | 'cash';
+type OrderStatus = 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
 
 interface OrderListItem {
-  id: number;
+  id: string;
   order_number: string;
   status: OrderStatus;
   total_amount: number;
@@ -13,35 +16,27 @@ interface OrderListItem {
   payment_method: PaymentMethod;
   payment_status: string;
   created_at: string;
-  items_count: number;
-  total_count: number;
 }
 
 interface CreateOrderParams {
   deliveryMethod: DeliveryMethod;
   paymentMethod: PaymentMethod;
-  deliveryCity: string;
-  deliveryStreet: string;
-  deliveryBuilding: string;
-  deliveryApartment?: string;
-  deliveryComment?: string;
-  contactName?: string;
-  contactPhone?: string;
-  orderComment?: string;
+  shippingAddress: {
+    city: string;
+    address: string;
+    apartment?: string;
+    postalCode?: string;
+  };
+  phone: string;
+  comment?: string;
 }
 
-interface CreateOrderResult {
+export interface CreateOrderResult {
   success: boolean;
-  order_id?: number;
+  order_id?: string;
   order_number?: string;
   total_amount?: number;
   error?: string;
-  insufficient_stock?: Array<{
-    product_id: number;
-    name: string;
-    requested: number;
-    available: number;
-  }>;
 }
 
 interface OrdersState {
@@ -64,61 +59,151 @@ export function useOrders() {
 
   // Загрузка списка заказов
   const loadOrders = useCallback(async (page: number = 1, pageSize: number = 10) => {
-    setState(prev => ({ ...prev, isLoading: true, error: null }));
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        setState(prev => ({ ...prev, isLoading: false, error: 'Not authenticated' }));
+        return { success: false, error: 'Not authenticated' };
+      }
 
-    const { data, error } = await supabase.rpc('get_my_orders', {
-      page_number: page,
-      page_size: pageSize,
-    });
+      setState(prev => ({ ...prev, isLoading: true, error: null }));
 
-    if (error) {
-      setState(prev => ({ ...prev, isLoading: false, error: error.message }));
-      return { success: false, error: error.message };
+      const from = (page - 1) * pageSize;
+      const to = from + pageSize - 1;
+
+      const { data, error, count } = await supabase
+        .from('orders')
+        .select('*', { count: 'exact' })
+        .eq('user_id', session.user.id)
+        .order('created_at', { ascending: false })
+        .range(from, to);
+
+      if (error) {
+        setState(prev => ({ ...prev, isLoading: false, error: error.message }));
+        return { success: false, error: error.message };
+      }
+
+      const orders = (data || []) as OrderListItem[];
+
+      setState({
+        orders,
+        isLoading: false,
+        error: null,
+        totalCount: count || 0,
+        currentPage: page,
+      });
+
+      return { success: true, data: orders };
+    } catch (e: any) {
+      setState(prev => ({ ...prev, isLoading: false, error: e.message }));
+      return { success: false, error: e.message };
     }
-
-    const orders = (data || []) as OrderListItem[];
-    const totalCount = orders[0]?.total_count || 0;
-
-    setState({
-      orders,
-      isLoading: false,
-      error: null,
-      totalCount: Number(totalCount),
-      currentPage: page,
-    });
-
-    return { success: true, data: orders };
   }, [supabase]);
 
   // Создание заказа
   const createOrder = async (params: CreateOrderParams): Promise<CreateOrderResult> => {
-    setState(prev => ({ ...prev, isLoading: true }));
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        return { success: false, error: 'Not authenticated' };
+      }
 
-    const { data, error } = await supabase.rpc('create_order', {
-      delivery_method_param: params.deliveryMethod,
-      payment_method_param: params.paymentMethod,
-      delivery_city_param: params.deliveryCity,
-      delivery_street_param: params.deliveryStreet,
-      delivery_building_param: params.deliveryBuilding,
-      delivery_apartment_param: params.deliveryApartment || null,
-      delivery_comment_param: params.deliveryComment || null,
-      contact_name_param: params.contactName || null,
-      contact_phone_param: params.contactPhone || null,
-      order_comment_param: params.orderComment || null,
-    });
+      setState(prev => ({ ...prev, isLoading: true }));
 
-    setState(prev => ({ ...prev, isLoading: false }));
+      // Получаем товары из корзины
+      const { data: cartItems, error: cartError } = await supabase
+        .from('cart_items')
+        .select(`
+          id,
+          product_id,
+          quantity,
+          product:products(price, name)
+        `)
+        .eq('user_id', session.user.id);
 
-    if (error) {
-      return { success: false, error: error.message };
+      if (cartError || !cartItems?.length) {
+        setState(prev => ({ ...prev, isLoading: false }));
+        return { success: false, error: 'Корзина пуста' };
+      }
+
+      // Считаем сумму
+      const totalAmount = cartItems.reduce((sum, item: any) => {
+        const product = Array.isArray(item.product) ? item.product[0] : item.product;
+        return sum + (product?.price || 0) * item.quantity;
+      }, 0);
+
+      // Создаём заказ
+      const { data: order, error: orderError } = await supabase
+        .from('orders')
+        .insert({
+          user_id: session.user.id,
+          status: 'pending',
+          total_amount: totalAmount,
+          delivery_method: params.deliveryMethod,
+          payment_method: params.paymentMethod,
+          payment_status: 'pending',
+          shipping_address: {
+            city: params.shippingAddress.city,
+            address: params.shippingAddress.address,
+            apartment: params.shippingAddress.apartment || null,
+            postalCode: params.shippingAddress.postalCode || null,
+          },
+          phone: params.phone,
+          comment: params.comment || null,
+        })
+        .select()
+        .single();
+
+      if (orderError) {
+        setState(prev => ({ ...prev, isLoading: false }));
+        return { success: false, error: orderError.message };
+      }
+
+      // Создаём позиции заказа
+      const orderItems = cartItems.map((item: any) => {
+        const product = Array.isArray(item.product) ? item.product[0] : item.product;
+        return {
+          order_id: order.id,
+          product_id: item.product_id,
+          quantity: item.quantity,
+          price: product?.price || 0,
+          product_name: product?.name || 'Товар',
+        };
+      });
+
+      const { error: itemsError } = await supabase
+        .from('order_items')
+        .insert(orderItems);
+
+      if (itemsError) {
+        // Удаляем заказ если не удалось добавить позиции
+        await supabase.from('orders').delete().eq('id', order.id);
+        setState(prev => ({ ...prev, isLoading: false }));
+        return { success: false, error: itemsError.message };
+      }
+
+      // Очищаем корзину
+      await supabase
+        .from('cart_items')
+        .delete()
+        .eq('user_id', session.user.id);
+
+      setState(prev => ({ ...prev, isLoading: false }));
+
+      return {
+        success: true,
+        order_id: order.id,
+        order_number: order.order_number,
+        total_amount: totalAmount,
+      };
+    } catch (e: any) {
+      setState(prev => ({ ...prev, isLoading: false }));
+      return { success: false, error: e.message };
     }
-
-    const result = data as CreateOrderResult;
-    return result;
   };
 
   // Получение деталей заказа
-  const getOrderDetails = async (orderId: number) => {
+  const getOrderDetails = async (orderId: string) => {
     const { data: order, error: orderError } = await supabase
       .from('orders')
       .select('*')

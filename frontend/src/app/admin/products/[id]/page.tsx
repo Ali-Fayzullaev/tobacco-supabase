@@ -10,12 +10,12 @@ import { toast } from 'sonner';
 import { 
   ArrowLeft, 
   Loader2, 
-  Upload,
   X,
   Plus
 } from 'lucide-react';
 import { createBrowserSupabaseClient } from '@/lib/supabase';
-import type { Category } from '@/lib/database.types';
+import { ImageUploader } from '@/components/admin/ImageUploader';
+import type { Category } from '@/lib/types';
 
 const productSchema = z.object({
   name: z.string().min(2, 'Введите название'),
@@ -49,7 +49,7 @@ export default function ProductEditPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(!isNew);
   const [isSaving, setIsSaving] = useState(false);
-  const [imageUrl, setImageUrl] = useState<string>('');
+  const [images, setImages] = useState<string[]>([]);
   const [attributes, setAttributes] = useState<Attribute[]>([]);
 
   const {
@@ -126,7 +126,10 @@ export default function ProductEditPage() {
         setValue('in_stock', product.in_stock);
         setValue('is_active', product.is_active);
         setValue('is_featured', product.is_featured);
-        setImageUrl(product.image_url || '');
+        // Загружаем изображения
+        const imgs: string[] = [];
+        if (product.image_url) imgs.push(product.image_url);
+        setImages(imgs);
         setAttributes(product.attributes?.map((a: any) => ({ name: a.name, value: a.value })) || []);
       }
     } catch (error) {
@@ -156,7 +159,7 @@ export default function ProductEditPage() {
         in_stock: data.in_stock,
         is_active: data.is_active,
         is_featured: data.is_featured,
-        image_url: imageUrl || null,
+        image_url: images[0] || null,
       };
 
       if (isNew) {
@@ -435,36 +438,14 @@ export default function ProductEditPage() {
           </div>
         </div>
 
-        {/* Image */}
+        {/* Images */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Изображение</h2>
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              URL изображения
-            </label>
-            <input
-              type="url"
-              value={imageUrl}
-              onChange={(e) => setImageUrl(e.target.value)}
-              placeholder="https://example.com/image.jpg"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500"
-            />
-            <p className="text-xs text-gray-500 mt-1">
-              Введите прямую ссылку на изображение или загрузите в Supabase Storage
-            </p>
-          </div>
-
-          {imageUrl && (
-            <div className="mt-4">
-              <img
-                src={imageUrl}
-                alt="Preview"
-                className="w-32 h-32 object-cover rounded-lg border"
-                onError={(e) => (e.currentTarget.style.display = 'none')}
-              />
-            </div>
-          )}
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Изображения</h2>
+          <ImageUploader
+            images={images}
+            onChange={setImages}
+            maxImages={5}
+          />
         </div>
 
         {/* Attributes */}

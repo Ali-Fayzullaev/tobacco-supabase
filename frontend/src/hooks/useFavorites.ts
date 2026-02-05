@@ -3,25 +3,26 @@
 import { useState, useEffect, useCallback } from 'react';
 import { getSupabaseBrowserClient } from '@/lib/supabase';
 
-interface FavoriteItem {
-  id: number;
-  product_id: number;
+export interface FavoriteItem {
+  id: string;
+  product_id: string;
   created_at: string;
   product: {
-    id: number;
+    id: string;
     slug: string;
-    name_ru: string;
-    name_kk: string;
+    name: string;
+    name_kk: string | null;
     price: number;
     old_price: number | null;
-    stock_quantity: number;
-    primary_image_url?: string;
+    in_stock: boolean;
+    image_url: string | null;
+    brand?: string | null;
   };
 }
 
 interface FavoritesState {
-  items: FavoriteItem[];
-  productIds: Set<number>;
+  favorites: FavoriteItem[];
+  productIds: Set<string>;
   isLoading: boolean;
   error: string | null;
 }
@@ -29,7 +30,7 @@ interface FavoritesState {
 export function useFavorites() {
   const supabase = getSupabaseBrowserClient();
   const [state, setState] = useState<FavoritesState>({
-    items: [],
+    favorites: [],
     productIds: new Set(),
     isLoading: true,
     error: null,
@@ -37,92 +38,62 @@ export function useFavorites() {
 
   // Загрузка избранного
   const loadFavorites = useCallback(async () => {
-    setState(prev => ({ ...prev, isLoading: true, error: null }));
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        setState({
+          favorites: [],
+          productIds: new Set(),
+          isLoading: false,
+          error: null,
+        });
+        return;
+      }
 
-    // Получаем избранное с информацией о товарах
-    const { data: favorites, error: favError } = await supabase
-      .from('favorites')
-      .select('*')
-      .order('created_at', { ascending: false });
+      setState(prev => ({ ...prev, isLoading: true, error: null }));
 
-    if (favError) {
-      setState(prev => ({
-        ...prev,
-        isLoading: false,
-        error: favError.message,
+      // Получаем избранное с информацией о товарах
+      const { data: favorites, error: favError } = await supabase
+        .from('favorites')
+        .select(`
+          id,
+          product_id,
+          created_at,
+          product:products(id, slug, name, name_kk, price, old_price, in_stock, image_url, brand)
+        `)
+        .eq('user_id', session.user.id)
+        .order('created_at', { ascending: false });
+
+      if (favError) {
+        // Таблица может не существовать
+        setState({
+          favorites: [],
+          productIds: new Set(),
+          isLoading: false,
+          error: null,
+        });
+        return;
+      }
+
+      const items = ((favorites || []) as unknown as FavoriteItem[]).map(item => ({
+        ...item,
+        product: Array.isArray(item.product) ? item.product[0] : item.product,
       }));
-      return;
-    }
+      const productIdSet = new Set(items.map(f => f.product_id));
 
-    if (!favorites || favorites.length === 0) {
       setState({
-        items: [],
-        productIds: new Set(),
+        favorites: items,
+        productIds: productIdSet,
         isLoading: false,
         error: null,
       });
-      return;
-    }
-
-    // Получаем информацию о товарах
-    const productIds = favorites.map(f => f.product_id);
-    const { data: products, error: prodError } = await supabase
-      .from('products')
-      .select(`
-        id,
-        slug,
-        name_ru,
-        name_kk,
-        price,
-        old_price,
-        stock_quantity
-      `)
-      .in('id', productIds)
-      .eq('is_active', true)
-      .eq('is_deleted', false);
-
-    if (prodError) {
+    } catch (e) {
       setState(prev => ({
         ...prev,
         isLoading: false,
-        error: prodError.message,
+        error: null,
       }));
-      return;
     }
-
-    // Получаем изображения
-    const { data: images } = await supabase
-      .from('product_images')
-      .select('product_id, image_url')
-      .in('product_id', productIds)
-      .eq('is_primary', true);
-
-    const imageMap = new Map(images?.map(img => [img.product_id, img.image_url]) || []);
-
-    // Собираем данные
-    const items: FavoriteItem[] = favorites
-      .map(fav => {
-        const product = products?.find(p => p.id === fav.product_id);
-        if (!product) return null;
-
-        return {
-          id: fav.id,
-          product_id: fav.product_id,
-          created_at: fav.created_at,
-          product: {
-            ...product,
-            primary_image_url: imageMap.get(product.id) || undefined,
-          },
-        };
-      })
-      .filter((item): item is FavoriteItem => item !== null);
-
-    setState({
-      items,
-      productIds: new Set(productIds),
-      isLoading: false,
-      error: null,
-    });
   }, [supabase]);
 
   // Загрузка при монтировании
@@ -131,26 +102,49 @@ export function useFavorites() {
   }, [loadFavorites]);
 
   // Переключение избранного
-  const toggleFavorite = async (productId: number) => {
-    const { data, error } = await supabase.rpc('toggle_favorite', {
-      product_id_param: productId,
-    });
+  const toggleFavorite = async (productId: string) => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        return { success: false, error: 'Not authenticated' };
+      }
 
-    if (error) {
+      // Проверяем, есть ли уже в избранном
+      const isInFavorites = state.productIds.has(productId);
+
+      if (isInFavorites) {
+        // Удаляем
+        const { error } = await supabase
+          .from('favorites')
+          .delete()
+          .eq('user_id', session.user.id)
+          .eq('product_id', productId);
+
+        if (error) throw error;
+        
+        await loadFavorites();
+        return { success: true, action: 'removed' as const };
+      } else {
+        // Добавляем
+        const { error } = await supabase
+          .from('favorites')
+          .insert({
+            user_id: session.user.id,
+            product_id: productId,
+          });
+
+        if (error) throw error;
+        
+        await loadFavorites();
+        return { success: true, action: 'added' as const };
+      }
+    } catch (error: any) {
       return { success: false, error: error.message };
     }
-
-    const result = data as { success: boolean; action: 'added' | 'removed' };
-
-    if (result.success) {
-      await loadFavorites();
-    }
-
-    return result;
   };
 
   // Проверка, есть ли товар в избранном
-  const isFavorite = (productId: number) => {
+  const isFavorite = (productId: string) => {
     return state.productIds.has(productId);
   };
 
@@ -158,6 +152,7 @@ export function useFavorites() {
     ...state,
     toggleFavorite,
     isFavorite,
+    loadFavorites,
     refreshFavorites: loadFavorites,
   };
 }

@@ -23,7 +23,7 @@ import { useProducts } from '@/hooks/useProducts';
 import { useCart } from '@/hooks/useCart';
 import { useFavorites } from '@/hooks/useFavorites';
 import { formatPrice } from '@/lib/utils';
-import type { ProductFull } from '@/lib/database.types';
+import type { ProductFull, ProductImage, ProductAttribute } from '@/lib/types';
 
 export default function ProductPage() {
   const params = useParams();
@@ -48,9 +48,9 @@ export default function ProductPage() {
   }, [slug, isAuthLoading, user, isAdult]);
 
   const loadProduct = async () => {
-    const data = await getFullProduct(slug);
-    if (data) {
-      setProduct(data);
+    const result = await getFullProduct(slug);
+    if (result.success && result.data) {
+      setProduct(result.data as unknown as ProductFull);
     }
   };
 
@@ -66,7 +66,7 @@ export default function ProductPage() {
     }
   };
 
-  const images = product?.images?.length 
+  const images: { id: string; image_url: string; alt_text: string | null }[] = product?.images?.length 
     ? product.images 
     : [{ id: '1', image_url: product?.image_url || '', alt_text: product?.name || '' }];
 
@@ -351,7 +351,7 @@ export default function ProductPage() {
               <div>
                 <h2 className="font-semibold text-gray-900 mb-3">Характеристики</h2>
                 <dl className="space-y-2">
-                  {product.attributes.map((attr) => (
+                  {product.attributes.map((attr: ProductAttribute) => (
                     <div key={attr.id} className="flex justify-between py-2 border-b border-gray-100">
                       <dt className="text-gray-500">{attr.name}</dt>
                       <dd className="text-gray-900 font-medium">{attr.value}</dd>

@@ -33,11 +33,11 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
-  // Не проверяем сессию на страницах auth - пусть клиент сам обрабатывает
-  const authRoutes = ['/login', '/register', '/test-login', '/catalog'];
-  const isAuthRoute = authRoutes.some(route => pathname.startsWith(route));
+  // Публичные роуты - не требуют авторизации
+  const publicRoutes = ['/login', '/register', '/catalog', '/product', '/'];
+  const isPublicRoute = publicRoutes.some(route => pathname.startsWith(route) || pathname === '/');
   
-  if (isAuthRoute) {
+  if (isPublicRoute) {
     return response;
   }
 

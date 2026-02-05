@@ -94,7 +94,7 @@ export default function CheckoutPage() {
     if (!addressData) return;
 
     const result = await createOrder({
-      deliveryMethod,
+      deliveryMethod: deliveryMethod as any,
       paymentMethod,
       shippingAddress: {
         city: addressData.city,
@@ -106,9 +106,9 @@ export default function CheckoutPage() {
       comment: addressData.comment,
     });
 
-    if (result.success && result.orderNumber) {
+    if (result.success && result.order_number) {
       await clearCart();
-      router.push(`/order-success?number=${result.orderNumber}`);
+      router.push(`/order-success?number=${result.order_number}`);
     } else {
       toast.error(result.error || 'Ошибка при создании заказа');
     }

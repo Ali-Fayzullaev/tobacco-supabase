@@ -17,12 +17,11 @@ import {
   AlertTriangle
 } from 'lucide-react';
 import { useAuth } from '@/hooks';
-import { useProducts } from '@/hooks/useProducts';
+import { useProducts, ProductSearchResult } from '@/hooks/useProducts';
 import { useCategories } from '@/hooks/useCategories';
 import { useCart } from '@/hooks/useCart';
 import { useFavorites } from '@/hooks/useFavorites';
 import { formatPrice } from '@/lib/utils';
-import type { Product, Category } from '@/lib/database.types';
 
 type SortOption = 'newest' | 'price_asc' | 'price_desc' | 'popular';
 
@@ -34,7 +33,7 @@ const sortOptions: { value: SortOption; label: string }[] = [
 ];
 
 interface ProductCardProps {
-  product: Product;
+  product: ProductSearchResult;
   viewMode: 'grid' | 'list';
 }
 
@@ -42,6 +41,7 @@ function ProductCard({ product, viewMode }: ProductCardProps) {
   const { addToCart, isLoading: isCartLoading } = useCart();
   const { toggleFavorite, isFavorite, isLoading: isFavLoading } = useFavorites();
   const isFav = isFavorite(product.id);
+  const inStock = product.in_stock;
 
   const handleAddToCart = async () => {
     await addToCart(product.id, 1);
@@ -98,7 +98,7 @@ function ProductCard({ product, viewMode }: ProductCardProps) {
               </button>
               <button
                 onClick={handleAddToCart}
-                disabled={isCartLoading || !product.in_stock}
+                disabled={isCartLoading || !inStock}
                 className="flex items-center gap-2 px-4 py-2 bg-gold-500 hover:bg-gold-600 text-white rounded-lg transition-colors disabled:opacity-50"
               >
                 <ShoppingCart className="w-5 h-5" />
@@ -127,7 +127,7 @@ function ProductCard({ product, viewMode }: ProductCardProps) {
               Нет фото
             </div>
           )}
-          {!product.in_stock && (
+          {!inStock && (
             <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
               <span className="text-white font-medium">Нет в наличии</span>
             </div>
@@ -159,7 +159,7 @@ function ProductCard({ product, viewMode }: ProductCardProps) {
             </button>
             <button
               onClick={handleAddToCart}
-              disabled={isCartLoading || !product.in_stock}
+              disabled={isCartLoading || !inStock}
               className="p-2 text-gold-600 hover:bg-gold-50 rounded-lg transition-colors disabled:opacity-50"
             >
               <ShoppingCart className="w-5 h-5" />
@@ -192,15 +192,12 @@ function CatalogContent() {
     max: searchParams.get('maxPrice') || '',
   });
 
-  // Check if user is authenticated and adult
-  const isAdult = profile?.birth_date && 
-    new Date(profile.birth_date) <= new Date(new Date().setFullYear(new Date().getFullYear() - 18));
-
+  // Загружаем товары при изменении фильтров
   useEffect(() => {
-    if (!isAuthLoading && user && isAdult) {
+    if (!isAuthLoading) {
       loadProducts();
     }
-  }, [selectedCategory, sortBy, isAuthLoading, user, isAdult]);
+  }, [selectedCategory, sortBy, isAuthLoading]);
 
   const loadProducts = async () => {
     await searchProducts({
@@ -208,7 +205,7 @@ function CatalogContent() {
       categoryId: selectedCategory || undefined,
       minPrice: priceRange.min ? Number(priceRange.min) : undefined,
       maxPrice: priceRange.max ? Number(priceRange.max) : undefined,
-      sortBy: sortBy,
+      sortBy: sortBy === 'popular' ? 'newest' : sortBy,
     });
   };
 
@@ -221,7 +218,7 @@ function CatalogContent() {
   const updateURL = () => {
     const params = new URLSearchParams();
     if (searchQuery) params.set('q', searchQuery);
-    if (selectedCategory) params.set('category', selectedCategory);
+    if (selectedCategory) params.set('category', String(selectedCategory));
     if (sortBy !== 'newest') params.set('sort', sortBy);
     if (priceRange.min) params.set('minPrice', priceRange.min);
     if (priceRange.max) params.set('maxPrice', priceRange.max);
@@ -241,65 +238,6 @@ function CatalogContent() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <Loader2 className="w-8 h-8 text-gold-500 animate-spin" />
-      </div>
-    );
-  }
-
-  // Show access denied for non-authenticated users
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="max-w-md text-center">
-          <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <AlertTriangle className="w-10 h-10 text-red-500" />
-          </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">
-            Доступ ограничен
-          </h1>
-          <p className="text-gray-500 mb-6">
-            Для просмотра каталога необходимо войти в систему и подтвердить, 
-            что вам исполнилось 18 лет.
-          </p>
-          <div className="flex flex-col gap-3">
-            <Link
-              href="/login?redirect=/catalog"
-              className="bg-gold-500 hover:bg-gold-600 text-white py-3 px-6 rounded-lg font-medium transition-colors"
-            >
-              Войти
-            </Link>
-            <Link
-              href="/register"
-              className="bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 px-6 rounded-lg font-medium transition-colors"
-            >
-              Зарегистрироваться
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Show access denied for underage users
-  if (!isAdult) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="max-w-md text-center">
-          <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <AlertTriangle className="w-10 h-10 text-red-500" />
-          </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">
-            Доступ запрещён
-          </h1>
-          <p className="text-gray-500 mb-6">
-            Продажа табачной продукции лицам младше 18 лет запрещена законодательством Республики Казахстан.
-          </p>
-          <Link
-            href="/"
-            className="inline-block bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 px-6 rounded-lg font-medium transition-colors"
-          >
-            На главную
-          </Link>
-        </div>
       </div>
     );
   }

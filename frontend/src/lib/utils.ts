@@ -163,3 +163,21 @@ export const paymentStatusLabels: Record<string, { ru: string; kk: string }> = {
   failed: { ru: 'Ошибка оплаты', kk: 'Төлем қатесі' },
   refunded: { ru: 'Возврат', kk: 'Қайтару' },
 };
+
+// Получить метку статуса заказа
+export function getStatusLabel(status: string, locale: 'ru' | 'kk' = 'ru'): string {
+  return orderStatusLabels[status]?.[locale] || status;
+}
+
+// Получить цвет статуса заказа
+export function getStatusColor(status: string): string {
+  const colors: Record<string, string> = {
+    new: 'bg-blue-100 text-blue-800',
+    confirmed: 'bg-green-100 text-green-800',
+    processing: 'bg-yellow-100 text-yellow-800',
+    shipping: 'bg-purple-100 text-purple-800',
+    delivered: 'bg-green-100 text-green-800',
+    cancelled: 'bg-red-100 text-red-800',
+  };
+  return colors[status] || 'bg-gray-100 text-gray-800';
+}

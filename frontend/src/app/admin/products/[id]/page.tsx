@@ -68,6 +68,7 @@ export default function ProductEditPage() {
   });
 
   const name = watch('name');
+  const [slugSuffix] = useState(() => Date.now().toString(36) + Math.random().toString(36).substring(2, 6));
 
   useEffect(() => {
     loadCategories();
@@ -79,14 +80,17 @@ export default function ProductEditPage() {
   // Auto-generate slug from name
   useEffect(() => {
     if (name && isNew) {
-      const slug = name
+      // Генерируем slug из названия + уникальный суффикс (timestamp + random)
+      const baseSlug = name
         .toLowerCase()
         .replace(/[^a-zа-яё0-9\s-]/gi, '')
         .replace(/\s+/g, '-')
-        .replace(/-+/g, '-');
-      setValue('slug', slug);
+        .replace(/-+/g, '-')
+        .substring(0, 50); // Ограничиваем длину
+      
+      setValue('slug', `${baseSlug}-${slugSuffix}`);
     }
-  }, [name, isNew, setValue]);
+  }, [name, isNew, setValue, slugSuffix]);
 
   const loadCategories = async () => {
     const supabase = createBrowserSupabaseClient();
@@ -222,7 +226,19 @@ export default function ProductEditPage() {
       }
     } catch (error: any) {
       console.error('Error saving product:', error);
-      toast.error(error.message || 'Ошибка при сохранении');
+      
+      // Понятные сообщения об ошибках
+      if (error.code === '23505') {
+        if (error.message?.includes('slug')) {
+          toast.error('Товар с таким URL уже существует. Измените URL.');
+        } else if (error.message?.includes('sku')) {
+          toast.error('Товар с таким артикулом уже существует.');
+        } else {
+          toast.error('Товар с такими данными уже существует.');
+        }
+      } else {
+        toast.error(error.message || 'Ошибка при сохранении');
+      }
     } finally {
       setIsSaving(false);
     }

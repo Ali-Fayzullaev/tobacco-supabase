@@ -68,7 +68,8 @@ export function ProductCard({ product, size = 'normal', className }: ProductCard
       buttonSize: 'h-7 sm:h-8 text-[10px] sm:text-xs',
       iconSize: 'h-3 w-3 sm:h-3.5 sm:w-3.5',
       showBrand: false,
-      showRating: false,
+      showRating: true,
+      starSize: 'h-2.5 w-2.5',
       showDiscount: true,
       favBtnSize: 'p-1 sm:p-1.5',
       favIconSize: 'h-3 w-3 sm:h-4 sm:w-4',
@@ -85,6 +86,7 @@ export function ProductCard({ product, size = 'normal', className }: ProductCard
       iconSize: 'h-3.5 w-3.5 sm:h-4 sm:w-4',
       showBrand: true,
       showRating: true,
+      starSize: 'h-3 w-3',
       showDiscount: true,
       favBtnSize: 'p-1.5 sm:p-2',
       favIconSize: 'h-4 w-4',
@@ -98,6 +100,7 @@ export function ProductCard({ product, size = 'normal', className }: ProductCard
       oldPriceSize: 'text-sm',
       badgeSize: 'text-xs px-2.5 py-0.5',
       buttonSize: 'h-9 sm:h-10 text-sm',
+      starSize: 'h-3.5 w-3.5',
       iconSize: 'h-4 w-4',
       showBrand: true,
       showRating: true,
@@ -210,19 +213,17 @@ export function ProductCard({ product, size = 'normal', className }: ProductCard
                   <Star
                     key={star}
                     className={cn(
-                      "h-3 w-3",
+                      s.starSize || "h-3 w-3",
                       star <= Math.round(rating) 
                         ? "text-amber-400 fill-amber-400" 
-                        : "text-gray-200"
+                        : "text-gray-300"
                     )}
                   />
                 ))}
               </div>
-              {reviewsCount > 0 && (
-                <span className="text-[10px] sm:text-xs text-gray-400 ml-1">
-                  ({reviewsCount})
-                </span>
-              )}
+              <span className="text-[10px] sm:text-xs text-gray-500 ml-1">
+                {reviewsCount > 0 ? `(${reviewsCount})` : 'Нет отзывов'}
+              </span>
             </div>
           )}
 

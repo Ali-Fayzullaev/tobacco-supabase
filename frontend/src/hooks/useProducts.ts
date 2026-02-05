@@ -17,6 +17,10 @@ export interface ProductSearchResult {
   category_id: string | null;
   image_url: string | null;
   is_featured: boolean;
+  is_new?: boolean;
+  is_bestseller?: boolean;
+  rating?: number;
+  reviews_count?: number;
 }
 
 interface ProductDetail {
@@ -180,6 +184,10 @@ export function useProducts() {
         category_id: item.category_id,
         image_url: item.image_url || null,
         is_featured: item.is_featured || false,
+        is_new: item.is_new || false,
+        is_bestseller: item.is_bestseller || false,
+        rating: item.rating || 0,
+        reviews_count: item.reviews_count || 0,
       }));
 
       setState({

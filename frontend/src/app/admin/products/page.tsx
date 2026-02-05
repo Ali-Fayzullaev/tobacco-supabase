@@ -103,14 +103,16 @@ export default function AdminProductsPage() {
   };
 
   const deleteProduct = async (productId: string) => {
-    if (!confirm('Вы уверены, что хотите удалить этот товар?')) return;
+    if (!confirm('Вы уверены, что хотите удалить этот товар? Товар будет скрыт из каталога.')) return;
 
     try {
       const supabase = createBrowserSupabaseClient();
       
+      // Мягкое удаление - скрываем товар вместо удаления
+      // Это сохраняет данные для истории заказов
       const { error } = await supabase
         .from('products')
-        .delete()
+        .update({ is_active: false })
         .eq('id', productId);
 
       if (error) throw error;

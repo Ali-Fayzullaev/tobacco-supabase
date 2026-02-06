@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import { 
   ShieldCheck, 
@@ -15,8 +17,15 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { useStoreSettings } from '@/hooks/useStoreSettings';
 
 export default function HomePage() {
+  const { settings } = useStoreSettings();
+  
+  const storeName = settings.store_name || 'Tobacco Shop';
+  const storePhone = settings.store_phone || '+7 (777) 123-45-67';
+  const freeDeliveryAmount = settings.free_delivery_threshold || '15000';
+  const deliveryDays = settings.delivery_days || '1-3';
   const features = [
     {
       icon: ShieldCheck,
@@ -56,11 +65,11 @@ export default function HomePage() {
           <div className="flex h-16 items-center justify-between">
             <Link href="/" className="flex items-center gap-2">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/25">
-                <span className="text-lg font-bold text-white">T</span>
+                <span className="text-lg font-bold text-white">{storeName.charAt(0)}</span>
               </div>
               <div>
-                <span className="text-lg font-bold text-gray-900">Tobacco</span>
-                <span className="text-lg font-bold text-orange-500">Shop</span>
+                <span className="text-lg font-bold text-gray-900">{storeName.split(' ')[0] || 'Tobacco'}</span>
+                <span className="text-lg font-bold text-orange-500">{storeName.split(' ').slice(1).join(' ') || 'Shop'}</span>
               </div>
             </Link>
             
@@ -289,10 +298,10 @@ export default function HomePage() {
                     <ArrowRight className="h-5 w-5" />
                   </Button>
                 </Link>
-                <a href="tel:+77771234567">
+                <a href={`tel:${storePhone.replace(/[^+\d]/g, '')}`}>
                   <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 gap-2 px-8">
                     <Phone className="h-5 w-5" />
-                    +7 (777) 123-45-67
+                    {storePhone}
                   </Button>
                 </a>
               </div>
@@ -328,10 +337,10 @@ export default function HomePage() {
             <div className="flex items-center gap-4">
               <Link href="/" className="flex items-center gap-2">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-orange-500 to-orange-600">
-                  <span className="text-sm font-bold text-white">T</span>
+                  <span className="text-sm font-bold text-white">{storeName.charAt(0)}</span>
                 </div>
                 <span className="text-sm font-medium text-gray-500">
-                  © 2024 Tobacco Shop KZ
+                  © {new Date().getFullYear()} {storeName}
                 </span>
               </Link>
             </div>

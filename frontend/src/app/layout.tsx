@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { Toaster } from 'sonner';
 import { AuthProvider } from '@/context/AuthContext';
+import { StoreSettingsProvider } from '@/hooks/useStoreSettings';
 
 const inter = Inter({ subsets: ['latin', 'cyrillic'] });
 
@@ -24,7 +25,9 @@ export default function RootLayout({
     <html lang="ru">
       <body className={inter.className}>
         <AuthProvider>
-          {children}
+          <StoreSettingsProvider>
+            {children}
+          </StoreSettingsProvider>
         </AuthProvider>
         <Toaster position="top-right" richColors />
       </body>

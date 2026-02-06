@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import { 
   Phone, 
@@ -10,8 +12,24 @@ import {
   Truck,
   Shield
 } from 'lucide-react';
+import { useStoreSettings } from '@/hooks/useStoreSettings';
 
 export function Footer() {
+  const { settings } = useStoreSettings();
+  
+  const storeName = settings.store_name || 'Tobacco Shop';
+  const storePhone = settings.store_phone || '+7 (777) 123-45-67';
+  const storeEmail = settings.store_email || 'info@tobacco.kz';
+  const storeAddress = settings.store_address || 'г. Алматы, ул. Абая 150, офис 312';
+  const freeDeliveryAmount = settings.free_delivery_threshold || '15000';
+
+  // Формируем список способов оплаты на основе настроек
+  const paymentMethods: string[] = [];
+  if (settings.payment_kaspi) paymentMethods.push('Kaspi');
+  if (settings.payment_card) paymentMethods.push('карты');
+  if (settings.payment_cash) paymentMethods.push('наличные');
+  const paymentText = paymentMethods.length > 0 ? paymentMethods.join(', ') : 'Kaspi, карты, наличные';
+
   return (
     <footer className="bg-gray-900 text-white">
       {/* Features bar */}
@@ -22,14 +40,14 @@ export function Footer() {
               <Truck className="h-6 w-6 flex-shrink-0" />
               <div>
                 <p className="font-medium text-sm">Бесплатная доставка</p>
-                <p className="text-xs text-orange-100">от 15 000 ₸</p>
+                <p className="text-xs text-orange-100">от {Number(freeDeliveryAmount).toLocaleString('ru-RU')} ₸</p>
               </div>
             </div>
             <div className="flex items-center gap-3 text-white">
               <CreditCard className="h-6 w-6 flex-shrink-0" />
               <div>
                 <p className="font-medium text-sm">Удобная оплата</p>
-                <p className="text-xs text-orange-100">Kaspi, карты, наличные</p>
+                <p className="text-xs text-orange-100">{paymentText}</p>
               </div>
             </div>
             <div className="flex items-center gap-3 text-white">
@@ -43,7 +61,7 @@ export function Footer() {
               <Phone className="h-6 w-6 flex-shrink-0" />
               <div>
                 <p className="font-medium text-sm">Поддержка 24/7</p>
-                <p className="text-xs text-orange-100">+7 (777) 123-45-67</p>
+                <p className="text-xs text-orange-100">{storePhone}</p>
               </div>
             </div>
           </div>
@@ -57,16 +75,15 @@ export function Footer() {
           <div>
             <Link href="/" className="flex items-center gap-2 mb-4">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600">
-                <span className="text-lg font-bold text-white">T</span>
+                <span className="text-lg font-bold text-white">{storeName.charAt(0)}</span>
               </div>
               <div>
-                <span className="text-lg font-bold text-white">Tobacco</span>
-                <span className="text-lg font-bold text-orange-500">Shop</span>
+                <span className="text-lg font-bold text-white">{storeName.split(' ')[0] || 'Tobacco'}</span>
+                <span className="text-lg font-bold text-orange-500">{storeName.split(' ').slice(1).join(' ') || 'Shop'}</span>
               </div>
             </Link>
             <p className="text-gray-400 text-sm mb-4">
-              Премиальные табачные изделия от лучших мировых производителей. 
-              Работаем с 2024 года.
+              {settings.store_description || 'Премиальные табачные изделия от лучших мировых производителей.'}
             </p>
             <div className="flex gap-3">
               <a 
@@ -136,25 +153,25 @@ export function Footer() {
             <ul className="space-y-3">
               <li>
                 <a 
-                  href="tel:+77771234567" 
+                  href={`tel:${storePhone.replace(/[^+\d]/g, '')}`}
                   className="flex items-center gap-3 text-gray-400 hover:text-orange-500 transition-colors"
                 >
                   <Phone className="h-4 w-4 text-orange-500" />
-                  <span className="text-sm">+7 (777) 123-45-67</span>
+                  <span className="text-sm">{storePhone}</span>
                 </a>
               </li>
               <li>
                 <a 
-                  href="mailto:info@tobacco.kz" 
+                  href={`mailto:${storeEmail}`}
                   className="flex items-center gap-3 text-gray-400 hover:text-orange-500 transition-colors"
                 >
                   <Mail className="h-4 w-4 text-orange-500" />
-                  <span className="text-sm">info@tobacco.kz</span>
+                  <span className="text-sm">{storeEmail}</span>
                 </a>
               </li>
               <li className="flex items-start gap-3 text-gray-400">
                 <MapPin className="h-4 w-4 text-orange-500 flex-shrink-0 mt-0.5" />
-                <span className="text-sm">г. Алматы, ул. Абая 150, офис 312</span>
+                <span className="text-sm">{storeAddress}</span>
               </li>
             </ul>
             
@@ -181,7 +198,7 @@ export function Footer() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-gray-500 text-sm">
-              © 2024 Tobacco Shop KZ. Все права защищены.
+              © {new Date().getFullYear()} {storeName}. Все права защищены.
             </p>
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2 text-gray-500 text-sm">

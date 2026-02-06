@@ -7,15 +7,37 @@ type DeliveryMethod = 'courier' | 'pickup' | 'post';
 type PaymentMethod = 'kaspi' | 'card' | 'cash';
 type OrderStatus = 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
 
+interface OrderItem {
+  id: string;
+  order_id: string;
+  product_id: string | null;
+  quantity: number;
+  price: number;
+  product_deleted?: boolean;
+  product_name_snapshot?: string;
+  product?: {
+    id: string;
+    name: string;
+    slug: string;
+    image_url: string | null;
+  } | null;
+}
+
 interface OrderListItem {
   id: string;
   order_number: string;
   status: OrderStatus;
   total_amount: number;
+  subtotal?: number;
   delivery_method: DeliveryMethod;
+  delivery_cost: number;
   payment_method: PaymentMethod;
   payment_status: string;
+  shipping_address: any;
+  phone: string | null;
+  comment: string | null;
   created_at: string;
+  items?: OrderItem[];
 }
 
 interface CreateOrderParams {
@@ -57,8 +79,8 @@ export function useOrders() {
     currentPage: 1,
   });
 
-  // Загрузка списка заказов
-  const loadOrders = useCallback(async (page: number = 1, pageSize: number = 10) => {
+  // Загрузка списка заказов с товарами
+  const loadOrders = useCallback(async (page: number = 1, pageSize: number = 20) => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
@@ -71,9 +93,22 @@ export function useOrders() {
       const from = (page - 1) * pageSize;
       const to = from + pageSize - 1;
 
+      // Загружаем заказы с товарами
       const { data, error, count } = await supabase
         .from('orders')
-        .select('*', { count: 'exact' })
+        .select(`
+          *,
+          items:order_items(
+            id,
+            order_id,
+            product_id,
+            quantity,
+            price,
+            product_deleted,
+            product_name_snapshot,
+            product:products(id, name, slug, image_url)
+          )
+        `, { count: 'exact' })
         .eq('user_id', session.user.id)
         .order('created_at', { ascending: false })
         .range(from, to);

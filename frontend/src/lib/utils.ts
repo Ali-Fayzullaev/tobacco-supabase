@@ -88,20 +88,26 @@ export function formatProductCount(count: number): string {
   return `${count} ${pluralize(count, 'товар', 'товара', 'товаров')}`;
 }
 
-// Генерация slug из текста
+// Генерация slug из текста (поддержка русского и казахского)
 export function generateSlug(text: string): string {
+  // Карта транслитерации для русского и казахского
+  const translitMap: Record<string, string> = {
+    // Русские буквы
+    'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo',
+    'ж': 'zh', 'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm',
+    'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u',
+    'ф': 'f', 'х': 'h', 'ц': 'ts', 'ч': 'ch', 'ш': 'sh', 'щ': 'sch', 'ъ': '',
+    'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu', 'я': 'ya',
+    // Казахские буквы
+    'ә': 'a', 'ғ': 'g', 'қ': 'k', 'ң': 'n', 'ө': 'o', 'ұ': 'u', 'ү': 'u', 
+    'і': 'i', 'һ': 'h'
+  };
+
   return text
     .toLowerCase()
-    .replace(/[а-яё]/g, (char) => {
-      const map: Record<string, string> = {
-        'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo',
-        'ж': 'zh', 'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm',
-        'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u',
-        'ф': 'f', 'х': 'h', 'ц': 'ts', 'ч': 'ch', 'ш': 'sh', 'щ': 'sch', 'ъ': '',
-        'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu', 'я': 'ya'
-      };
-      return map[char] || char;
-    })
+    .split('')
+    .map(char => translitMap[char] !== undefined ? translitMap[char] : char)
+    .join('')
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
 }

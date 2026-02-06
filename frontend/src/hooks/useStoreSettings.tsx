@@ -18,7 +18,7 @@ export interface StoreSettings {
 }
 
 const defaultSettings: StoreSettings = {
-  store_name: 'Tobacco Shop',
+  store_name: 'Shop Shop',
   store_email: 'info@tobacco.kz',
   store_phone: '+7 (777) 123-45-67',
   store_address: 'г. Алматы, ул. Абая 150, офис 312',

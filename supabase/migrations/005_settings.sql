@@ -25,7 +25,7 @@ CREATE POLICY "Admins can manage settings" ON public.store_settings
 
 -- Начальные настройки
 INSERT INTO public.store_settings (key, value) VALUES
-  ('store_name', 'Tobacco Shop'),
+  ('store_name', 'Shop Shop'),
   ('store_email', 'info@tobacco.kz'),
   ('store_phone', '+7 (777) 123-45-67'),
   ('store_address', 'г. Алматы, ул. Абая 1'),

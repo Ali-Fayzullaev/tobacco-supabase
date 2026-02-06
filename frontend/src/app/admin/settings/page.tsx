@@ -77,7 +77,7 @@ export default function AdminSettingsPage() {
         settings[item.key] = item.value || '';
       });
 
-      setStoreName(settings.store_name || 'Tobacco Shop');
+      setStoreName(settings.store_name || 'Shop Shop');
       setStoreEmail(settings.store_email || '');
       setStorePhone(settings.store_phone || '');
       setStoreAddress(settings.store_address || '');

@@ -91,7 +91,7 @@ function LoginFormContent() {
               <span className="text-xl font-bold text-white">T</span>
             </div>
             <div>
-              <span className="text-2xl font-bold text-gray-900">Tobacco</span>
+              <span className="text-2xl font-bold text-gray-900">Shop</span>
               <span className="text-2xl font-bold text-orange-500">Shop</span>
             </div>
           </Link>

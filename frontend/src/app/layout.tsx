@@ -8,7 +8,7 @@ import { StoreSettingsProvider } from '@/hooks/useStoreSettings';
 const inter = Inter({ subsets: ['latin', 'cyrillic'] });
 
 export const metadata: Metadata = {
-  title: 'Tobacco Shop KZ - Магазин табачных изделий',
+  title: 'Shop Shop KZ - Магазин табачных изделий',
   description: 'Интернет-магазин табачных изделий в Казахстане. Только для лиц старше 18 лет.',
   robots: {
     index: false,

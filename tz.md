@@ -891,7 +891,7 @@ UPLOAD_DIR=./uploads
 **Frontend (.env):**
 ```
 REACT_APP_API_URL=http://localhost:8000/api
-REACT_APP_SITE_NAME=Tobacco Shop
+REACT_APP_SITE_NAME=Shop Shop
 ```
 
 ### 9.4 Запуск проекта

@@ -43,7 +43,7 @@ export function Header() {
   const [showNotifications, setShowNotifications] = useState(false);
 
   const isAdmin = profile?.role === 'admin';
-  const storeName = settings.store_name || 'Tobacco Shop';
+  const storeName = settings.store_name || 'Shop Shop';
   const storePhone = settings.store_phone || '+7 (777) 123-45-67';
   const freeDeliveryAmount = settings.free_delivery_threshold || '15000';
 
@@ -132,7 +132,7 @@ export function Header() {
                 <span className="text-lg font-bold text-white">T</span>
               </div>
               <div className="hidden sm:block">
-                <span className="text-xl font-bold text-gray-900">Tobacco</span>
+                <span className="text-xl font-bold text-gray-900">Shop</span>
                 <span className="text-xl font-bold text-orange-500">Shop</span>
               </div>
             </Link>
@@ -350,28 +350,6 @@ export function Header() {
           </div>
         </div>
       </div>
-
-      {/* Categories Navigation */}
-      <nav className="hidden lg:block bg-gray-50 border-b border-gray-100">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center gap-1 h-12">
-            {categories.map((cat) => (
-              <Link
-                key={cat.href}
-                href={cat.href}
-                className={cn(
-                  "px-4 py-2 text-sm font-medium rounded-lg transition-colors",
-                  pathname.includes(cat.href.split('=')[1])
-                    ? "bg-orange-100 text-orange-700" 
-                    : "text-gray-600 hover:text-orange-600 hover:bg-orange-50"
-                )}
-              >
-                {cat.label}
-              </Link>
-            ))}
-          </div>
-        </div>
-      </nav>
 
       {/* Mobile menu */}
       {mobileMenuOpen && (

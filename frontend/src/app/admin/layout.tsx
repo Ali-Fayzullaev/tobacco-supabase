@@ -183,15 +183,6 @@ export default function AdminLayout({
                 );
               })}
             </nav>
-
-            {/* Bottom card */}
-            <div className="mt-8 p-4 bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl text-white">
-              <p className="text-sm font-medium mb-1">Нужна помощь?</p>
-              <p className="text-xs text-gray-400 mb-3">Документация и поддержка</p>
-              <button className="w-full text-xs bg-white/10 hover:bg-white/20 py-2 rounded-lg transition-colors">
-                Открыть справку
-              </button>
-            </div>
           </div>
         </aside>
 

@@ -76,7 +76,7 @@ export default function ProfileLayout({
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             <Link href="/" className="text-xl font-bold text-gold-500">
-              Tobacco Shop KZ
+              Shop Shop KZ
             </Link>
             <nav className="hidden md:flex items-center gap-6">
               <Link href="/catalog" className="text-gray-600 hover:text-gray-900">

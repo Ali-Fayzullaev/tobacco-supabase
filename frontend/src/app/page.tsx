@@ -22,7 +22,7 @@ import { useStoreSettings } from '@/hooks/useStoreSettings';
 export default function HomePage() {
   const { settings } = useStoreSettings();
   
-  const storeName = settings.store_name || 'Tobacco Shop';
+  const storeName = settings.store_name || 'Shop Shop';
   const storePhone = settings.store_phone || '+7 (777) 123-45-67';
   const freeDeliveryAmount = settings.free_delivery_threshold || '15000';
   const deliveryDays = settings.delivery_days || '1-3';
@@ -68,7 +68,7 @@ export default function HomePage() {
                 <span className="text-lg font-bold text-white">{storeName.charAt(0)}</span>
               </div>
               <div>
-                <span className="text-lg font-bold text-gray-900">{storeName.split(' ')[0] || 'Tobacco'}</span>
+                <span className="text-lg font-bold text-gray-900">{storeName.split(' ')[0] || 'Shop'}</span>
                 <span className="text-lg font-bold text-orange-500">{storeName.split(' ').slice(1).join(' ') || 'Shop'}</span>
               </div>
             </Link>
@@ -199,7 +199,7 @@ export default function HomePage() {
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">О нашем магазине</h2>
                 <div className="space-y-4 text-gray-600">
                   <p>
-                    Tobacco Shop KZ — ведущий интернет-магазин табачных изделий в Казахстане. 
+                    Shop Shop KZ — ведущий интернет-магазин табачных изделий в Казахстане. 
                     Мы работаем с 2024 года и за это время заслужили доверие тысяч клиентов.
                   </p>
                   <p>

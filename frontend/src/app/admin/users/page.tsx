@@ -91,16 +91,35 @@ export default function AdminUsersPage() {
     try {
       const supabase = createBrowserSupabaseClient();
       
-      const { error } = await supabase
-        .from('profiles')
-        .update({ role: newRole })
-        .eq('id', userId);
+      // Используем RPC функцию для безопасного обновления роли
+      const { data, error } = await supabase.rpc('update_user_role', {
+        target_user_id: userId,
+        new_role: newRole
+      });
 
-      if (error) throw error;
+      if (error) {
+        // Fallback на прямое обновление если RPC не существует
+        if (error.message.includes('function') || error.code === '42883') {
+          const { error: updateError } = await supabase
+            .from('profiles')
+            .update({ role: newRole })
+            .eq('id', userId);
+          
+          if (updateError) throw updateError;
+        } else {
+          throw error;
+        }
+      }
 
-      loadUsers();
-    } catch (error) {
+      // Обновляем локальный стейт
+      setUsers(prev => prev.map(u => 
+        u.id === userId ? { ...u, role: newRole } : u
+      ));
+      
+      alert(`Роль успешно изменена на "${newRole === 'admin' ? 'Администратор' : 'Пользователь'}"`);
+    } catch (error: any) {
       console.error('Error updating user role:', error);
+      alert(`Ошибка при изменении роли: ${error.message || 'Неизвестная ошибка'}`);
     }
   };
 

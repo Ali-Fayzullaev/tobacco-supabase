@@ -53,7 +53,7 @@ function ResetPasswordForm() {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link href="/" className="text-2xl font-bold text-gold-500">
-            Tobacco Shop KZ
+            Shop Shop KZ
           </Link>
         </div>
 

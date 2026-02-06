@@ -17,7 +17,7 @@ import { useStoreSettings } from '@/hooks/useStoreSettings';
 export function Footer() {
   const { settings } = useStoreSettings();
   
-  const storeName = settings.store_name || 'Tobacco Shop';
+  const storeName = settings.store_name || 'Shop Shop';
   const storePhone = settings.store_phone || '+7 (777) 123-45-67';
   const storeEmail = settings.store_email || 'info@tobacco.kz';
   const storeAddress = settings.store_address || 'г. Алматы, ул. Абая 150, офис 312';
@@ -78,7 +78,7 @@ export function Footer() {
                 <span className="text-lg font-bold text-white">{storeName.charAt(0)}</span>
               </div>
               <div>
-                <span className="text-lg font-bold text-white">{storeName.split(' ')[0] || 'Tobacco'}</span>
+                <span className="text-lg font-bold text-white">{storeName.split(' ')[0] || 'Shop'}</span>
                 <span className="text-lg font-bold text-orange-500">{storeName.split(' ').slice(1).join(' ') || 'Shop'}</span>
               </div>
             </Link>

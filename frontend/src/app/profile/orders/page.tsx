@@ -400,8 +400,8 @@ function OrderCard({ order }: { order: any }) {
           </div>
         </div>
 
-        {/* Progress Bar */}
-        {order.status !== 'cancelled' && (
+        {/* Progress Bar - скрываем если есть удалённые товары или заказ отменён */}
+        {order.status !== 'cancelled' && !hasDeletedProducts && (
           <div className="mt-4 pt-4 border-t border-gray-100">
             <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
               <div 
@@ -417,6 +417,31 @@ function OrderCard({ order }: { order: any }) {
               <span>Собирается</span>
               <span>В пути</span>
               <span>Доставлен</span>
+            </div>
+          </div>
+        )}
+
+        {/* Статус при удалённых товарах */}
+        {hasDeletedProducts && order.status !== 'cancelled' && (
+          <div className="mt-4 pt-4 border-t border-gray-100">
+            <div className="flex items-center gap-3 p-3 bg-amber-50 rounded-xl border border-amber-200">
+              <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center">
+                <AlertTriangle className="w-4 h-4 text-amber-600" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-medium text-amber-800">
+                  Заказ обрабатывается с учётом изменений
+                </p>
+                <p className="text-xs text-amber-600 mt-0.5">
+                  Некоторые товары были исключены из заказа
+                </p>
+              </div>
+              <div className={cn(
+                "px-3 py-1.5 rounded-lg text-xs font-semibold",
+                status.iconBg, status.textColor
+              )}>
+                {status.label}
+              </div>
             </div>
           </div>
         )}

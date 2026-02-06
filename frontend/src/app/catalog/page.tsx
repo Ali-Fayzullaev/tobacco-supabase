@@ -200,7 +200,7 @@ function CatalogContent() {
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center gap-3 mb-2">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600">
-              <Sparkles className="h-5 w-5 text-white" />
+              <span className='text-white'>T</span>
             </div>
             <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Каталог товаров</h1>
           </div>
@@ -310,12 +310,6 @@ function CatalogContent() {
                   >
                     Применить
                   </Button>
-                </div>
-
-                {/* Promo Banner */}
-                <div className="mt-6 p-4 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl text-white">
-                  <p className="font-semibold mb-1">🔥 Скидки до 30%</p>
-                  <p className="text-sm text-orange-100">На популярные товары</p>
                 </div>
               </CardContent>
             </Card>

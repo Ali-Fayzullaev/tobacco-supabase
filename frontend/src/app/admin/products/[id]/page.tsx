@@ -334,11 +334,19 @@ export default function ProductEditPage() {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500"
               >
                 <option value="">Выберите категорию</option>
-                {categories.map((cat) => (
-                  <option key={cat.id} value={cat.id}>
-                    {cat.parent_id ? '— ' : ''}{cat.name}
-                  </option>
-                ))}
+                {categories.filter(c => !c.parent_id).map((parent) => {
+                  const subs = categories.filter(c => c.parent_id === parent.id);
+                  return (
+                    <optgroup key={parent.id} label={parent.name}>
+                      <option value={parent.id}>{parent.name} (общее)</option>
+                      {subs.map(sub => (
+                        <option key={sub.id} value={sub.id}>
+                          &nbsp;&nbsp;{sub.name}
+                        </option>
+                      ))}
+                    </optgroup>
+                  );
+                })}
               </select>
               {errors.category_id && (
                 <p className="text-red-500 text-xs mt-1">{errors.category_id.message}</p>

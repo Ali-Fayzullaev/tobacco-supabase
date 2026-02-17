@@ -23,6 +23,7 @@ import { useAuth } from '@/hooks';
 import { useCart } from '@/hooks/useCart';
 import { useFavorites } from '@/hooks/useFavorites';
 import { useStoreSettings } from '@/hooks/useStoreSettings';
+import { useCategories } from '@/hooks/useCategories';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -35,6 +36,7 @@ export function Header() {
   const { totalItems } = useCart();
   const { favorites } = useFavorites();
   const { settings } = useStoreSettings();
+  const { parentCategories } = useCategories();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   
@@ -104,13 +106,9 @@ export function Header() {
 
   const unreadCount = notifications.filter(n => !n.is_read).length;
 
-  const categories = [
-    { href: '/catalog?category=cigarettes', label: 'Сигареты' },
-    { href: '/catalog?category=cigars', label: 'Сигары' },
-    { href: '/catalog?category=tobacco', label: 'Табак' },
-    { href: '/catalog?category=e-cigarettes', label: 'Электронные сигареты' },
-    { href: '/catalog?category=accessories', label: 'Аксессуары' },
-  ];
+  const categories = parentCategories
+    .filter(c => c.is_active)
+    .map(c => ({ href: `/catalog?category=${c.slug}`, label: c.name }));
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

@@ -16,7 +16,8 @@ import {
   AlertTriangle,
   ChevronRight,
   Store,
-  Shield
+  Shield,
+  FolderTree
 } from 'lucide-react';
 import { useAuth } from '@/hooks';
 import { cn } from '@/lib/utils';
@@ -24,6 +25,7 @@ import { cn } from '@/lib/utils';
 const navItems = [
   { href: '/admin', label: 'Дашборд', icon: LayoutDashboard, exact: true },
   { href: '/admin/products', label: 'Товары', icon: Package },
+  { href: '/admin/categories', label: 'Категории', icon: FolderTree },
   { href: '/admin/orders', label: 'Заказы', icon: ShoppingBag },
   { href: '/admin/users', label: 'Пользователи', icon: Users },
   { href: '/admin/settings', label: 'Настройки', icon: Settings },

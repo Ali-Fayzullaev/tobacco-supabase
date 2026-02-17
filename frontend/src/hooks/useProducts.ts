@@ -71,6 +71,7 @@ interface ProductAttribute {
 interface SearchParams {
   query?: string;
   categoryId?: string;
+  categoryIds?: string[];
   brand?: string;
   minPrice?: number;
   maxPrice?: number;
@@ -115,8 +116,10 @@ export function useProducts() {
         .select('*', { count: 'exact' })
         .eq('is_active', true);
 
-      // Фильтр по категории
-      if (params.categoryId) {
+      // Фильтр по категории (одна или несколько)
+      if (params.categoryIds && params.categoryIds.length > 0) {
+        query = query.in('category_id', params.categoryIds);
+      } else if (params.categoryId) {
         query = query.eq('category_id', params.categoryId);
       }
 

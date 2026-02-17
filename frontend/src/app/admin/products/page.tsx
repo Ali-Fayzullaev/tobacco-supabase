@@ -41,6 +41,7 @@ import type { Product, Category } from '@/lib/types';
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [allCategories, setAllCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('');
@@ -78,12 +79,17 @@ export default function AdminProductsPage() {
 
   const loadCategories = async () => {
     const supabase = createBrowserSupabaseClient();
+    // Загружаем все категории
     const { data } = await supabase
       .from('categories')
       .select('*')
-      .is('parent_id', null)
-      .order('sort_order');
-    setCategories(data || []);
+      .order('sort_order')
+      .order('name');
+    
+    const all = data || [];
+    setAllCategories(all);
+    // Для фильтра - только родительские
+    setCategories(all.filter(c => !c.parent_id));
   };
 
   const loadProducts = async () => {
@@ -571,11 +577,19 @@ export default function AdminProductsPage() {
               className="py-3 bg-transparent border-0 focus:ring-0 font-medium text-gray-700"
             >
               <option value="">Все категории</option>
-              {categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.name}
-                </option>
-              ))}
+              {categories.map((cat) => {
+                const subs = allCategories.filter(c => c.parent_id === cat.id);
+                return (
+                  <optgroup key={cat.id} label={cat.name}>
+                    <option value={cat.id}>{cat.name} (все)</option>
+                    {subs.map(sub => (
+                      <option key={sub.id} value={sub.id}>
+                        &nbsp;&nbsp;{sub.name}
+                      </option>
+                    ))}
+                  </optgroup>
+                );
+              })}
             </select>
           </div>
 

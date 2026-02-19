@@ -27,6 +27,7 @@ const navItems = [
   { href: '/admin/products', label: 'Товары', icon: Package },
   { href: '/admin/categories', label: 'Категории', icon: FolderTree },
   { href: '/admin/orders', label: 'Заказы', icon: ShoppingBag },
+  { href: '/admin/error-reports', label: 'Отчёты об ошибках', icon: AlertTriangle },
   { href: '/admin/users', label: 'Пользователи', icon: Users },
   { href: '/admin/settings', label: 'Настройки', icon: Settings },
 ];

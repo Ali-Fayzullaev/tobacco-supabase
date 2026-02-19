@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { Toaster } from 'sonner';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { AuthProvider } from '@/context/AuthContext';
 import { StoreSettingsProvider } from '@/hooks/useStoreSettings';
 
@@ -26,7 +27,10 @@ export default function RootLayout({
       <body className={inter.className}>
         <AuthProvider>
           <StoreSettingsProvider>
-            {children}
+            {/* Оборачиваем приложение в ErrorBoundary — перехват ошибок на клиенте */}
+            <ErrorBoundary>
+              {children}
+            </ErrorBoundary>
           </StoreSettingsProvider>
         </AuthProvider>
         <Toaster position="top-right" richColors />

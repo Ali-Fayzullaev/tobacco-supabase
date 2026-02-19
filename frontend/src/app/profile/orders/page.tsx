@@ -28,6 +28,7 @@ import {
   Bell
 } from 'lucide-react';
 import { useOrders } from '@/hooks/useOrders';
+import { CenteredPageSkeleton } from '@/components/Skeleton';
 import { formatPrice, formatDate, getStatusLabel, getStatusColor, cn } from '@/lib/utils';
 
 // Конфигурация статусов с иконками и градиентами
@@ -126,15 +127,10 @@ export default function OrdersPage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <div className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-br from-orange-400 to-amber-500 rounded-2xl flex items-center justify-center mx-auto mb-4 animate-pulse">
-            <Package className="w-8 h-8 text-white" />
-          </div>
-          <Loader2 className="w-6 h-6 text-orange-500 animate-spin mx-auto mb-2" />
-          <p className="text-gray-500">Загрузка заказов...</p>
-        </div>
-      </div>
+      <CenteredPageSkeleton
+        icon={<Package className="w-6 h-6 text-white" />}
+        title="Загрузка заказов..."
+      />
     );
   }
 

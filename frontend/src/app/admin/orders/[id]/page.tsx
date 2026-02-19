@@ -22,6 +22,7 @@ import {
   ShoppingBag,
   AlertCircle
 } from 'lucide-react';
+import { OrderSkeleton } from '@/components/Skeleton';
 import { createBrowserSupabaseClient } from '@/lib/supabase';
 import { formatPrice, cn } from '@/lib/utils';
 
@@ -135,14 +136,7 @@ export default function AdminOrderDetailPage() {
   };
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <div className="text-center">
-          <Loader2 className="w-10 h-10 text-orange-500 animate-spin mx-auto mb-3" />
-          <p className="text-gray-500">Загрузка заказа...</p>
-        </div>
-      </div>
-    );
+    return <OrderSkeleton />;
   }
 
   if (error || !order) {

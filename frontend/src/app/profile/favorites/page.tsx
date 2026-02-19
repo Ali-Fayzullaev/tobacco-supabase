@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Heart, ShoppingCart, Trash2, Loader2 } from 'lucide-react';
+import { ProductCardSkeleton } from '@/components/Skeleton';
 import { useFavorites } from '@/hooks/useFavorites';
 import { useCart } from '@/hooks/useCart';
 import { formatPrice } from '@/lib/utils';
@@ -18,8 +19,10 @@ export default function FavoritesPage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-8 h-8 text-gold-500 animate-spin" />
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 py-8">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <ProductCardSkeleton key={i} />
+        ))}
       </div>
     );
   }

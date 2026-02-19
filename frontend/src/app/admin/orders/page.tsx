@@ -20,6 +20,7 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { createBrowserSupabaseClient } from '@/lib/supabase';
+import { TableSkeleton } from '@/components/Skeleton';
 import { formatPrice, cn } from '@/lib/utils';
 
 type OrderStatus = 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
@@ -240,11 +241,8 @@ function AdminOrdersContent() {
       {/* Orders Table */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         {isLoading ? (
-          <div className="flex items-center justify-center py-20">
-            <div className="text-center">
-              <Loader2 className="w-10 h-10 text-orange-500 animate-spin mx-auto mb-3" />
-              <p className="text-gray-500">Загрузка заказов...</p>
-            </div>
+          <div className="p-4">
+            <TableSkeleton cols={6} rows={6} />
           </div>
         ) : (
           <>

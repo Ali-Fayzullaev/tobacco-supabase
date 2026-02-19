@@ -20,6 +20,7 @@ import {
   UserX
 } from 'lucide-react';
 import { createBrowserSupabaseClient } from '@/lib/supabase';
+import { TableSkeleton } from '@/components/Skeleton';
 import { cn } from '@/lib/utils';
 
 interface UserProfile {
@@ -246,11 +247,8 @@ export default function AdminUsersPage() {
       {/* Users Table */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         {isLoading ? (
-          <div className="flex items-center justify-center py-20">
-            <div className="text-center">
-              <Loader2 className="w-10 h-10 text-orange-500 animate-spin mx-auto mb-3" />
-              <p className="text-gray-500">Загрузка пользователей...</p>
-            </div>
+          <div className="p-4">
+            <TableSkeleton cols={5} rows={6} />
           </div>
         ) : (
           <>

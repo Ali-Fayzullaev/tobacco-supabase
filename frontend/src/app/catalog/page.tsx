@@ -21,6 +21,7 @@ import {
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { ProductCard, ProductCardCompact } from '@/components/ProductCard';
+import { ProductCardSkeleton, ProductCardCompactSkeleton, Skeleton } from '@/components/Skeleton';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -506,12 +507,53 @@ function CatalogContent() {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />
-        <div className="flex items-center justify-center py-32">
-          <div className="text-center">
-            <Loader2 className="w-10 h-10 text-orange-500 animate-spin mx-auto mb-3" />
-            <p className="text-gray-400 text-sm">Загрузка каталога...</p>
+
+        <div className="container mx-auto px-4 py-8 lg:py-12">
+          {/* Search skeleton */}
+          <div className="max-w-2xl mx-auto mb-8">
+            <div className="relative">
+              <Skeleton className="h-12 w-full rounded-2xl" />
+            </div>
+          </div>
+
+          {/* Categories showcase skeleton */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="rounded-2xl overflow-hidden aspect-[4/3] bg-gray-100">
+                <div className="p-4 h-full flex flex-col justify-end">
+                  <Skeleton className="h-6 w-3/4 rounded-md mb-2" />
+                  <Skeleton className="h-3 w-1/2 rounded-md" />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="lg:flex lg:gap-8">
+            {/* Sidebar skeleton */}
+            <aside className="hidden lg:block w-64 flex-shrink-0">
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 space-y-4">
+                <Skeleton className="h-8 w-28 rounded-md" />
+                <Skeleton className="h-10 w-full rounded-xl" />
+                <Skeleton className="h-10 w-full rounded-xl" />
+                <Skeleton className="h-10 w-full rounded-xl" />
+              </div>
+            </aside>
+
+            {/* Main content skeleton */}
+            <main className="flex-1">
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 sm:p-6 mb-6">
+                <Skeleton className="h-6 w-40 rounded-md" />
+              </div>
+
+              <div className={cn("grid", getGridClass(gridSize), getGapClass(cardSize))}>
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <ProductCardSkeleton key={i} size={cardSize === 'compact' ? 'compact' : cardSize === 'comfortable' ? 'comfortable' : 'normal'} />
+                ))}
+              </div>
+            </main>
           </div>
         </div>
+
         <Footer />
       </div>
     );
@@ -840,12 +882,19 @@ function CatalogContent() {
 
             {/* Товары */}
             {isProductsLoading ? (
-              <div className="flex items-center justify-center py-20">
-                <div className="text-center">
-                  <Loader2 className="w-8 h-8 text-orange-500 animate-spin mx-auto mb-3" />
-                  <p className="text-gray-400 text-sm">Загрузка товаров...</p>
+              viewMode === 'list' ? (
+                <div className="space-y-3">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <ProductCardCompactSkeleton key={i} />
+                  ))}
                 </div>
-              </div>
+              ) : (
+                <div className={cn("grid", getGridClass(gridSize), getGapClass(cardSize))}>
+                  {Array.from({ length: 12 }).map((_, i) => (
+                    <ProductCardSkeleton key={i} size={cardSize === 'compact' ? 'compact' : cardSize === 'comfortable' ? 'comfortable' : 'normal'} />
+                  ))}
+                </div>
+              )
             ) : products.length === 0 ? (
               <div className="bg-white rounded-2xl border border-gray-100 shadow-sm py-16 text-center">
                 <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">

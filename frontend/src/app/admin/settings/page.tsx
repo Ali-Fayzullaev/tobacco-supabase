@@ -20,6 +20,7 @@ import {
   FileText
 } from 'lucide-react';
 import { createBrowserSupabaseClient } from '@/lib/supabase';
+import { CenteredPageSkeleton } from '@/components/Skeleton';
 import { cn } from '@/lib/utils';
 
 interface SettingsSection {
@@ -138,12 +139,10 @@ export default function AdminSettingsPage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <div className="text-center">
-          <Loader2 className="w-10 h-10 text-orange-500 animate-spin mx-auto mb-3" />
-          <p className="text-gray-500">Загрузка настроек...</p>
-        </div>
-      </div>
+      <CenteredPageSkeleton
+        icon={<Settings className="w-6 h-6 text-white" />}
+        title="Загрузка настроек..."
+      />
     );
   }
 

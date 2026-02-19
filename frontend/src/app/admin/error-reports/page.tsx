@@ -144,8 +144,35 @@ export default function AdminErrorReportsPage() {
         </div>
 
         {isLoading ? (
-          <div className="p-8 flex items-center justify-center">
-            <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
+          <div className="p-4">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead className="text-xs text-gray-500 uppercase">
+                  <tr>
+                    <th className="px-4 py-3">Дата</th>
+                    <th className="px-4 py-3">Сообщение</th>
+                    <th className="px-4 py-3">URL</th>
+                    <th className="px-4 py-3">User</th>
+                    <th className="px-4 py-3">Consent</th>
+                    <th className="px-4 py-3">Resolved</th>
+                    <th className="px-4 py-3">Действия</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <tr key={i} className="animate-pulse">
+                      <td className="px-4 py-3"><div className="h-3 bg-gray-200 rounded w-36" /></td>
+                      <td className="px-4 py-3"><div className="h-3 bg-gray-200 rounded w-64" /></td>
+                      <td className="px-4 py-3"><div className="h-3 bg-gray-200 rounded w-48" /></td>
+                      <td className="px-4 py-3"><div className="h-3 bg-gray-200 rounded w-24" /></td>
+                      <td className="px-4 py-3"><div className="h-3 bg-gray-200 rounded w-16" /></td>
+                      <td className="px-4 py-3"><div className="h-3 bg-gray-200 rounded w-20" /></td>
+                      <td className="px-4 py-3"><div className="h-3 bg-gray-200 rounded w-20" /></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         ) : reports.length === 0 ? (
           <div className="p-8 text-center text-gray-500">Отчётов не найдено</div>

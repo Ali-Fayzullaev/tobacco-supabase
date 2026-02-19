@@ -26,6 +26,7 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { ReviewForm } from '@/components/ReviewForm';
 import { ReviewCard } from '@/components/ReviewCard';
+import { Skeleton } from '@/components/Skeleton';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -121,8 +122,48 @@ export default function ProductPage() {
   // Loading state
   if (isAuthLoading || isProductLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="container mx-auto px-4 py-16 lg:py-24">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
+            {/* Image skeleton */}
+            <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+              <div className="relative aspect-square bg-gray-100">
+                <Skeleton className="w-full h-full" />
+              </div>
+              <div className="p-4">
+                <Skeleton className="rounded-md" style={{ height: 18, width: '60%' }} />
+                <div className="flex gap-2 mt-4">
+                  <Skeleton className="rounded-md" style={{ height: 36, width: 96 }} />
+                  <Skeleton className="rounded-md" style={{ height: 36, width: 72 }} />
+                </div>
+              </div>
+            </div>
+
+            {/* Info skeleton */}
+            <div className="space-y-5">
+              <Skeleton className="rounded-md" style={{ height: 28, width: '50%' }} />
+              <Skeleton className="rounded-md" style={{ height: 18, width: 120 }} />
+              <Skeleton className="rounded-md" style={{ height: 56, width: '100%' }} />
+
+              <div className="grid grid-cols-3 gap-3">
+                <Skeleton className="rounded-md" style={{ height: 64 }} />
+                <Skeleton className="rounded-md" style={{ height: 64 }} />
+                <Skeleton className="rounded-md" style={{ height: 64 }} />
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-8 lg:mt-10">
+            <div className="bg-white border border-gray-100 rounded-xl p-4">
+              <Skeleton className="rounded-md" style={{ height: 20, width: '40%' }} />
+              <div className="mt-4">
+                <Skeleton className="rounded-md" style={{ height: 160, width: '100%' }} />
+              </div>
+            </div>
+          </div>
+        </div>
+        <Footer />
       </div>
     );
   }
@@ -177,19 +218,28 @@ export default function ProductPage() {
   if (!product) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <Card className="max-w-md w-full bg-white border-gray-200 shadow-lg">
-          <CardContent className="p-8 text-center">
-            <ShoppingCart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">Товар не найден</h1>
-            <p className="text-gray-500 mb-6">
-              Возможно, товар был удалён или перемещён.
-            </p>
-            <Link href="/catalog">
-              <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white">
-                Перейти в каталог
-              </Button>
-            </Link>
-          </CardContent>
+        <Card className="max-w-3xl w-full bg-white border-gray-200 shadow-lg">
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="p-6 flex items-center justify-center">
+              <div className="w-40 h-40 bg-gray-100 rounded-md overflow-hidden">
+                <Skeleton className="w-full h-full rounded-md" />
+              </div>
+            </div>
+            <CardContent className="p-8 text-center md:text-left flex flex-col justify-center">
+              <h1 className="text-2xl font-bold text-gray-900 mb-4">Товар не найден</h1>
+              <p className="text-gray-500 mb-6">
+                Возможно, товар был удалён или перемещён.
+              </p>
+              <div className="mb-4">
+                <Skeleton className="rounded-md mx-auto md:mx-0" style={{ height: 12, width: 200 }} />
+              </div>
+              <Link href="/catalog" className="w-full md:w-auto mx-auto md:mx-0">
+                <Button className="w-full md:w-auto bg-orange-500 hover:bg-orange-600 text-white">
+                  Перейти в каталог
+                </Button>
+              </Link>
+            </CardContent>
+          </div>
         </Card>
       </div>
     );

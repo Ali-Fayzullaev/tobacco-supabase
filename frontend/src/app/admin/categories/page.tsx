@@ -7,6 +7,7 @@ import {
   GripVertical, Eye, EyeOff, Save, X, Upload, ChevronRight, 
   ImageIcon, ArrowUp, ArrowDown, FolderTree
 } from 'lucide-react';
+import { CenteredPageSkeleton, AdminCategoriesSkeleton } from '@/components/Skeleton';
 import { createBrowserSupabaseClient } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
 import type { Category } from '@/lib/types';
@@ -239,11 +240,7 @@ export default function AdminCategoriesPage() {
   };
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
-      </div>
-    );
+    return <AdminCategoriesSkeleton />;
   }
 
   return (

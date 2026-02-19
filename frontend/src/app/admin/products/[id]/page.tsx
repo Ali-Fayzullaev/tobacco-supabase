@@ -11,8 +11,10 @@ import {
   ArrowLeft, 
   Loader2, 
   X,
-  Plus
+  Plus,
+  ShoppingCart
 } from 'lucide-react';
+import { CenteredPageSkeleton } from '@/components/Skeleton';
 import { createBrowserSupabaseClient } from '@/lib/supabase';
 import { ImageUploader } from '@/components/admin/ImageUploader';
 import type { Category } from '@/lib/types';
@@ -260,9 +262,10 @@ export default function ProductEditPage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-8 h-8 text-gold-500 animate-spin" />
-      </div>
+      <CenteredPageSkeleton
+        icon={<ShoppingCart className="w-6 h-6 text-white" />}
+        title="Загрузка товара..."
+      />
     );
   }
 

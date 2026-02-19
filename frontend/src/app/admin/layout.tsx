@@ -20,6 +20,7 @@ import {
   FolderTree
 } from 'lucide-react';
 import { useAuth } from '@/hooks';
+import { CenteredPageSkeleton } from '@/components/Skeleton';
 import { cn } from '@/lib/utils';
 
 const navItems = [
@@ -51,15 +52,10 @@ export default function AdminLayout({
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-amber-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-orange-500/30 animate-pulse">
-            <Shield className="w-8 h-8 text-white" />
-          </div>
-          <Loader2 className="w-6 h-6 text-orange-500 animate-spin mx-auto" />
-          <p className="text-gray-500 mt-3">Загрузка админ-панели...</p>
-        </div>
-      </div>
+      <CenteredPageSkeleton
+        icon={<Shield className="w-6 h-6 text-white" />}
+        title="Загрузка админ-панели..."
+      />
     );
   }
 

@@ -96,7 +96,7 @@ export function useCart() {
       );
 
       // Собираем cartItems с продуктами
-      const cartItems: CartItem[] = cartData
+      const cartItems = cartData
         .map(item => {
           const product = productsMap.get(item.product_id);
           if (!product) return null;
@@ -115,9 +115,9 @@ export function useCart() {
             },
           };
         })
-        .filter((item): item is CartItem => item !== null);
+        .filter(item => item !== null) as CartItem[];
 
-      const totalAmount = cartItems.reduce((sum, item) => sum + (item.product?.price || 0) * item.quantity, 0);
+      const totalAmount = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
       const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
       setState({

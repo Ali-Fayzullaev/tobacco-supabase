@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { Heart, ShoppingCart, Star, Eye } from 'lucide-react';
+import { Heart, ShoppingCart, Star, Eye, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useCart } from '@/hooks/useCart';
@@ -18,6 +18,7 @@ interface Product {
   image_url?: string | null;
   brand?: string | null;
   in_stock: boolean;
+  stock?: number;
   is_featured?: boolean;
   is_new?: boolean;
   is_bestseller?: boolean;
@@ -29,9 +30,10 @@ interface ProductCardProps {
   product: Product;
   size?: 'compact' | 'normal' | 'comfortable';
   className?: string;
+  showPrice?: boolean;
 }
 
-export function ProductCard({ product, size = 'normal', className }: ProductCardProps) {
+export function ProductCard({ product, size = 'normal', className, showPrice = true }: ProductCardProps) {
   const { addToCart, isLoading: isCartLoading } = useCart();
   const { toggleFavorite, isFavorite, isLoading: isFavLoading } = useFavorites();
   const isFav = isFavorite(product.id);
@@ -177,6 +179,14 @@ export function ProductCard({ product, size = 'normal', className }: ProductCard
               </div>
             )}
 
+            {product.in_stock && product.stock !== undefined && product.stock > 0 && product.stock <= 5 && (
+              <div className="absolute top-2 left-2 z-10">
+                <span className="bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full text-[10px] font-semibold">
+                  Осталось {product.stock} шт.
+                </span>
+              </div>
+            )}
+
             {/* Quick View on Hover */}
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
               <span className="bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-medium text-gray-700 shadow-sm">
@@ -229,33 +239,55 @@ export function ProductCard({ product, size = 'normal', className }: ProductCard
 
           {/* Price Block */}
           <div className="mt-auto pt-2">
-            {/* Old Price */}
-            {product.old_price && s.showDiscount && (
-              <div className="flex items-center gap-1.5">
-                <span className={cn("text-gray-400 line-through", s.oldPriceSize)}>
-                  {formatPrice(product.old_price)}
-                </span>
+            {showPrice ? (
+              <>
+                {/* Old Price */}
+                {product.old_price && s.showDiscount && (
+                  <div className="flex items-center gap-1.5">
+                    <span className={cn("text-gray-400 line-through", s.oldPriceSize)}>
+                      {formatPrice(product.old_price)}
+                    </span>
+                  </div>
+                )}
+                
+                {/* Current Price */}
+                <div className={cn("font-bold text-orange-600", s.priceSize)}>
+                  {formatPrice(product.price)}
+                </div>
+              </>
+            ) : (
+              <div className="text-xs text-gray-400 italic">
+                Войдите (18+) для просмотра цен
               </div>
             )}
-            
-            {/* Current Price */}
-            <div className={cn("font-bold text-orange-600", s.priceSize)}>
-              {formatPrice(product.price)}
-            </div>
           </div>
 
           {/* Add to Cart Button */}
-          <Button
-            onClick={handleAddToCart}
-            disabled={!product.in_stock || isCartLoading}
-            className={cn(
-              "w-full mt-2 bg-orange-500 hover:bg-orange-600 text-white font-medium",
-              s.buttonSize
-            )}
-          >
-            <ShoppingCart className={cn(s.iconSize, "mr-1.5")} />
-            В корзину
-          </Button>
+          {showPrice ? (
+            <Button
+              onClick={handleAddToCart}
+              disabled={!product.in_stock || isCartLoading}
+              className={cn(
+                "w-full mt-2 bg-orange-500 hover:bg-orange-600 text-white font-medium",
+                s.buttonSize
+              )}
+            >
+              <ShoppingCart className={cn(s.iconSize, "mr-1.5")} />
+              В корзину
+            </Button>
+          ) : (
+            <Link href="/login" className="w-full">
+              <Button
+                variant="outline"
+                className={cn(
+                  "w-full mt-2 border-orange-300 text-orange-600 hover:bg-orange-50 font-medium",
+                  s.buttonSize
+                )}
+              >
+                Войти
+              </Button>
+            </Link>
+          )}
         </div>
       </div>
     </Link>
@@ -263,7 +295,7 @@ export function ProductCard({ product, size = 'normal', className }: ProductCard
 }
 
 // Компактная карточка для списка
-export function ProductCardCompact({ product }: { product: Product }) {
+export function ProductCardCompact({ product, showPrice = true }: { product: Product; showPrice?: boolean }) {
   const { addToCart, isLoading } = useCart();
   const { toggleFavorite, isFavorite } = useFavorites();
   const isFav = isFavorite(product.id);
@@ -322,13 +354,19 @@ export function ProductCardCompact({ product }: { product: Product }) {
         
         {/* Price */}
         <div className="flex items-baseline gap-2 mt-1">
-          <span className="text-base sm:text-lg font-bold text-orange-600">
-            {formatPrice(product.price)}
-          </span>
-          {product.old_price && (
-            <span className="text-xs text-gray-400 line-through">
-              {formatPrice(product.old_price)}
-            </span>
+          {showPrice ? (
+            <>
+              <span className="text-base sm:text-lg font-bold text-orange-600">
+                {formatPrice(product.price)}
+              </span>
+              {product.old_price && (
+                <span className="text-xs text-gray-400 line-through">
+                  {formatPrice(product.old_price)}
+                </span>
+              )}
+            </>
+          ) : (
+            <span className="text-xs text-gray-400 italic">Войдите (18+)</span>
           )}
         </div>
       </div>
@@ -349,17 +387,25 @@ export function ProductCardCompact({ product }: { product: Product }) {
         >
           <Heart className={cn("h-4 w-4", isFav && "fill-current")} />
         </button>
-        <Button
-          size="sm"
-          onClick={(e) => {
-            e.preventDefault();
-            addToCart(product.id, 1);
-          }}
-          disabled={!product.in_stock || isLoading}
-          className="bg-orange-500 hover:bg-orange-600 h-9 px-3"
-        >
-          <ShoppingCart className="h-4 w-4" />
-        </Button>
+        {showPrice ? (
+          <Button
+            size="sm"
+            onClick={(e) => {
+              e.preventDefault();
+              addToCart(product.id, 1);
+            }}
+            disabled={!product.in_stock || isLoading}
+            className="bg-orange-500 hover:bg-orange-600 h-9 px-3"
+          >
+            <ShoppingCart className="h-4 w-4" />
+          </Button>
+        ) : (
+          <Link href="/login">
+            <Button size="sm" variant="outline" className="border-orange-300 text-orange-600 h-9 px-3">
+              <Lock className="h-4 w-4" />
+            </Button>
+          </Link>
+        )}
       </div>
     </div>
   );

@@ -379,6 +379,11 @@ function CatalogContent() {
   const { user, profile, isLoading: isAuthLoading } = useAuth();
   const { searchProducts, products, isLoading: isProductsLoading } = useProducts();
   const { categories, parentCategories, getSubcategories, getCategoryById, isLoading: isCategoriesLoading } = useCategories();
+
+  // Можно ли показывать цены/корзину: авторизован + 18+
+  const isAdult = profile?.birth_date && 
+    new Date(profile.birth_date) <= new Date(new Date().setFullYear(new Date().getFullYear() - 18));
+  const canBuy = !!user && !!isAdult;
   
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [gridSize, setGridSize] = useState<GridSize>('4');
@@ -503,7 +508,7 @@ function CatalogContent() {
   const activeFiltersCount = [selectedCategory, priceRange.min, priceRange.max, searchQuery].filter(Boolean).length;
 
   /* ═══════════════ LOADING ═══════════════ */
-  if (isAuthLoading || isCategoriesLoading) {
+  if (isCategoriesLoading) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />
@@ -920,13 +925,13 @@ function CatalogContent() {
             ) : viewMode === 'list' ? (
               <div className="space-y-3">
                 {products.map((product) => (
-                  <ProductCardCompact key={product.id} product={product} />
+                  <ProductCardCompact key={product.id} product={product} showPrice={canBuy} />
                 ))}
               </div>
             ) : (
               <div className={cn("grid", getGridClass(gridSize), getGapClass(cardSize))}>
                 {products.map((product) => (
-                  <ProductCard key={product.id} product={product} size={cardSize} />
+                  <ProductCard key={product.id} product={product} size={cardSize} showPrice={canBuy} />
                 ))}
               </div>
             )}

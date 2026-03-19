@@ -71,12 +71,13 @@ export default function ProductPage() {
 
   const isAdult = profile?.birth_date && 
     new Date(profile.birth_date) <= new Date(new Date().setFullYear(new Date().getFullYear() - 18));
+  const canBuy = !!user && !!isAdult;
 
   useEffect(() => {
-    if (!isAuthLoading && user && isAdult && slug) {
+    if (!isAuthLoading && slug) {
       loadProduct();
     }
-  }, [slug, isAuthLoading, user, isAdult]);
+  }, [slug, isAuthLoading]);
 
   // Load reviews when product is loaded
   useEffect(() => {
@@ -449,21 +450,36 @@ export default function ProductPage() {
             </div>
 
             {/* Price */}
-            <div className="flex items-baseline gap-4 flex-wrap">
-              <span className="text-3xl lg:text-4xl font-bold text-orange-600">
-                {formatPrice(product.price)}
-              </span>
-              {product.old_price && (
-                <span className="text-xl text-gray-400 line-through">
-                  {formatPrice(product.old_price)}
+            {canBuy ? (
+              <div className="flex items-baseline gap-4 flex-wrap">
+                <span className="text-3xl lg:text-4xl font-bold text-orange-600">
+                  {formatPrice(product.price)}
                 </span>
-              )}
-              {discount > 0 && (
-                <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
-                  Экономия {formatPrice(product.old_price! - product.price)}
-                </Badge>
-              )}
-            </div>
+                {product.old_price && (
+                  <span className="text-xl text-gray-400 line-through">
+                    {formatPrice(product.old_price)}
+                  </span>
+                )}
+                {discount > 0 && (
+                  <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
+                    Экономия {formatPrice(product.old_price! - product.price)}
+                  </Badge>
+                )}
+              </div>
+            ) : (
+              <div className="bg-orange-50 border border-orange-200 rounded-xl p-4">
+                <p className="text-sm text-orange-700 font-medium">
+                  {!user ? 'Войдите в аккаунт, чтобы видеть цены и совершать покупки' : 'Покупка доступна только для лиц старше 18 лет'}
+                </p>
+                {!user && (
+                  <Link href={`/login?redirect=/product/${slug}`}>
+                    <Button size="sm" className="mt-2 bg-orange-500 hover:bg-orange-600 text-white">
+                      Войти
+                    </Button>
+                  </Link>
+                )}
+              </div>
+            )}
 
             {/* Stock Status */}
             <div className="flex items-center gap-2">
@@ -478,11 +494,18 @@ export default function ProductPage() {
                   Нет в наличии
                 </Badge>
               )}
+              {product.in_stock && product.stock !== undefined && product.stock <= 5 && (
+                <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 gap-1">
+                  <AlertTriangle className="w-3.5 h-3.5" />
+                  Осталось мало ({product.stock} шт.)
+                </Badge>
+              )}
             </div>
 
             <Separator className="bg-gray-200" />
 
             {/* Quantity & Add to Cart */}
+            {canBuy && (
             <div className="space-y-4">
               <div className="flex items-center gap-4">
                 {/* Quantity Selector */}
@@ -498,6 +521,7 @@ export default function ProductPage() {
                   <button
                     onClick={() => setQuantity(q => q + 1)}
                     className="p-3 hover:bg-gray-50 transition-colors rounded-r-xl"
+                    disabled={product.stock !== undefined && quantity >= product.stock}
                   >
                     <Plus className="w-4 h-4 text-gray-600" />
                   </button>
@@ -537,6 +561,7 @@ export default function ProductPage() {
                 </Button>
               </div>
             </div>
+            )}
 
             <Separator className="bg-gray-200" />
 

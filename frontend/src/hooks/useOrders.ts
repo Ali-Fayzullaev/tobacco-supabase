@@ -135,7 +135,7 @@ export function useOrders() {
     }
   }, [supabase]);
 
-  // Создание заказа
+  // Создание заказа (атомарное резервирование через RPC)
   const createOrder = async (params: CreateOrderParams): Promise<CreateOrderResult> => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
@@ -148,12 +148,7 @@ export function useOrders() {
       // Получаем товары из корзины
       const { data: cartItems, error: cartError } = await supabase
         .from('cart_items')
-        .select(`
-          id,
-          product_id,
-          quantity,
-          product:products(price, name)
-        `)
+        .select('product_id, quantity')
         .eq('user_id', session.user.id);
 
       if (cartError || !cartItems?.length) {
@@ -161,75 +156,41 @@ export function useOrders() {
         return { success: false, error: 'Корзина пуста' };
       }
 
-      // Считаем сумму
-      const totalAmount = cartItems.reduce((sum, item: any) => {
-        const product = Array.isArray(item.product) ? item.product[0] : item.product;
-        return sum + (product?.price || 0) * item.quantity;
-      }, 0);
-
-      // Создаём заказ
-      const { data: order, error: orderError } = await supabase
-        .from('orders')
-        .insert({
-          user_id: session.user.id,
-          status: 'pending',
-          total_amount: totalAmount,
-          delivery_method: params.deliveryMethod,
-          payment_method: params.paymentMethod,
-          payment_status: 'pending',
-          shipping_address: {
-            city: params.shippingAddress.city,
-            address: params.shippingAddress.address,
-            apartment: params.shippingAddress.apartment || null,
-            postalCode: params.shippingAddress.postalCode || null,
-          },
-          phone: params.phone,
-          comment: params.comment || null,
-        })
-        .select()
-        .single();
-
-      if (orderError) {
-        setState(prev => ({ ...prev, isLoading: false }));
-        return { success: false, error: orderError.message };
-      }
-
-      // Создаём позиции заказа
-      const orderItems = cartItems.map((item: any) => {
-        const product = Array.isArray(item.product) ? item.product[0] : item.product;
-        return {
-          order_id: order.id,
+      // Вызываем атомарную функцию резервирования
+      const { data, error } = await supabase.rpc('reserve_stock_for_order', {
+        p_user_id: session.user.id,
+        p_items: cartItems.map(item => ({
           product_id: item.product_id,
           quantity: item.quantity,
-          price: product?.price || 0,
-          product_name: product?.name || 'Товар',
-        };
+        })),
+        p_delivery_method: params.deliveryMethod,
+        p_payment_method: params.paymentMethod,
+        p_shipping_address: {
+          city: params.shippingAddress.city,
+          address: params.shippingAddress.address,
+          apartment: params.shippingAddress.apartment || null,
+          postalCode: params.shippingAddress.postalCode || null,
+        },
+        p_phone: params.phone,
+        p_comment: params.comment || null,
       });
-
-      const { error: itemsError } = await supabase
-        .from('order_items')
-        .insert(orderItems);
-
-      if (itemsError) {
-        // Удаляем заказ если не удалось добавить позиции
-        await supabase.from('orders').delete().eq('id', order.id);
-        setState(prev => ({ ...prev, isLoading: false }));
-        return { success: false, error: itemsError.message };
-      }
-
-      // Очищаем корзину
-      await supabase
-        .from('cart_items')
-        .delete()
-        .eq('user_id', session.user.id);
 
       setState(prev => ({ ...prev, isLoading: false }));
 
+      if (error) {
+        return { success: false, error: error.message };
+      }
+
+      const result = data as any;
+      if (!result?.success) {
+        return { success: false, error: result?.error || 'Ошибка создания заказа' };
+      }
+
       return {
         success: true,
-        order_id: order.id,
-        order_number: order.order_number,
-        total_amount: totalAmount,
+        order_id: result.order_id,
+        order_number: result.order_number,
+        total_amount: result.total_amount,
       };
     } catch (e: any) {
       setState(prev => ({ ...prev, isLoading: false }));

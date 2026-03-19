@@ -13,10 +13,10 @@ import {
   X,
   LogOut,
   Loader2,
-  AlertTriangle,
   ChevronRight,
   Store,
   Shield,
+  AlertTriangle,
   FolderTree
 } from 'lucide-react';
 import { useAuth } from '@/hooks';
@@ -28,7 +28,6 @@ const navItems = [
   { href: '/admin/products', label: 'Товары', icon: Package },
   { href: '/admin/categories', label: 'Категории', icon: FolderTree },
   { href: '/admin/orders', label: 'Заказы', icon: ShoppingBag },
-  { href: '/admin/error-reports', label: 'Отчёты об ошибках', icon: AlertTriangle },
   { href: '/admin/users', label: 'Пользователи', icon: Users },
   { href: '/admin/settings', label: 'Настройки', icon: Settings },
 ];
@@ -105,11 +104,11 @@ export default function AdminLayout({
           </div>
           <div className="flex items-center gap-3">
             <Link 
-              href="/" 
+              href="/catalog" 
               className="hidden sm:flex items-center gap-2 text-gray-400 hover:text-white text-sm bg-white/5 hover:bg-white/10 px-3 py-2 rounded-lg transition-colors"
             >
               <Store className="w-4 h-4" />
-              На сайт
+              На магазин
             </Link>
             <div className="hidden sm:flex items-center gap-3 pl-3 border-l border-white/10">
               <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center text-sm font-semibold">

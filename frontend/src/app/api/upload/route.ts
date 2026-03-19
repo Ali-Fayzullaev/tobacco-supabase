@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 import { v2 as cloudinary } from 'cloudinary';
 
 cloudinary.config({
@@ -7,8 +9,36 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+async function getAuthUser() {
+  const cookieStore = await cookies();
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+      },
+    }
+  );
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return null;
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single();
+  return profile?.role === 'admin' ? user : null;
+}
+
 export async function POST(request: NextRequest) {
   try {
+    const admin = await getAuthUser();
+    if (!admin) {
+      return NextResponse.json({ error: 'Нет доступа' }, { status: 403 });
+    }
+
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
     const url = formData.get('url') as string | null;
@@ -71,6 +101,11 @@ export async function POST(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
+    const admin = await getAuthUser();
+    if (!admin) {
+      return NextResponse.json({ error: 'Нет доступа' }, { status: 403 });
+    }
+
     const { public_id } = await request.json();
     
     if (!public_id) {

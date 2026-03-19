@@ -35,14 +35,14 @@ export async function middleware(request: NextRequest) {
 
   // Публичные роуты - не требуют авторизации
   const publicRoutes = ['/login', '/register', '/catalog', '/product', '/'];
-  const isPublicRoute = publicRoutes.some(route => pathname.startsWith(route) || pathname === '/');
+  const isPublicRoute = publicRoutes.some(route => pathname === route || pathname.startsWith(route + '/')) || pathname === '/';
   
   if (isPublicRoute) {
     return response;
   }
 
   // Protected routes that require authentication
-  const protectedRoutes = ['/catalog', '/product', '/cart', '/checkout', '/profile', '/admin'];
+  const protectedRoutes = ['/cart', '/checkout', '/profile', '/admin'];
   const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
 
   // Для защищённых роутов проверяем сессию

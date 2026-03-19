@@ -30,7 +30,7 @@ const productSchema = z.object({
   sku: z.string().optional(),
   brand: z.string().optional(),
   category_id: z.string().min(1, 'Выберите категорию'),
-  in_stock: z.boolean(),
+  stock: z.number().min(0, 'Остаток не может быть отрицательным'),
   is_active: z.boolean(),
   is_featured: z.boolean(),
 });
@@ -63,7 +63,7 @@ export default function ProductEditPage() {
   } = useForm<ProductForm>({
     resolver: zodResolver(productSchema),
     defaultValues: {
-      in_stock: true,
+      stock: 0,
       is_active: true,
       is_featured: false,
     },
@@ -129,7 +129,7 @@ export default function ProductEditPage() {
         setValue('sku', product.sku || '');
         setValue('brand', product.brand || '');
         setValue('category_id', product.category_id || '');
-        setValue('in_stock', product.in_stock);
+        setValue('stock', product.stock ?? (product.in_stock ? 100 : 0));
         setValue('is_active', product.is_active);
         setValue('is_featured', product.is_featured);
         // Загружаем изображения
@@ -162,7 +162,7 @@ export default function ProductEditPage() {
         sku: data.sku || null,
         brand: data.brand || null,
         category_id: data.category_id,
-        in_stock: data.in_stock,
+        stock: data.stock,
         is_active: data.is_active,
         is_featured: data.is_featured,
         image_url: images[0] || null,
@@ -435,16 +435,25 @@ export default function ProductEditPage() {
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-6 mt-4">
-            <label className="flex items-center gap-2">
+          <div className="grid md:grid-cols-2 gap-4 mt-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Остаток на складе (шт.)
+              </label>
               <input
-                {...register('in_stock')}
-                type="checkbox"
-                className="w-4 h-4 text-gold-500 rounded"
+                {...register('stock', { valueAsNumber: true })}
+                type="number"
+                min="0"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500"
               />
-              <span className="text-gray-700">В наличии</span>
-            </label>
+              {errors.stock && (
+                <p className="text-red-500 text-xs mt-1">{errors.stock.message}</p>
+              )}
+              <p className="text-gray-400 text-xs mt-1">Наличие обновится автоматически (stock &gt; 0 = в наличии)</p>
+            </div>
+          </div>
 
+          <div className="flex flex-wrap gap-6 mt-4">
             <label className="flex items-center gap-2">
               <input
                 {...register('is_active')}

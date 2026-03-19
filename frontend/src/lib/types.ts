@@ -55,6 +55,7 @@ export interface Product {
   brand: string | null;
   category_id: string | null;
   in_stock: boolean;
+  stock?: number;
   is_active: boolean;
   is_featured: boolean;
   is_new?: boolean;

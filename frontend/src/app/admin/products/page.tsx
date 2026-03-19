@@ -112,9 +112,9 @@ export default function AdminProductsPage() {
       }
 
       if (stockFilter === 'in_stock') {
-        query = query.eq('in_stock', true);
+        query = query.gt('stock', 0);
       } else if (stockFilter === 'out_of_stock') {
-        query = query.eq('in_stock', false);
+        query = query.eq('stock', 0);
       }
 
       // Фильтр по статусу активности
@@ -472,7 +472,7 @@ export default function AdminProductsPage() {
 
   // Stats
   const activeCount = products.filter(p => p.is_active).length;
-  const inStockCount = products.filter(p => p.in_stock).length;
+  const inStockCount = products.filter(p => (p as any).stock > 0).length;
 
   return (
     <div className="space-y-6">
@@ -1093,10 +1093,10 @@ export default function AdminProductsPage() {
                         )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        {product.in_stock ? (
+                        {(product as any).stock > 0 ? (
                           <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
                             <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
-                            В наличии
+                            {(product as any).stock} шт.
                           </span>
                         ) : (
                           <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-100 text-red-700 text-xs font-semibold rounded-full">

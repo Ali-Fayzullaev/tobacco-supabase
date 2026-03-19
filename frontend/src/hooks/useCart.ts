@@ -12,6 +12,7 @@ export interface CartItem {
     name_kk: string | null;
     price: number;
     in_stock: boolean;
+    stock?: number;
     slug: string;
     image_url?: string | null;
     brand?: string | null;
@@ -76,7 +77,7 @@ export function useCart() {
       // Загружаем продукты отдельным запросом
       const { data: productsData, error: productsError } = await supabase
         .from('products')
-        .select('id, name, name_kk, price, in_stock, slug, image_url, brand')
+        .select('id, name, name_kk, price, in_stock, stock, slug, image_url, brand')
         .in('id', productIds);
 
       if (productsError) {
@@ -109,6 +110,7 @@ export function useCart() {
               name_kk: product.name_kk,
               price: product.price,
               in_stock: product.in_stock,
+              stock: product.stock,
               slug: product.slug,
               image_url: product.image_url,
               brand: product.brand,
@@ -151,6 +153,13 @@ export function useCart() {
 
       setState(prev => ({ ...prev, isLoading: true }));
 
+      // Проверяем остаток на складе
+      const { data: product } = await supabase
+        .from('products')
+        .select('stock')
+        .eq('id', productId)
+        .single();
+
       // Проверяем, есть ли уже такой товар в корзине
       const { data: existing } = await supabase
         .from('cart_items')
@@ -158,6 +167,18 @@ export function useCart() {
         .eq('user_id', session.user.id)
         .eq('product_id', productId)
         .single();
+
+      const currentInCart = existing?.quantity || 0;
+      const requestedTotal = currentInCart + quantity;
+      const availableStock = product?.stock ?? 0;
+
+      if (availableStock < requestedTotal) {
+        setState(prev => ({ ...prev, isLoading: false }));
+        const msg = currentInCart > 0
+          ? `Недостаточно товара. На складе: ${availableStock}, в корзине уже: ${currentInCart}`
+          : `Недостаточно товара. На складе: ${availableStock}`;
+        return { success: false, error: msg };
+      }
 
       if (existing) {
         // Обновляем количество

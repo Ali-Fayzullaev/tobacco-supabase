@@ -36,6 +36,18 @@ export async function middleware(request: NextRequest) {
   // Публичные роуты - не требуют авторизации
   const publicRoutes = ['/login', '/register', '/catalog', '/product', '/'];
   const isPublicRoute = publicRoutes.some(route => pathname === route || pathname.startsWith(route + '/')) || pathname === '/';
+
+  // Получаем пользователя один раз (getUser валидирует токен на сервере, надёжнее getSession)
+  const { data: { user } } = await supabase.auth.getUser();
+
+  // Если залогиненный пользователь заходит на /login или /register — редиректим
+  if (pathname === '/login' || pathname === '/register') {
+    if (user) {
+      const redirectTo = request.nextUrl.searchParams.get('redirect') || '/catalog';
+      return NextResponse.redirect(new URL(redirectTo, request.url));
+    }
+    return response;
+  }
   
   if (isPublicRoute) {
     return response;
@@ -45,12 +57,9 @@ export async function middleware(request: NextRequest) {
   const protectedRoutes = ['/cart', '/checkout', '/profile', '/admin'];
   const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
 
-  // Для защищённых роутов проверяем сессию
+  // Для защищённых роутов проверяем авторизацию
   if (isProtectedRoute) {
-    const { data: { session } } = await supabase.auth.getSession();
-
-    // If user is not logged in and trying to access protected route
-    if (!session) {
+    if (!user) {
       const redirectUrl = new URL('/login', request.url);
       redirectUrl.searchParams.set('redirect', pathname);
       return NextResponse.redirect(redirectUrl);
@@ -61,7 +70,7 @@ export async function middleware(request: NextRequest) {
       const { data: profile } = await supabase
         .from('profiles')
         .select('role')
-        .eq('id', session.user.id)
+        .eq('id', user.id)
         .single();
 
       if (profile?.role !== 'admin') {

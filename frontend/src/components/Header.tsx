@@ -43,6 +43,7 @@ export function Header() {
   // Уведомления
   const [notifications, setNotifications] = useState<any[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
 
   const isAdmin = profile?.role === 'admin';
   const storeName = settings.store_name || 'Shop Shop';
@@ -173,7 +174,10 @@ export function Header() {
                         "relative text-gray-600 hover:text-orange-600 hover:bg-orange-50",
                         showNotifications && "bg-orange-50 text-orange-600"
                       )}
-                      onClick={() => setShowNotifications(!showNotifications)}
+                      onClick={() => {
+                        setShowNotifications(!showNotifications);
+                        setShowUserMenu(false);
+                      }}
                     >
                       <Bell className="h-5 w-5" />
                       {unreadCount > 0 && (
@@ -278,7 +282,7 @@ export function Header() {
                   </div>
 
                   {/* Favorites */}
-                  <Link href="/profile?tab=favorites">
+                  <Link href="/profile/favorites">
                     <Button variant="ghost" size="icon" className="relative text-gray-600 hover:text-orange-600 hover:bg-orange-50">
                       <Heart className="h-5 w-5" />
                       {favorites.length > 0 && (
@@ -302,23 +306,112 @@ export function Header() {
                   </Link>
 
                   {/* User menu */}
-                  <Link href="/profile">
-                    <Button variant="ghost" className="hidden sm:flex gap-2 text-gray-600 hover:text-orange-600 hover:bg-orange-50">
+                  <div className="relative hidden sm:block">
+                    <Button 
+                      variant="ghost" 
+                      size="icon"
+                      className={cn(
+                        "relative text-gray-600 hover:text-orange-600 hover:bg-orange-50",
+                        showUserMenu && "bg-orange-50 text-orange-600"
+                      )}
+                      onClick={() => {
+                        setShowUserMenu(!showUserMenu);
+                        setShowNotifications(false);
+                      }}
+                    >
                       <User className="h-5 w-5" />
-                      <span className="hidden lg:inline max-w-[100px] truncate">
-                        {profile?.first_name || 'Профиль'}
-                      </span>
                     </Button>
-                  </Link>
 
-                  {isAdmin && (
-                    <Link href="/admin" className="hidden md:block">
-                      <Button variant="outline" size="sm" className="gap-1 border-orange-200 text-orange-600 hover:bg-orange-50">
-                        <Settings className="h-4 w-4" />
-                        Админ
-                      </Button>
-                    </Link>
-                  )}
+                    {showUserMenu && (
+                      <>
+                        <div 
+                          className="fixed inset-0 z-40" 
+                          onClick={() => setShowUserMenu(false)} 
+                        />
+                        <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-2xl border border-gray-100 z-50 overflow-hidden">
+                          {/* User info */}
+                          <div className="p-4 border-b border-gray-100 bg-gradient-to-r from-orange-50 to-amber-50">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center">
+                                <User className="w-5 h-5 text-orange-600" />
+                              </div>
+                              <div className="min-w-0">
+                                <p className="font-semibold text-gray-900 truncate">
+                                  {profile?.first_name || 'Пользователь'}
+                                </p>
+                                <p className="text-xs text-gray-500 truncate">
+                                  {user?.email}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Menu items */}
+                          <div className="py-2">
+                            <Link
+                              href="/profile"
+                              onClick={() => setShowUserMenu(false)}
+                              className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors"
+                            >
+                              <User className="w-4 h-4" />
+                              Мой профиль
+                            </Link>
+                            <Link
+                              href="/profile/orders"
+                              onClick={() => setShowUserMenu(false)}
+                              className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors"
+                            >
+                              <Package className="w-4 h-4" />
+                              Мои заказы
+                            </Link>
+                            <Link
+                              href="/profile/favorites"
+                              onClick={() => setShowUserMenu(false)}
+                              className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors"
+                            >
+                              <Heart className="w-4 h-4" />
+                              Избранное
+                            </Link>
+                            <Link
+                              href="/profile/settings"
+                              onClick={() => setShowUserMenu(false)}
+                              className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors"
+                            >
+                              <Settings className="w-4 h-4" />
+                              Настройки
+                            </Link>
+                            {isAdmin && (
+                              <>
+                                <div className="my-1 border-t border-gray-100" />
+                                <Link
+                                  href="/admin"
+                                  onClick={() => setShowUserMenu(false)}
+                                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-orange-600 hover:bg-orange-50 transition-colors"
+                                >
+                                  <Settings className="w-4 h-4" />
+                                  Админ-панель
+                                </Link>
+                              </>
+                            )}
+                          </div>
+
+                          {/* Logout */}
+                          <div className="border-t border-gray-100">
+                            <button
+                              onClick={() => {
+                                signOut();
+                                setShowUserMenu(false);
+                              }}
+                              className="flex items-center gap-3 px-4 py-3 text-sm text-red-500 hover:bg-red-50 transition-colors w-full"
+                            >
+                              <LogOut className="w-4 h-4" />
+                              Выйти
+                            </button>
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </div>
                 </>
               ) : (
                 <div className="flex items-center gap-2">

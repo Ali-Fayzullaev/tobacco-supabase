@@ -38,6 +38,7 @@ import { useCart } from '@/hooks/useCart';
 import { useFavorites } from '@/hooks/useFavorites';
 import { useReviews } from '@/hooks/useReviews';
 import { formatPrice, cn } from '@/lib/utils';
+import { toast } from 'sonner';
 import type { ProductFull, ProductImage, ProductAttribute } from '@/lib/types';
 
 export default function ProductPage() {
@@ -50,6 +51,7 @@ export default function ProductPage() {
   const { toggleFavorite, isFavorite, isLoading: isFavLoading } = useFavorites();
 
   const [product, setProduct] = useState<ProductFull | null>(null);
+  const [productLoading, setProductLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [activeTab, setActiveTab] = useState('description');
@@ -87,22 +89,33 @@ export default function ProductPage() {
   }, [product?.id]);
 
   const loadProduct = async () => {
+    setProductLoading(true);
     const result = await getFullProduct(slug);
     if (result.success && result.data) {
       setProduct(result.data as unknown as ProductFull);
     }
+    setProductLoading(false);
   };
 
   const handleAddToCart = async () => {
     if (product) {
-      await addToCart(product.id, quantity);
+      const result = await addToCart(product.id, quantity);
+      if (result.success) {
+        toast.success(`${product.name} добавлен в корзину`);
+      } else {
+        toast.error(result.error || 'Не удалось добавить товар');
+      }
     }
   };
 
   const handleQuickBuy = async () => {
     if (product) {
-      await addToCart(product.id, quantity);
-      window.location.href = '/checkout';
+      const result = await addToCart(product.id, quantity);
+      if (result.success) {
+        window.location.href = '/checkout';
+      } else {
+        toast.error(result.error || 'Не удалось добавить товар');
+      }
     }
   };
 
@@ -121,7 +134,7 @@ export default function ProductPage() {
     : 0;
 
   // Loading state
-  if (isAuthLoading || isProductLoading) {
+  if (isAuthLoading || productLoading) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />

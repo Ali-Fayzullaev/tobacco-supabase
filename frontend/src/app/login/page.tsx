@@ -26,6 +26,7 @@ function LoginFormContent() {
   const searchParams = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
   const isRegistered = searchParams.get('registered') === 'true';
   const redirectTo = searchParams.get('redirect') || '/catalog';
@@ -37,6 +38,20 @@ function LoginFormContent() {
   } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
   });
+
+  // Проверяем, не залогинен ли уже пользователь
+  useEffect(() => {
+    const checkAuth = async () => {
+      const supabase = getSupabaseBrowserClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        window.location.href = redirectTo;
+        return;
+      }
+      setIsCheckingAuth(false);
+    };
+    checkAuth();
+  }, [redirectTo]);
 
   useEffect(() => {
     if (isRegistered) {
@@ -68,6 +83,14 @@ function LoginFormContent() {
     toast.success('Добро пожаловать!');
     window.location.href = redirectTo;
   };
+
+  if (isCheckingAuth) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-orange-50/30 to-white flex items-center justify-center p-4">

@@ -1,8 +1,10 @@
 'use client';
 
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Heart, ShoppingCart, Star, Eye, Lock } from 'lucide-react';
+import { Heart, ShoppingCart, Star, Eye, Lock, Loader2, Check } from 'lucide-react';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useCart } from '@/hooks/useCart';
@@ -34,9 +36,11 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, size = 'normal', className, showPrice = true }: ProductCardProps) {
-  const { addToCart, isLoading: isCartLoading } = useCart();
+  const { addToCart } = useCart();
   const { toggleFavorite, isFavorite, isLoading: isFavLoading } = useFavorites();
   const isFav = isFavorite(product.id);
+  const [addingToCart, setAddingToCart] = useState(false);
+  const [addedToCart, setAddedToCart] = useState(false);
 
   const discount = product.old_price 
     ? Math.round((1 - product.price / product.old_price) * 100) 
@@ -45,10 +49,24 @@ export function ProductCard({ product, size = 'normal', className, showPrice = t
   const rating = product.rating || 0;
   const reviewsCount = product.reviews_count || 0;
 
-  const handleAddToCart = (e: React.MouseEvent) => {
+  const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    addToCart(product.id, 1);
+    if (addingToCart) return;
+    setAddingToCart(true);
+    setAddedToCart(false);
+    try {
+      const result = await addToCart(product.id, 1);
+      if (result.success) {
+        setAddedToCart(true);
+        toast.success(`${product.name} добавлен в корзину`);
+        setTimeout(() => setAddedToCart(false), 1500);
+      } else {
+        toast.error(result.error || 'Не удалось добавить товар');
+      }
+    } finally {
+      setAddingToCart(false);
+    }
   };
 
   const handleToggleFavorite = (e: React.MouseEvent) => {
@@ -266,14 +284,23 @@ export function ProductCard({ product, size = 'normal', className, showPrice = t
           {showPrice ? (
             <Button
               onClick={handleAddToCart}
-              disabled={!product.in_stock || isCartLoading}
+              disabled={!product.in_stock || addingToCart}
               className={cn(
-                "w-full mt-2 bg-orange-500 hover:bg-orange-600 text-white font-medium",
+                "w-full mt-2 font-medium transition-all",
+                addedToCart
+                  ? "bg-green-500 hover:bg-green-600 text-white"
+                  : "bg-orange-500 hover:bg-orange-600 text-white",
                 s.buttonSize
               )}
             >
-              <ShoppingCart className={cn(s.iconSize, "mr-1.5")} />
-              В корзину
+              {addingToCart ? (
+                <Loader2 className={cn(s.iconSize, "mr-1.5 animate-spin")} />
+              ) : addedToCart ? (
+                <Check className={cn(s.iconSize, "mr-1.5")} />
+              ) : (
+                <ShoppingCart className={cn(s.iconSize, "mr-1.5")} />
+              )}
+              {addingToCart ? 'Добавляем...' : addedToCart ? 'Добавлено!' : 'В корзину'}
             </Button>
           ) : (
             <Link href="/login" className="w-full">
@@ -296,13 +323,34 @@ export function ProductCard({ product, size = 'normal', className, showPrice = t
 
 // Компактная карточка для списка
 export function ProductCardCompact({ product, showPrice = true }: { product: Product; showPrice?: boolean }) {
-  const { addToCart, isLoading } = useCart();
+  const { addToCart } = useCart();
   const { toggleFavorite, isFavorite } = useFavorites();
   const isFav = isFavorite(product.id);
+  const [addingToCart, setAddingToCart] = useState(false);
+  const [addedToCart, setAddedToCart] = useState(false);
 
   const discount = product.old_price 
     ? Math.round((1 - product.price / product.old_price) * 100) 
     : 0;
+
+  const handleAddToCart = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (addingToCart) return;
+    setAddingToCart(true);
+    setAddedToCart(false);
+    try {
+      const result = await addToCart(product.id, 1);
+      if (result.success) {
+        setAddedToCart(true);
+        toast.success(`${product.name} добавлен в корзину`);
+        setTimeout(() => setAddedToCart(false), 1500);
+      } else {
+        toast.error(result.error || 'Не удалось добавить товар');
+      }
+    } finally {
+      setAddingToCart(false);
+    }
+  };
   
   return (
     <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-white rounded-xl border border-gray-100 hover:border-orange-200 hover:shadow-md transition-all">
@@ -390,14 +438,22 @@ export function ProductCardCompact({ product, showPrice = true }: { product: Pro
         {showPrice ? (
           <Button
             size="sm"
-            onClick={(e) => {
-              e.preventDefault();
-              addToCart(product.id, 1);
-            }}
-            disabled={!product.in_stock || isLoading}
-            className="bg-orange-500 hover:bg-orange-600 h-9 px-3"
+            onClick={handleAddToCart}
+            disabled={!product.in_stock || addingToCart}
+            className={cn(
+              "h-9 px-3 transition-all",
+              addedToCart
+                ? "bg-green-500 hover:bg-green-600"
+                : "bg-orange-500 hover:bg-orange-600"
+            )}
           >
-            <ShoppingCart className="h-4 w-4" />
+            {addingToCart ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : addedToCart ? (
+              <Check className="h-4 w-4" />
+            ) : (
+              <ShoppingCart className="h-4 w-4" />
+            )}
           </Button>
         ) : (
           <Link href="/login">

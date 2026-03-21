@@ -7,7 +7,6 @@ import { z } from 'zod';
 import { toast } from 'sonner';
 import { Eye, EyeOff, Loader2, Shield, Bell, Trash2 } from 'lucide-react';
 import { useAuth } from '@/hooks';
-import { createBrowserSupabaseClient } from '@/lib/supabase';
 
 const passwordSchema = z.object({
   currentPassword: z.string().min(1, 'Введите текущий пароль'),
@@ -39,12 +38,20 @@ export default function SettingsPage() {
   const onPasswordSubmit = async (data: PasswordForm) => {
     setIsChangingPassword(true);
     try {
-      const supabase = createBrowserSupabaseClient();
-      const { error } = await supabase.auth.updateUser({
-        password: data.newPassword,
+      const res = await fetch('/api/change-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          currentPassword: data.currentPassword,
+          newPassword: data.newPassword,
+        }),
       });
 
-      if (error) throw error;
+      const result = await res.json();
+
+      if (!res.ok) {
+        throw new Error(result.error || 'Ошибка при смене пароля');
+      }
 
       toast.success('Пароль успешно изменён');
       reset();
@@ -81,7 +88,7 @@ export default function SettingsPage() {
               <input
                 {...register('currentPassword')}
                 type={showCurrentPassword ? 'text' : 'password'}
-                className="w-full px-4 py-2 pr-10 border border-[#333] rounded-lg focus:ring-2 focus:ring-gold-500"
+                className="w-full px-4 py-2.5 pr-10 bg-[#121212] border border-[#2A2A2A] rounded-xl text-[#F5F5F5] placeholder:text-[#666] focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 outline-none"
               />
               <button
                 type="button"
@@ -104,7 +111,7 @@ export default function SettingsPage() {
               <input
                 {...register('newPassword')}
                 type={showNewPassword ? 'text' : 'password'}
-                className="w-full px-4 py-2 pr-10 border border-[#333] rounded-lg focus:ring-2 focus:ring-gold-500"
+                className="w-full px-4 py-2.5 pr-10 bg-[#121212] border border-[#2A2A2A] rounded-xl text-[#F5F5F5] placeholder:text-[#666] focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 outline-none"
               />
               <button
                 type="button"
@@ -126,7 +133,7 @@ export default function SettingsPage() {
             <input
               {...register('confirmPassword')}
               type="password"
-              className="w-full px-4 py-2 border border-[#333] rounded-lg focus:ring-2 focus:ring-gold-500"
+              className="w-full px-4 py-2.5 bg-[#121212] border border-[#2A2A2A] rounded-xl text-[#F5F5F5] placeholder:text-[#666] focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 outline-none"
             />
             {errors.confirmPassword && (
               <p className="text-red-500 text-xs mt-1">{errors.confirmPassword.message}</p>

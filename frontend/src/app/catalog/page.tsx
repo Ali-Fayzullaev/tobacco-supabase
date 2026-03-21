@@ -88,7 +88,7 @@ function getGapClass(cardSize: CardSize): string {
 const categoryGradients: Record<string, string> = {
   'cigarettes': 'from-amber-700 via-amber-800 to-amber-950',
   'papirosy': 'from-stone-600 via-stone-700 to-stone-900',
-  'cigarillos': 'from-orange-700 via-orange-800 to-orange-950',
+  'cigarillos': 'from-gold-700 via-gold-800 to-gold-950',
   'cigars': 'from-yellow-800 via-amber-900 to-amber-950',
   'tobacco': 'from-lime-800 via-green-900 to-green-950',
   'smoking-tobacco': 'from-emerald-700 via-emerald-800 to-emerald-950',
@@ -134,7 +134,7 @@ function CategoryCard({
       className={cn(
         "group relative overflow-hidden rounded-2xl cursor-pointer transition-all duration-500",
         "hover:shadow-2xl hover:shadow-black/30 hover:-translate-y-1.5",
-        "focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2",
+        "focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2",
         className
       )}
     >
@@ -150,8 +150,8 @@ function CategoryCard({
           <div className="absolute inset-0 flex items-center justify-center opacity-20 group-hover:opacity-30 transition-opacity duration-500">
             <span className="text-8xl select-none">{emoji}</span>
           </div>
-          <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 opacity-30" />
-          <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2 opacity-30" />
+          <div className="absolute top-0 right-0 w-32 h-32 bg-[#1E1E1E]/10 rounded-full -translate-y-1/2 translate-x-1/2 opacity-30" />
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-[#1E1E1E]/5 rounded-full translate-y-1/2 -translate-x-1/2 opacity-30" />
         </div>
       )}
       
@@ -167,14 +167,14 @@ function CategoryCard({
           </p>
         )}
         {subcategoryCount > 0 && (
-          <p className="text-orange-300/80 text-xs mt-2 flex items-center gap-1.5 text-left">
+          <p className="text-gold-300/80 text-xs mt-2 flex items-center gap-1.5 text-left">
             <Layers className="w-3.5 h-3.5" />
             {subcategoryCount} подкатегори{subcategoryCount > 4 ? 'й' : subcategoryCount > 1 ? 'и' : 'я'}
           </p>
         )}
       </div>
 
-      <div className="absolute top-4 right-4 w-9 h-9 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 group-hover:bg-orange-500/90 transition-all duration-500 transform translate-x-2 -translate-y-2 group-hover:translate-x-0 group-hover:translate-y-0">
+      <div className="absolute top-4 right-4 w-9 h-9 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 group-hover:bg-gold-500/90 transition-all duration-500 transform translate-x-2 -translate-y-2 group-hover:translate-x-0 group-hover:translate-y-0">
         <ChevronRight className="w-4 h-4 text-white" />
       </div>
     </button>
@@ -202,10 +202,10 @@ function CategoriesShowcase({
   return (
     <section>
       <div className="text-center mb-8">
-        <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">
+        <h2 className="text-3xl sm:text-4xl font-bold text-[#F5F5F5] tracking-tight">
           Каталог товаров
         </h2>
-        <p className="text-gray-500 mt-2 text-lg">
+        <p className="text-[#A0A0A0] mt-2 text-lg">
           Выберите интересующую категорию
         </p>
       </div>
@@ -236,7 +236,7 @@ function CategoriesShowcase({
               <button
                 key={cat.id}
                 onClick={() => onSelectCategory(cat.id)}
-                className="group relative w-full overflow-hidden rounded-2xl cursor-pointer transition-all duration-500 hover:shadow-2xl hover:shadow-black/30 hover:-translate-y-1.5 aspect-[2.2/1] text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500"
+                className="group relative w-full overflow-hidden rounded-2xl cursor-pointer transition-all duration-500 hover:shadow-2xl hover:shadow-black/30 hover:-translate-y-1.5 aspect-[2.2/1] text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500"
               >
                 {cat.image_url ? (
                   <img 
@@ -263,7 +263,7 @@ function CategoriesShowcase({
                         <span 
                           key={sub.id}
                           onClick={(e) => { e.stopPropagation(); onSelectCategory(sub.id); }}
-                          className="px-3 py-1.5 bg-white/15 backdrop-blur-sm text-white/90 text-sm rounded-full hover:bg-orange-500/80 transition-all duration-300 cursor-pointer hover:scale-105"
+                          className="px-3 py-1.5 bg-[#1E1E1E]/15 backdrop-blur-sm text-white/90 text-sm rounded-full hover:bg-gold-500/80 transition-all duration-300 cursor-pointer hover:scale-105"
                         >
                           {sub.name}
                         </span>
@@ -271,7 +271,7 @@ function CategoriesShowcase({
                     </div>
                   )}
                 </div>
-                <div className="absolute top-4 right-4 w-9 h-9 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 group-hover:bg-orange-500/90 transition-all duration-500">
+                <div className="absolute top-4 right-4 w-9 h-9 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 group-hover:bg-gold-500/90 transition-all duration-500">
                   <ChevronRight className="w-4 h-4 text-white" />
                 </div>
               </button>
@@ -357,7 +357,7 @@ function ActiveCategoryBanner({
                 <button
                   key={sub.id}
                   onClick={() => onSelectSub(sub.id)}
-                  className="px-4 py-2 bg-white/15 backdrop-blur-sm text-white rounded-xl text-sm font-medium hover:bg-orange-500/80 transition-all duration-300 hover:scale-105"
+                  className="px-4 py-2 bg-[#1E1E1E]/15 backdrop-blur-sm text-white rounded-xl text-sm font-medium hover:bg-gold-500/80 transition-all duration-300 hover:scale-105"
                 >
                   {sub.name}
                 </button>
@@ -510,7 +510,7 @@ function CatalogContent() {
   /* ═══════════════ LOADING ═══════════════ */
   if (isCategoriesLoading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-[#121212]">
         <Header />
 
         <div className="container mx-auto px-4 py-8 lg:py-12">
@@ -524,7 +524,7 @@ function CatalogContent() {
           {/* Categories showcase skeleton */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="rounded-2xl overflow-hidden aspect-[4/3] bg-gray-100">
+              <div key={i} className="rounded-2xl overflow-hidden aspect-[4/3] bg-[#252525]">
                 <div className="p-4 h-full flex flex-col justify-end">
                   <Skeleton className="h-6 w-3/4 rounded-md mb-2" />
                   <Skeleton className="h-3 w-1/2 rounded-md" />
@@ -536,7 +536,7 @@ function CatalogContent() {
           <div className="lg:flex lg:gap-8">
             {/* Sidebar skeleton */}
             <aside className="hidden lg:block w-64 flex-shrink-0">
-              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 space-y-4">
+              <div className="bg-[#1E1E1E] rounded-2xl border border-[#2A2A2A] shadow-sm p-5 space-y-4">
                 <Skeleton className="h-8 w-28 rounded-md" />
                 <Skeleton className="h-10 w-full rounded-xl" />
                 <Skeleton className="h-10 w-full rounded-xl" />
@@ -546,7 +546,7 @@ function CatalogContent() {
 
             {/* Main content skeleton */}
             <main className="flex-1">
-              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 sm:p-6 mb-6">
+              <div className="bg-[#1E1E1E] rounded-2xl border border-[#2A2A2A] shadow-sm p-4 sm:p-6 mb-6">
                 <Skeleton className="h-6 w-40 rounded-md" />
               </div>
 
@@ -567,21 +567,21 @@ function CatalogContent() {
   /* ═══════════════ SHOWCASE MODE ═══════════════ */
   if (isShowcaseMode) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-[#121212]">
         <Header />
         
         {/* Поиск */}
-        <div className="bg-white border-b border-gray-100">
+        <div className="bg-[#1E1E1E] border-b border-[#2A2A2A]">
           <div className="container mx-auto px-4 py-8">
             <div className="max-w-2xl mx-auto">
               <form onSubmit={(e) => { e.preventDefault(); if (searchQuery.trim()) loadProducts(); }} className="relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#666]" />
                 <input
                   type="text"
                   placeholder="Поиск товаров по названию, бренду..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl text-base focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-400 transition-all"
+                  className="w-full pl-12 pr-4 py-4 bg-[#121212] border border-[#2A2A2A] rounded-2xl text-base focus:outline-none focus:ring-2 focus:ring-gold-500/30 focus:border-gold-400 transition-all"
                 />
               </form>
             </div>
@@ -604,18 +604,18 @@ function CatalogContent() {
 
   /* ═══════════════ PRODUCTS MODE ═══════════════ */
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#121212]">
       <Header />
 
       {/* Шапка с хлебными крошками */}
-      <div className="bg-white border-b border-gray-100">
+      <div className="bg-[#1E1E1E] border-b border-[#2A2A2A]">
         <div className="container mx-auto px-4 py-5">
-          <div className="flex items-center gap-2 text-sm text-gray-400 mb-2">
-            <Link href="/catalog" className="hover:text-orange-500 transition-colors">Каталог</Link>
+          <div className="flex items-center gap-2 text-sm text-[#666] mb-2">
+            <Link href="/catalog" className="hover:text-gold-500 transition-colors">Каталог</Link>
             {currentParentCategory && (
               <>
                 <ChevronRight className="w-3.5 h-3.5" />
-                <button onClick={() => handleSelectCategory(currentParentCategory.id)} className="hover:text-orange-500 transition-colors">
+                <button onClick={() => handleSelectCategory(currentParentCategory.id)} className="hover:text-gold-500 transition-colors">
                   {currentParentCategory.name}
                 </button>
               </>
@@ -623,21 +623,21 @@ function CatalogContent() {
             {currentCategory && (
               <>
                 <ChevronRight className="w-3.5 h-3.5" />
-                <span className="text-gray-700 font-medium">{currentCategory.name}</span>
+                <span className="text-[#C0C0C0] font-medium">{currentCategory.name}</span>
               </>
             )}
             {searchQuery && !currentCategory && (
               <>
                 <ChevronRight className="w-3.5 h-3.5" />
-                <span className="text-gray-700 font-medium">Поиск: &laquo;{searchQuery}&raquo;</span>
+                <span className="text-[#C0C0C0] font-medium">Поиск: &laquo;{searchQuery}&raquo;</span>
               </>
             )}
           </div>
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl font-bold text-[#F5F5F5]">
               {currentCategory?.name || 'Результаты поиска'}
             </h1>
-            <span className="text-sm text-gray-400">
+            <span className="text-sm text-[#666]">
               {isProductsLoading ? '...' : `${products.length} товаров`}
             </span>
           </div>
@@ -659,34 +659,34 @@ function CatalogContent() {
         <div className="flex gap-6 lg:gap-8">
           {/* ═══ SIDEBAR ═══ */}
           <aside className="hidden lg:block w-64 flex-shrink-0">
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 sticky top-24 space-y-6">
+            <div className="bg-[#1E1E1E] rounded-2xl border border-[#2A2A2A] shadow-sm p-5 sticky top-24 space-y-6">
               {/* Поиск */}
               <form onSubmit={handleSearch}>
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#666]" />
                   <Input
                     type="text"
                     placeholder="Поиск..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 bg-gray-50 border-gray-200 rounded-xl h-10"
+                    className="pl-10 bg-[#121212] border-[#2A2A2A] rounded-xl h-10"
                   />
                 </div>
               </form>
 
-              <Separator className="bg-gray-100" />
+              <Separator className="bg-[#252525]" />
 
               {/* Категории */}
               <div>
-                <h3 className="font-semibold text-gray-900 mb-3 text-sm uppercase tracking-wide">Категории</h3>
+                <h3 className="font-semibold text-[#F5F5F5] mb-3 text-sm uppercase tracking-wide">Категории</h3>
                 <div className="space-y-0.5">
                   <button
                     onClick={() => { setSelectedCategory(null); router.push('/catalog', { scroll: false }); }}
                     className={cn(
                       "w-full text-left px-3 py-2 rounded-xl text-sm transition-all",
                       !selectedCategory 
-                        ? "bg-orange-50 text-orange-600 font-semibold" 
-                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                        ? "bg-gold-500/10 text-gold-600 font-semibold" 
+                        : "text-[#A0A0A0] hover:bg-[#121212] hover:text-[#F5F5F5]"
                     )}
                   >
                     Все категории
@@ -704,8 +704,8 @@ function CatalogContent() {
                           className={cn(
                             "w-full text-left px-3 py-2 rounded-xl text-sm transition-all flex items-center justify-between",
                             isExpanded 
-                              ? "bg-orange-50 text-orange-600 font-semibold" 
-                              : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                              ? "bg-gold-500/10 text-gold-600 font-semibold" 
+                              : "text-[#A0A0A0] hover:bg-[#121212] hover:text-[#F5F5F5]"
                           )}
                         >
                           <span>{cat.name}</span>
@@ -717,7 +717,7 @@ function CatalogContent() {
                           )}
                         </button>
                         {isExpanded && subs.length > 0 && (
-                          <div className="ml-3 mt-1 mb-1 space-y-0.5 border-l-2 border-orange-200 pl-3">
+                          <div className="ml-3 mt-1 mb-1 space-y-0.5 border-l-2 border-gold-500/30 pl-3">
                             {subs.map(sub => (
                               <button
                                 key={sub.id}
@@ -725,8 +725,8 @@ function CatalogContent() {
                                 className={cn(
                                   "w-full text-left px-3 py-1.5 rounded-lg text-sm transition-all",
                                   selectedCategory === sub.id
-                                    ? "text-orange-600 font-semibold bg-orange-50"
-                                    : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
+                                    ? "text-gold-600 font-semibold bg-gold-500/10"
+                                    : "text-[#A0A0A0] hover:text-[#C0C0C0] hover:bg-[#121212]"
                                 )}
                               >
                                 {sub.name}
@@ -740,18 +740,18 @@ function CatalogContent() {
                 </div>
               </div>
 
-              <Separator className="bg-gray-100" />
+              <Separator className="bg-[#252525]" />
 
               {/* Цена */}
               <div>
-                <h3 className="font-semibold text-gray-900 mb-3 text-sm uppercase tracking-wide">Цена, ₸</h3>
+                <h3 className="font-semibold text-[#F5F5F5] mb-3 text-sm uppercase tracking-wide">Цена, ₸</h3>
                 <div className="flex items-center gap-2">
                   <Input
                     type="number"
                     placeholder="От"
                     value={priceRange.min}
                     onChange={(e) => setPriceRange({ ...priceRange, min: e.target.value })}
-                    className="bg-gray-50 border-gray-200 rounded-xl h-10"
+                    className="bg-[#121212] border-[#2A2A2A] rounded-xl h-10"
                   />
                   <span className="text-gray-300">—</span>
                   <Input
@@ -759,14 +759,14 @@ function CatalogContent() {
                     placeholder="До"
                     value={priceRange.max}
                     onChange={(e) => setPriceRange({ ...priceRange, max: e.target.value })}
-                    className="bg-gray-50 border-gray-200 rounded-xl h-10"
+                    className="bg-[#121212] border-[#2A2A2A] rounded-xl h-10"
                   />
                 </div>
                 <Button
                   onClick={loadProducts}
                   variant="outline"
                   size="sm"
-                  className="w-full mt-3 border-gray-200 text-gray-600 hover:bg-orange-50 hover:text-orange-600 hover:border-orange-200 rounded-xl"
+                  className="w-full mt-3 border-[#2A2A2A] text-[#A0A0A0] hover:bg-gold-500/10 hover:text-gold-600 hover:border-gold-500/30 rounded-xl"
                 >
                   Применить
                 </Button>
@@ -775,12 +775,12 @@ function CatalogContent() {
               {/* Сброс */}
               {activeFiltersCount > 0 && (
                 <>
-                  <Separator className="bg-gray-100" />
+                  <Separator className="bg-[#252525]" />
                   <Button
                     onClick={clearFilters}
                     variant="ghost"
                     size="sm"
-                    className="w-full text-orange-500 hover:text-orange-600 hover:bg-orange-50"
+                    className="w-full text-gold-500 hover:text-gold-600 hover:bg-gold-500/10"
                   >
                     Сбросить все фильтры
                   </Button>
@@ -792,19 +792,19 @@ function CatalogContent() {
           {/* ═══ MAIN CONTENT ═══ */}
           <main className="flex-1 min-w-0">
             {/* Панель управления */}
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-3 sm:p-4 mb-6">
+            <div className="bg-[#1E1E1E] rounded-2xl border border-[#2A2A2A] shadow-sm p-3 sm:p-4 mb-6">
               <div className="flex flex-wrap items-center gap-3">
                 {/* Мобильные фильтры */}
                 <Button
                   onClick={() => setShowFilters(true)}
                   variant="outline"
                   size="sm"
-                  className="lg:hidden gap-2 border-gray-200 rounded-xl"
+                  className="lg:hidden gap-2 border-[#2A2A2A] rounded-xl"
                 >
                   <SlidersHorizontal className="h-4 w-4" />
                   Фильтры
                   {activeFiltersCount > 0 && (
-                    <Badge className="ml-1 bg-orange-500 h-5 w-5 p-0 flex items-center justify-center text-[10px]">
+                    <Badge className="ml-1 bg-gold-500 h-5 w-5 p-0 flex items-center justify-center text-[10px]">
                       {activeFiltersCount}
                     </Badge>
                   )}
@@ -812,14 +812,14 @@ function CatalogContent() {
 
                 {/* Сортировка */}
                 <div className="flex items-center gap-2">
-                  <ArrowUpDown className="h-4 w-4 text-gray-400 hidden sm:block" />
+                  <ArrowUpDown className="h-4 w-4 text-[#666] hidden sm:block" />
                   <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortOption)}>
-                    <SelectTrigger className="w-[140px] sm:w-[160px] bg-white border-gray-200 h-9 text-sm rounded-xl">
+                    <SelectTrigger className="w-[140px] sm:w-[160px] bg-[#1E1E1E] border-[#2A2A2A] h-9 text-sm rounded-xl">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-white border-gray-200">
+                    <SelectContent className="bg-[#1E1E1E] border-[#2A2A2A]">
                       {sortOptions.map((o) => (
-                        <SelectItem key={o.value} value={o.value} className="text-gray-700 focus:bg-orange-50 focus:text-orange-600">{o.label}</SelectItem>
+                        <SelectItem key={o.value} value={o.value} className="text-[#C0C0C0] focus:bg-gold-500/10 focus:text-gold-600">{o.label}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -829,21 +829,21 @@ function CatalogContent() {
 
                 {/* Размер карточек */}
                 <div className="hidden md:flex items-center gap-2">
-                  <span className="text-xs text-gray-400">Размер:</span>
+                  <span className="text-xs text-[#666]">Размер:</span>
                   <Select value={cardSize} onValueChange={(v) => handleCardSizeChange(v as CardSize)}>
-                    <SelectTrigger className="w-[110px] bg-white border-gray-200 h-9 text-sm rounded-xl">
+                    <SelectTrigger className="w-[110px] bg-[#1E1E1E] border-[#2A2A2A] h-9 text-sm rounded-xl">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-white border-gray-200">
+                    <SelectContent className="bg-[#1E1E1E] border-[#2A2A2A]">
                       {cardSizeOptions.map((o) => (
-                        <SelectItem key={o.value} value={o.value} className="text-gray-700 focus:bg-orange-50 focus:text-orange-600">{o.label}</SelectItem>
+                        <SelectItem key={o.value} value={o.value} className="text-[#C0C0C0] focus:bg-gold-500/10 focus:text-gold-600">{o.label}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
 
                 {/* Колонки */}
-                <div className="hidden sm:flex items-center border border-gray-200 rounded-xl overflow-hidden">
+                <div className="hidden sm:flex items-center border border-[#2A2A2A] rounded-xl overflow-hidden">
                   {gridOptions.map((o) => (
                     <button
                       key={o.value}
@@ -852,8 +852,8 @@ function CatalogContent() {
                       className={cn(
                         "px-2.5 py-1.5 text-sm font-medium transition-colors min-w-[32px]",
                         gridSize === o.value 
-                          ? "bg-orange-50 text-orange-600" 
-                          : "text-gray-400 hover:text-gray-600 hover:bg-gray-50"
+                          ? "bg-gold-500/10 text-gold-600" 
+                          : "text-[#666] hover:text-[#A0A0A0] hover:bg-[#121212]"
                       )}
                     >
                       {o.label}
@@ -862,12 +862,12 @@ function CatalogContent() {
                 </div>
 
                 {/* Режим отображения */}
-                <div className="flex items-center border border-gray-200 rounded-xl overflow-hidden">
+                <div className="flex items-center border border-[#2A2A2A] rounded-xl overflow-hidden">
                   <button
                     onClick={() => handleViewModeChange('grid')}
                     className={cn(
                       "p-2 transition-colors",
-                      viewMode === 'grid' ? "bg-orange-50 text-orange-600" : "text-gray-400 hover:text-gray-600 hover:bg-gray-50"
+                      viewMode === 'grid' ? "bg-gold-500/10 text-gold-600" : "text-[#666] hover:text-[#A0A0A0] hover:bg-[#121212]"
                     )}
                   >
                     <Grid2X2 className="h-4 w-4" />
@@ -876,7 +876,7 @@ function CatalogContent() {
                     onClick={() => handleViewModeChange('list')}
                     className={cn(
                       "p-2 transition-colors",
-                      viewMode === 'list' ? "bg-orange-50 text-orange-600" : "text-gray-400 hover:text-gray-600 hover:bg-gray-50"
+                      viewMode === 'list' ? "bg-gold-500/10 text-gold-600" : "text-[#666] hover:text-[#A0A0A0] hover:bg-[#121212]"
                     )}
                   >
                     <LayoutList className="h-4 w-4" />
@@ -901,22 +901,22 @@ function CatalogContent() {
                 </div>
               )
             ) : products.length === 0 ? (
-              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm py-16 text-center">
-                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="bg-[#1E1E1E] rounded-2xl border border-[#2A2A2A] shadow-sm py-16 text-center">
+                <div className="w-16 h-16 bg-[#252525] rounded-full flex items-center justify-center mx-auto mb-4">
                   <ShoppingCart className="h-8 w-8 text-gray-300" />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                <h3 className="text-xl font-semibold text-[#F5F5F5] mb-2">
                   Товары не найдены
                 </h3>
-                <p className="text-gray-400 mb-6 max-w-sm mx-auto">
+                <p className="text-[#666] mb-6 max-w-sm mx-auto">
                   В этой категории пока нет товаров. Попробуйте выбрать другую категорию.
                 </p>
                 <div className="flex items-center justify-center gap-3">
-                  <Button onClick={handleBackToCategories} variant="outline" className="gap-2 rounded-xl border-gray-200">
+                  <Button onClick={handleBackToCategories} variant="outline" className="gap-2 rounded-xl border-[#2A2A2A]">
                     <ArrowLeft className="w-4 h-4" />
                     Назад
                   </Button>
-                  <Button onClick={clearFilters} className="bg-orange-500 hover:bg-orange-600 rounded-xl gap-2">
+                  <Button onClick={clearFilters} className="bg-gold-500 hover:bg-gold-600 rounded-xl gap-2">
                     <Tag className="w-4 h-4" />
                     Все категории
                   </Button>
@@ -943,14 +943,14 @@ function CatalogContent() {
       {showFilters && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowFilters(false)} />
-          <div className="absolute right-0 top-0 bottom-0 w-80 bg-white shadow-xl overflow-y-auto">
+          <div className="absolute right-0 top-0 bottom-0 w-80 bg-[#1E1E1E] shadow-xl overflow-y-auto">
             {/* Шапка */}
-            <div className="sticky top-0 bg-white border-b border-gray-100 px-5 py-4 flex items-center justify-between z-10">
-              <h2 className="font-semibold text-gray-900 flex items-center gap-2">
-                <Filter className="h-4 w-4 text-orange-500" />
+            <div className="sticky top-0 bg-[#1E1E1E] border-b border-[#2A2A2A] px-5 py-4 flex items-center justify-between z-10">
+              <h2 className="font-semibold text-[#F5F5F5] flex items-center gap-2">
+                <Filter className="h-4 w-4 text-gold-500" />
                 Фильтры
               </h2>
-              <button onClick={() => setShowFilters(false)} className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+              <button onClick={() => setShowFilters(false)} className="p-1.5 text-[#666] hover:text-[#A0A0A0] hover:bg-[#252525] rounded-lg transition-colors">
                 <X className="h-5 w-5" />
               </button>
             </div>
@@ -958,26 +958,26 @@ function CatalogContent() {
             <div className="p-5 space-y-6">
               {/* Отображение */}
               <div>
-                <h3 className="font-semibold text-gray-900 mb-3 text-sm uppercase tracking-wide">Отображение</h3>
+                <h3 className="font-semibold text-[#F5F5F5] mb-3 text-sm uppercase tracking-wide">Отображение</h3>
                 <div className="space-y-3">
                   <div>
-                    <label className="text-sm text-gray-500 mb-1 block">Колонок</label>
+                    <label className="text-sm text-[#A0A0A0] mb-1 block">Колонок</label>
                     <Select value={gridSize} onValueChange={(v) => handleGridSizeChange(v as GridSize)}>
-                      <SelectTrigger className="w-full bg-gray-50 border-gray-200 rounded-xl"><SelectValue /></SelectTrigger>
-                      <SelectContent className="bg-white border-gray-200">
+                      <SelectTrigger className="w-full bg-[#121212] border-[#2A2A2A] rounded-xl"><SelectValue /></SelectTrigger>
+                      <SelectContent className="bg-[#1E1E1E] border-[#2A2A2A]">
                         {gridOptions.map((o) => (
-                          <SelectItem key={o.value} value={o.value} className="text-gray-700">{o.cols} колонок</SelectItem>
+                          <SelectItem key={o.value} value={o.value} className="text-[#C0C0C0]">{o.cols} колонок</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   </div>
                   <div>
-                    <label className="text-sm text-gray-500 mb-1 block">Размер карточек</label>
+                    <label className="text-sm text-[#A0A0A0] mb-1 block">Размер карточек</label>
                     <Select value={cardSize} onValueChange={(v) => handleCardSizeChange(v as CardSize)}>
-                      <SelectTrigger className="w-full bg-gray-50 border-gray-200 rounded-xl"><SelectValue /></SelectTrigger>
-                      <SelectContent className="bg-white border-gray-200">
+                      <SelectTrigger className="w-full bg-[#121212] border-[#2A2A2A] rounded-xl"><SelectValue /></SelectTrigger>
+                      <SelectContent className="bg-[#1E1E1E] border-[#2A2A2A]">
                         {cardSizeOptions.map((o) => (
-                          <SelectItem key={o.value} value={o.value} className="text-gray-700">{o.label}</SelectItem>
+                          <SelectItem key={o.value} value={o.value} className="text-[#C0C0C0]">{o.label}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -985,33 +985,33 @@ function CatalogContent() {
                 </div>
               </div>
 
-              <Separator className="bg-gray-100" />
+              <Separator className="bg-[#252525]" />
 
               {/* Поиск */}
               <div>
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#666]" />
                   <Input
                     type="text"
                     placeholder="Поиск..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 bg-gray-50 border-gray-200 rounded-xl"
+                    className="pl-10 bg-[#121212] border-[#2A2A2A] rounded-xl"
                   />
                 </div>
               </div>
 
-              <Separator className="bg-gray-100" />
+              <Separator className="bg-[#252525]" />
 
               {/* Категории */}
               <div>
-                <h3 className="font-semibold text-gray-900 mb-3 text-sm uppercase tracking-wide">Категории</h3>
+                <h3 className="font-semibold text-[#F5F5F5] mb-3 text-sm uppercase tracking-wide">Категории</h3>
                 <div className="space-y-0.5">
                   <button
                     onClick={() => { setSelectedCategory(null); setShowFilters(false); router.push('/catalog', { scroll: false }); }}
                     className={cn(
                       "w-full text-left px-3 py-2 rounded-xl text-sm transition-all",
-                      !selectedCategory ? "bg-orange-50 text-orange-600 font-semibold" : "text-gray-600 hover:bg-gray-50"
+                      !selectedCategory ? "bg-gold-500/10 text-gold-600 font-semibold" : "text-[#A0A0A0] hover:bg-[#121212]"
                     )}
                   >
                     Все категории
@@ -1026,20 +1026,20 @@ function CatalogContent() {
                           onClick={() => { handleSelectCategory(cat.id); if (subs.length === 0) setShowFilters(false); }}
                           className={cn(
                             "w-full text-left px-3 py-2 rounded-xl text-sm transition-all",
-                            isExpanded ? "bg-orange-50 text-orange-600 font-semibold" : "text-gray-600 hover:bg-gray-50"
+                            isExpanded ? "bg-gold-500/10 text-gold-600 font-semibold" : "text-[#A0A0A0] hover:bg-[#121212]"
                           )}
                         >
                           {cat.name}
                         </button>
                         {isExpanded && subs.length > 0 && (
-                          <div className="ml-3 mt-1 mb-1 space-y-0.5 border-l-2 border-orange-200 pl-3">
+                          <div className="ml-3 mt-1 mb-1 space-y-0.5 border-l-2 border-gold-500/30 pl-3">
                             {subs.map(sub => (
                               <button
                                 key={sub.id}
                                 onClick={() => { handleSelectCategory(sub.id); setShowFilters(false); }}
                                 className={cn(
                                   "w-full text-left px-3 py-1.5 rounded-lg text-sm transition-all",
-                                  selectedCategory === sub.id ? "text-orange-600 font-semibold bg-orange-50" : "text-gray-500 hover:bg-gray-50"
+                                  selectedCategory === sub.id ? "text-gold-600 font-semibold bg-gold-500/10" : "text-[#A0A0A0] hover:bg-[#121212]"
                                 )}
                               >
                                 {sub.name}
@@ -1053,24 +1053,24 @@ function CatalogContent() {
                 </div>
               </div>
 
-              <Separator className="bg-gray-100" />
+              <Separator className="bg-[#252525]" />
 
               {/* Цена */}
               <div>
-                <h3 className="font-semibold text-gray-900 mb-3 text-sm uppercase tracking-wide">Цена, ₸</h3>
+                <h3 className="font-semibold text-[#F5F5F5] mb-3 text-sm uppercase tracking-wide">Цена, ₸</h3>
                 <div className="flex items-center gap-2">
-                  <Input type="number" placeholder="От" value={priceRange.min} onChange={(e) => setPriceRange({ ...priceRange, min: e.target.value })} className="bg-gray-50 border-gray-200 rounded-xl" />
+                  <Input type="number" placeholder="От" value={priceRange.min} onChange={(e) => setPriceRange({ ...priceRange, min: e.target.value })} className="bg-[#121212] border-[#2A2A2A] rounded-xl" />
                   <span className="text-gray-300">—</span>
-                  <Input type="number" placeholder="До" value={priceRange.max} onChange={(e) => setPriceRange({ ...priceRange, max: e.target.value })} className="bg-gray-50 border-gray-200 rounded-xl" />
+                  <Input type="number" placeholder="До" value={priceRange.max} onChange={(e) => setPriceRange({ ...priceRange, max: e.target.value })} className="bg-[#121212] border-[#2A2A2A] rounded-xl" />
                 </div>
               </div>
 
               {/* Кнопки */}
               <div className="flex gap-3 pt-2">
-                <Button onClick={clearFilters} variant="outline" className="flex-1 border-gray-200 rounded-xl">
+                <Button onClick={clearFilters} variant="outline" className="flex-1 border-[#2A2A2A] rounded-xl">
                   Сбросить
                 </Button>
-                <Button onClick={() => { loadProducts(); setShowFilters(false); }} className="flex-1 bg-orange-500 hover:bg-orange-600 rounded-xl">
+                <Button onClick={() => { loadProducts(); setShowFilters(false); }} className="flex-1 bg-gold-500 hover:bg-gold-600 rounded-xl">
                   Применить
                 </Button>
               </div>
@@ -1087,8 +1087,8 @@ function CatalogContent() {
 export default function CatalogPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
+      <div className="min-h-screen bg-[#121212] flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-gold-500 animate-spin" />
       </div>
     }>
       <CatalogContent />

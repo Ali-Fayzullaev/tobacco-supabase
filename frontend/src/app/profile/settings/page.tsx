@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -63,30 +63,30 @@ export default function SettingsPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">Настройки</h1>
+      <h1 className="text-2xl font-bold text-[#F5F5F5]">Настройки</h1>
 
       {/* Security Section */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <div className="bg-[#1E1E1E] rounded-xl shadow-sm border border-[#2A2A2A] p-6">
         <div className="flex items-center gap-3 mb-6">
           <Shield className="w-5 h-5 text-gold-500" />
-          <h2 className="text-lg font-semibold text-gray-900">Безопасность</h2>
+          <h2 className="text-lg font-semibold text-[#F5F5F5]">Безопасность</h2>
         </div>
 
         <form onSubmit={handleSubmit(onPasswordSubmit)} className="space-y-4 max-w-md">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-[#C0C0C0] mb-1">
               Текущий пароль
             </label>
             <div className="relative">
               <input
                 {...register('currentPassword')}
                 type={showCurrentPassword ? 'text' : 'password'}
-                className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500"
+                className="w-full px-4 py-2 pr-10 border border-[#333] rounded-lg focus:ring-2 focus:ring-gold-500"
               />
               <button
                 type="button"
                 onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#666]"
               >
                 {showCurrentPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
@@ -97,19 +97,19 @@ export default function SettingsPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-[#C0C0C0] mb-1">
               Новый пароль
             </label>
             <div className="relative">
               <input
                 {...register('newPassword')}
                 type={showNewPassword ? 'text' : 'password'}
-                className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500"
+                className="w-full px-4 py-2 pr-10 border border-[#333] rounded-lg focus:ring-2 focus:ring-gold-500"
               />
               <button
                 type="button"
                 onClick={() => setShowNewPassword(!showNewPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#666]"
               >
                 {showNewPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
@@ -120,13 +120,13 @@ export default function SettingsPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-[#C0C0C0] mb-1">
               Подтвердите новый пароль
             </label>
             <input
               {...register('confirmPassword')}
               type="password"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500"
+              className="w-full px-4 py-2 border border-[#333] rounded-lg focus:ring-2 focus:ring-gold-500"
             />
             {errors.confirmPassword && (
               <p className="text-red-500 text-xs mt-1">{errors.confirmPassword.message}</p>
@@ -145,17 +145,17 @@ export default function SettingsPage() {
       </div>
 
       {/* Notifications Section */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <div className="bg-[#1E1E1E] rounded-xl shadow-sm border border-[#2A2A2A] p-6">
         <div className="flex items-center gap-3 mb-6">
           <Bell className="w-5 h-5 text-gold-500" />
-          <h2 className="text-lg font-semibold text-gray-900">Уведомления</h2>
+          <h2 className="text-lg font-semibold text-[#F5F5F5]">Уведомления</h2>
         </div>
 
         <div className="space-y-4">
           <label className="flex items-center justify-between py-2">
             <div>
-              <p className="text-gray-900">Email уведомления о заказах</p>
-              <p className="text-sm text-gray-500">Статус и обновления по вашим заказам</p>
+              <p className="text-[#F5F5F5]">Email уведомления о заказах</p>
+              <p className="text-sm text-[#A0A0A0]">Статус и обновления по вашим заказам</p>
             </div>
             <input
               type="checkbox"
@@ -166,8 +166,8 @@ export default function SettingsPage() {
 
           <label className="flex items-center justify-between py-2">
             <div>
-              <p className="text-gray-900">Акции и скидки</p>
-              <p className="text-sm text-gray-500">Информация о специальных предложениях</p>
+              <p className="text-[#F5F5F5]">Акции и скидки</p>
+              <p className="text-sm text-[#A0A0A0]">Информация о специальных предложениях</p>
             </div>
             <input
               type="checkbox"
@@ -177,8 +177,8 @@ export default function SettingsPage() {
 
           <label className="flex items-center justify-between py-2">
             <div>
-              <p className="text-gray-900">SMS уведомления</p>
-              <p className="text-sm text-gray-500">Сообщения о статусе доставки</p>
+              <p className="text-[#F5F5F5]">SMS уведомления</p>
+              <p className="text-sm text-[#A0A0A0]">Сообщения о статусе доставки</p>
             </div>
             <input
               type="checkbox"
@@ -190,20 +190,20 @@ export default function SettingsPage() {
       </div>
 
       {/* Danger Zone */}
-      <div className="bg-white rounded-xl shadow-sm border border-red-200 p-6">
+      <div className="bg-[#1E1E1E] rounded-xl shadow-sm border border-red-800/30 p-6">
         <div className="flex items-center gap-3 mb-6">
           <Trash2 className="w-5 h-5 text-red-500" />
-          <h2 className="text-lg font-semibold text-red-600">Опасная зона</h2>
+          <h2 className="text-lg font-semibold text-red-400">Опасная зона</h2>
         </div>
 
-        <p className="text-gray-600 mb-4">
+        <p className="text-[#A0A0A0] mb-4">
           Удаление аккаунта необратимо. Все ваши данные, история заказов и избранное будут удалены.
         </p>
 
         {!showDeleteConfirm ? (
           <button
             onClick={() => setShowDeleteConfirm(true)}
-            className="border border-red-300 text-red-600 hover:bg-red-50 py-2 px-6 rounded-lg"
+            className="border border-red-300 text-red-400 hover:bg-red-900/20 py-2 px-6 rounded-lg"
           >
             Удалить аккаунт
           </button>
@@ -211,13 +211,13 @@ export default function SettingsPage() {
           <div className="flex items-center gap-3">
             <button
               onClick={handleDeleteAccount}
-              className="bg-red-500 hover:bg-red-600 text-white py-2 px-6 rounded-lg"
+              className="bg-red-900/200 hover:bg-red-600 text-white py-2 px-6 rounded-lg"
             >
               Подтвердить удаление
             </button>
             <button
               onClick={() => setShowDeleteConfirm(false)}
-              className="border border-gray-300 text-gray-700 py-2 px-6 rounded-lg"
+              className="border border-[#333] text-[#C0C0C0] py-2 px-6 rounded-lg"
             >
               Отмена
             </button>

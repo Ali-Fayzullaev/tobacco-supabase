@@ -105,8 +105,8 @@ export default function AdminDashboard() {
       trend: 'up',
       icon: ShoppingBag,
       color: 'from-blue-500 to-blue-600',
-      bgLight: 'bg-blue-50',
-      textColor: 'text-blue-600',
+      bgLight: 'bg-blue-900/20',
+      textColor: 'text-blue-400',
       href: '/admin/orders',
     },
     {
@@ -116,8 +116,8 @@ export default function AdminDashboard() {
       trend: 'up',
       icon: DollarSign,
       color: 'from-green-500 to-emerald-600',
-      bgLight: 'bg-green-50',
-      textColor: 'text-green-600',
+      bgLight: 'bg-green-900/20',
+      textColor: 'text-green-400',
       href: '/admin/orders',
     },
     {
@@ -127,8 +127,8 @@ export default function AdminDashboard() {
       trend: 'neutral',
       icon: Package,
       color: 'from-purple-500 to-violet-600',
-      bgLight: 'bg-purple-50',
-      textColor: 'text-purple-600',
+      bgLight: 'bg-purple-900/20',
+      textColor: 'text-purple-400',
       href: '/admin/products',
     },
     {
@@ -137,17 +137,17 @@ export default function AdminDashboard() {
       change: 'зарегистрировано',
       trend: 'neutral',
       icon: Users,
-      color: 'from-orange-500 to-amber-600',
-      bgLight: 'bg-orange-50',
-      textColor: 'text-orange-600',
+      color: 'from-gold-500 to-amber-600',
+      bgLight: 'bg-gold-500/10',
+      textColor: 'text-gold-600',
       href: '/admin/users',
     },
   ];
 
   const quickActions = [
-    { label: 'Добавить товар', href: '/admin/products/new', icon: Package, color: 'bg-purple-500' },
-    { label: 'Все заказы', href: '/admin/orders', icon: ShoppingBag, color: 'bg-blue-500' },
-    { label: 'Пользователи', href: '/admin/users', icon: Users, color: 'bg-orange-500' },
+    { label: 'Добавить товар', href: '/admin/products/new', icon: Package, color: 'bg-purple-900/200' },
+    { label: 'Все заказы', href: '/admin/orders', icon: ShoppingBag, color: 'bg-blue-900/200' },
+    { label: 'Пользователи', href: '/admin/users', icon: Users, color: 'bg-gold-500' },
   ];
 
   return (
@@ -155,17 +155,17 @@ export default function AdminDashboard() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 flex items-center gap-2">
-            <Activity className="w-8 h-8 text-orange-500" />
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#F5F5F5] flex items-center gap-2">
+            <Activity className="w-8 h-8 text-gold-500" />
             Дашборд
           </h1>
-          <p className="text-gray-500 mt-1">Обзор магазина и статистика</p>
+          <p className="text-[#A0A0A0] mt-1">Обзор магазина и статистика</p>
         </div>
         
         {stats?.pendingOrders ? (
           <Link
             href="/admin/orders?status=pending"
-            className="inline-flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-xl text-sm font-semibold shadow-lg shadow-orange-500/30 hover:shadow-xl transition-all animate-pulse"
+            className="inline-flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-yellow-400 to-gold-500 text-white rounded-xl text-sm font-semibold shadow-lg shadow-gold-500/30 hover:shadow-xl transition-all animate-pulse"
           >
             <Clock className="w-5 h-5" />
             {stats.pendingOrders} новых заказов
@@ -180,7 +180,7 @@ export default function AdminDashboard() {
           <Link
             key={stat.label}
             href={stat.href}
-            className="group bg-white rounded-2xl shadow-sm border border-gray-100 p-5 sm:p-6 hover:shadow-xl hover:border-gray-200 transition-all duration-300"
+            className="group bg-[#1E1E1E] rounded-2xl shadow-sm border border-[#2A2A2A] p-5 sm:p-6 hover:shadow-xl hover:border-[#2A2A2A] transition-all duration-300"
           >
             <div className="flex items-start justify-between mb-4">
               <div className={cn("p-3 rounded-xl bg-gradient-to-br shadow-lg", stat.color)}>
@@ -195,10 +195,10 @@ export default function AdminDashboard() {
                 {stat.change}
               </div>
             </div>
-            <p className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1 group-hover:text-orange-600 transition-colors">
+            <p className="text-2xl sm:text-3xl font-bold text-[#F5F5F5] mb-1 group-hover:text-gold-600 transition-colors">
               {stat.value}
             </p>
-            <p className="text-gray-500 text-sm">{stat.label}</p>
+            <p className="text-[#A0A0A0] text-sm">{stat.label}</p>
           </Link>
         ))}
       </div>
@@ -214,7 +214,7 @@ export default function AdminDashboard() {
             <Link
               key={action.label}
               href={action.href}
-              className="flex items-center gap-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-xl p-4 transition-all group"
+              className="flex items-center gap-3 bg-[#1E1E1E]/10 hover:bg-[#1E1E1E]/20 backdrop-blur-sm rounded-xl p-4 transition-all group"
             >
               <div className={cn("p-2 rounded-lg", action.color)}>
                 <action.icon className="w-5 h-5 text-white" />
@@ -222,23 +222,23 @@ export default function AdminDashboard() {
               <span className="text-white font-medium group-hover:translate-x-1 transition-transform">
                 {action.label}
               </span>
-              <ArrowUpRight className="w-4 h-4 text-gray-400 ml-auto" />
+              <ArrowUpRight className="w-4 h-4 text-[#666] ml-auto" />
             </Link>
           ))}
         </div>
       </div>
 
       {/* Recent Orders */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="p-5 sm:p-6 border-b border-gray-100">
+      <div className="bg-[#1E1E1E] rounded-2xl shadow-sm border border-[#2A2A2A] overflow-hidden">
+        <div className="p-5 sm:p-6 border-b border-[#2A2A2A]">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-lg font-semibold text-gray-900">Последние заказы</h2>
-              <p className="text-sm text-gray-500 mt-0.5">Актуальные заказы клиентов</p>
+              <h2 className="text-lg font-semibold text-[#F5F5F5]">Последние заказы</h2>
+              <p className="text-sm text-[#A0A0A0] mt-0.5">Актуальные заказы клиентов</p>
             </div>
             <Link
               href="/admin/orders"
-              className="flex items-center gap-1 text-orange-600 hover:text-orange-700 text-sm font-medium"
+              className="flex items-center gap-1 text-gold-600 hover:text-gold-700 text-sm font-medium"
             >
               Все заказы
               <ArrowUpRight className="w-4 h-4" />
@@ -248,54 +248,54 @@ export default function AdminDashboard() {
 
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50">
+            <thead className="bg-[#121212]">
               <tr>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-semibold text-[#A0A0A0] uppercase tracking-wider">
                   Заказ
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-semibold text-[#A0A0A0] uppercase tracking-wider">
                   Клиент
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-semibold text-[#A0A0A0] uppercase tracking-wider">
                   Сумма
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-semibold text-[#A0A0A0] uppercase tracking-wider">
                   Статус
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-semibold text-[#A0A0A0] uppercase tracking-wider">
                   Действия
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-[#2A2A2A]">
               {stats?.recentOrders.map((order) => (
-                <tr key={order.id} className="hover:bg-gray-50 transition-colors">
+                <tr key={order.id} className="hover:bg-[#121212] transition-colors">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <Link
                       href={`/admin/orders/${order.id}`}
-                      className="text-gray-900 hover:text-orange-600 font-semibold transition-colors"
+                      className="text-[#F5F5F5] hover:text-gold-600 font-semibold transition-colors"
                     >
                       #{order.order_number}
                     </Link>
-                    <p className="text-xs text-gray-400 mt-0.5">
+                    <p className="text-xs text-[#666] mt-0.5">
                       {new Date(order.created_at).toLocaleDateString('ru-RU')}
                     </p>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                      <div className="w-9 h-9 bg-gradient-to-br from-gold-400 to-gold-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
                         {order.profile?.first_name?.[0] || '?'}
                       </div>
                       <div>
-                        <p className="text-gray-900 font-medium">
+                        <p className="text-[#F5F5F5] font-medium">
                           {order.profile?.first_name} {order.profile?.last_name}
                         </p>
-                        <p className="text-gray-400 text-xs">{order.profile?.email}</p>
+                        <p className="text-[#666] text-xs">{order.profile?.email}</p>
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="font-bold text-gray-900">{formatPrice(order.total_amount)}</span>
+                    <span className="font-bold text-[#F5F5F5]">{formatPrice(order.total_amount)}</span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <StatusBadge status={order.status} />
@@ -303,7 +303,7 @@ export default function AdminDashboard() {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <Link
                       href={`/admin/orders/${order.id}`}
-                      className="inline-flex items-center gap-1 text-gray-500 hover:text-orange-600 text-sm transition-colors"
+                      className="inline-flex items-center gap-1 text-[#A0A0A0] hover:text-gold-600 text-sm transition-colors"
                     >
                       <Eye className="w-4 h-4" />
                       Подробнее
@@ -315,8 +315,8 @@ export default function AdminDashboard() {
                 <tr>
                   <td colSpan={5} className="px-6 py-16 text-center">
                     <ShoppingBag className="w-12 h-12 text-gray-200 mx-auto mb-3" />
-                    <p className="text-gray-500">Заказов пока нет</p>
-                    <p className="text-gray-400 text-sm mt-1">Они появятся здесь после первой покупки</p>
+                    <p className="text-[#A0A0A0]">Заказов пока нет</p>
+                    <p className="text-[#666] text-sm mt-1">Они появятся здесь после первой покупки</p>
                   </td>
                 </tr>
               )}
@@ -328,53 +328,53 @@ export default function AdminDashboard() {
       {/* Bottom Grid */}
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Activity Card */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <BarChart3 className="w-5 h-5 text-gray-400" />
+        <div className="bg-[#1E1E1E] rounded-2xl shadow-sm border border-[#2A2A2A] p-6">
+          <h3 className="text-lg font-semibold text-[#F5F5F5] mb-4 flex items-center gap-2">
+            <BarChart3 className="w-5 h-5 text-[#666]" />
             Активность
           </h3>
           <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 bg-green-50 rounded-xl">
+            <div className="flex items-center justify-between p-4 bg-green-900/20 rounded-xl">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
                   <CheckCircle className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <p className="font-medium text-gray-900">Выполненные заказы</p>
-                  <p className="text-sm text-gray-500">За всё время</p>
+                  <p className="font-medium text-[#F5F5F5]">Выполненные заказы</p>
+                  <p className="text-sm text-[#A0A0A0]">За всё время</p>
                 </div>
               </div>
-              <span className="text-2xl font-bold text-green-600">
+              <span className="text-2xl font-bold text-green-400">
                 {stats?.recentOrders.filter(o => o.status === 'delivered').length || 0}
               </span>
             </div>
             
-            <div className="flex items-center justify-between p-4 bg-yellow-50 rounded-xl">
+            <div className="flex items-center justify-between p-4 bg-yellow-900/20 rounded-xl">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-yellow-500 rounded-lg flex items-center justify-center">
+                <div className="w-10 h-10 bg-yellow-900/200 rounded-lg flex items-center justify-center">
                   <Clock className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <p className="font-medium text-gray-900">Ожидают обработки</p>
-                  <p className="text-sm text-gray-500">Требуют внимания</p>
+                  <p className="font-medium text-[#F5F5F5]">Ожидают обработки</p>
+                  <p className="text-sm text-[#A0A0A0]">Требуют внимания</p>
                 </div>
               </div>
-              <span className="text-2xl font-bold text-yellow-600">
+              <span className="text-2xl font-bold text-yellow-400">
                 {stats?.pendingOrders || 0}
               </span>
             </div>
 
-            <div className="flex items-center justify-between p-4 bg-blue-50 rounded-xl">
+            <div className="flex items-center justify-between p-4 bg-blue-900/20 rounded-xl">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+                <div className="w-10 h-10 bg-blue-900/200 rounded-lg flex items-center justify-center">
                   <Truck className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <p className="font-medium text-gray-900">В доставке</p>
-                  <p className="text-sm text-gray-500">На пути к клиентам</p>
+                  <p className="font-medium text-[#F5F5F5]">В доставке</p>
+                  <p className="text-sm text-[#A0A0A0]">На пути к клиентам</p>
                 </div>
               </div>
-              <span className="text-2xl font-bold text-blue-600">
+              <span className="text-2xl font-bold text-blue-400">
                 {stats?.recentOrders.filter(o => o.status === 'shipped').length || 0}
               </span>
             </div>
@@ -382,27 +382,27 @@ export default function AdminDashboard() {
         </div>
 
         {/* Quick Stats Card */}
-        <div className="bg-gradient-to-br from-orange-500 to-amber-600 rounded-2xl shadow-xl p-6 text-white">
+        <div className="bg-gradient-to-br from-gold-500 to-amber-600 rounded-2xl shadow-xl p-6 text-white">
           <h3 className="text-lg font-semibold mb-6 flex items-center gap-2">
             <PieChart className="w-5 h-5" />
             Сегодня
           </h3>
           <div className="grid grid-cols-2 gap-6">
-            <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4">
+            <div className="bg-[#1E1E1E]/20 backdrop-blur-sm rounded-xl p-4">
               <div className="flex items-center gap-2 mb-2">
                 <ShoppingBag className="w-5 h-5" />
                 <span className="text-white/80 text-sm">Заказов</span>
               </div>
               <p className="text-3xl font-bold">{stats?.todayOrders || 0}</p>
             </div>
-            <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4">
+            <div className="bg-[#1E1E1E]/20 backdrop-blur-sm rounded-xl p-4">
               <div className="flex items-center gap-2 mb-2">
                 <DollarSign className="w-5 h-5" />
                 <span className="text-white/80 text-sm">Выручка</span>
               </div>
               <p className="text-2xl font-bold">{formatPrice(stats?.todayRevenue || 0)}</p>
             </div>
-            <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4 col-span-2">
+            <div className="bg-[#1E1E1E]/20 backdrop-blur-sm rounded-xl p-4 col-span-2">
               <div className="flex items-center gap-2 mb-2">
                 <Calendar className="w-5 h-5" />
                 <span className="text-white/80 text-sm">Дата</span>
@@ -424,15 +424,15 @@ export default function AdminDashboard() {
 
 function StatusBadge({ status }: { status: string }) {
   const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
-    pending: { label: 'Новый', color: 'bg-yellow-100 text-yellow-700 border-yellow-200', icon: Clock },
-    confirmed: { label: 'Подтверждён', color: 'bg-blue-100 text-blue-700 border-blue-200', icon: CheckCircle },
-    processing: { label: 'В обработке', color: 'bg-purple-100 text-purple-700 border-purple-200', icon: Package },
-    shipped: { label: 'Отправлен', color: 'bg-indigo-100 text-indigo-700 border-indigo-200', icon: Truck },
-    delivered: { label: 'Доставлен', color: 'bg-green-100 text-green-700 border-green-200', icon: CheckCircle },
-    cancelled: { label: 'Отменён', color: 'bg-red-100 text-red-700 border-red-200', icon: XCircle },
+    pending: { label: 'Новый', color: 'bg-yellow-900/30 text-yellow-400 border-yellow-800/30', icon: Clock },
+    confirmed: { label: 'Подтверждён', color: 'bg-blue-900/30 text-blue-400 border-blue-800/30', icon: CheckCircle },
+    processing: { label: 'В обработке', color: 'bg-purple-900/30 text-purple-400 border-purple-800/30', icon: Package },
+    shipped: { label: 'Отправлен', color: 'bg-indigo-900/30 text-indigo-400 border-indigo-800/30', icon: Truck },
+    delivered: { label: 'Доставлен', color: 'bg-green-900/30 text-green-400 border-green-800/30', icon: CheckCircle },
+    cancelled: { label: 'Отменён', color: 'bg-red-900/30 text-red-400 border-red-800/30', icon: XCircle },
   };
 
-  const config = statusConfig[status] || { label: status, color: 'bg-gray-100 text-gray-700 border-gray-200', icon: MoreHorizontal };
+  const config = statusConfig[status] || { label: status, color: 'bg-[#252525] text-[#C0C0C0] border-[#2A2A2A]', icon: MoreHorizontal };
   const Icon = config.icon;
 
   return (

@@ -151,11 +151,11 @@ export default function AdminSettingsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 flex items-center gap-3">
-            <Settings className="w-8 h-8 text-orange-500" />
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#F5F5F5] flex items-center gap-3">
+            <Settings className="w-8 h-8 text-gold-500" />
             Настройки
           </h1>
-          <p className="text-gray-500 mt-1">Управление настройками магазина</p>
+          <p className="text-[#A0A0A0] mt-1">Управление настройками магазина</p>
         </div>
         <button
           onClick={handleSave}
@@ -164,7 +164,7 @@ export default function AdminSettingsPage() {
             "flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold shadow-lg transition-all",
             saveSuccess
               ? "bg-green-500 text-white shadow-green-500/30"
-              : "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-orange-500/30 hover:shadow-xl"
+              : "bg-gradient-to-r from-gold-500 to-gold-500/50 text-white shadow-gold-500/30 hover:shadow-xl"
           )}
         >
           {isSaving ? (
@@ -187,16 +187,16 @@ export default function AdminSettingsPage() {
       </div>
 
       {error && (
-        <div className="p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3">
+        <div className="p-4 bg-red-900/20 border border-red-800/30 rounded-xl flex items-center gap-3">
           <AlertCircle className="w-5 h-5 text-red-500" />
-          <p className="text-red-700">{error}</p>
+          <p className="text-red-400">{error}</p>
         </div>
       )}
 
       <div className="grid lg:grid-cols-4 gap-6">
         {/* Sidebar */}
         <div className="lg:col-span-1">
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
+          <div className="bg-[#1E1E1E] rounded-2xl shadow-sm border border-[#2A2A2A] p-4">
             <nav className="space-y-1">
               {sections.map((section) => {
                 const isActive = activeSection === section.id;
@@ -207,8 +207,8 @@ export default function AdminSettingsPage() {
                     className={cn(
                       "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all",
                       isActive
-                        ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg shadow-orange-500/30"
-                        : "text-gray-600 hover:bg-gray-50"
+                        ? "bg-gradient-to-r from-gold-500 to-gold-500/50 text-white shadow-lg shadow-gold-500/30"
+                        : "text-[#A0A0A0] hover:bg-[#121212]"
                     )}
                   >
                     <section.icon className="w-5 h-5" />
@@ -222,93 +222,93 @@ export default function AdminSettingsPage() {
 
         {/* Content */}
         <div className="lg:col-span-3">
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+          <div className="bg-[#1E1E1E] rounded-2xl shadow-sm border border-[#2A2A2A] p-6">
             {/* Store Settings */}
             {activeSection === 'store' && (
               <div className="space-y-6">
-                <div className="flex items-center gap-3 pb-4 border-b border-gray-100">
-                  <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                    <Store className="w-5 h-5 text-purple-600" />
+                <div className="flex items-center gap-3 pb-4 border-b border-[#2A2A2A]">
+                  <div className="w-10 h-10 bg-purple-900/30 rounded-lg flex items-center justify-center">
+                    <Store className="w-5 h-5 text-purple-400" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-semibold text-gray-900">Информация о магазине</h2>
-                    <p className="text-sm text-gray-500">Основные данные магазина</p>
+                    <h2 className="text-lg font-semibold text-[#F5F5F5]">Информация о магазине</h2>
+                    <p className="text-sm text-[#A0A0A0]">Основные данные магазина</p>
                   </div>
                 </div>
 
                 <div className="grid sm:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-[#C0C0C0] mb-2">
                       Название магазина
                     </label>
                     <div className="relative">
-                      <Store className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <Store className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#666]" />
                       <input
                         type="text"
                         value={storeName}
                         onChange={(e) => setStoreName(e.target.value)}
-                        className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
+                        className="w-full pl-12 pr-4 py-3 border border-[#2A2A2A] rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-[#C0C0C0] mb-2">
                       Email
                     </label>
                     <div className="relative">
-                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#666]" />
                       <input
                         type="email"
                         value={storeEmail}
                         onChange={(e) => setStoreEmail(e.target.value)}
-                        className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
+                        className="w-full pl-12 pr-4 py-3 border border-[#2A2A2A] rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-[#C0C0C0] mb-2">
                       Телефон
                     </label>
                     <div className="relative">
-                      <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#666]" />
                       <input
                         type="tel"
                         value={storePhone}
                         onChange={(e) => setStorePhone(e.target.value)}
-                        className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
+                        className="w-full pl-12 pr-4 py-3 border border-[#2A2A2A] rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-[#C0C0C0] mb-2">
                       Адрес
                     </label>
                     <div className="relative">
-                      <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#666]" />
                       <input
                         type="text"
                         value={storeAddress}
                         onChange={(e) => setStoreAddress(e.target.value)}
-                        className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
+                        className="w-full pl-12 pr-4 py-3 border border-[#2A2A2A] rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500"
                       />
                     </div>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-[#C0C0C0] mb-2">
                     Описание магазина
                   </label>
                   <div className="relative">
-                    <FileText className="absolute left-4 top-4 w-5 h-5 text-gray-400" />
+                    <FileText className="absolute left-4 top-4 w-5 h-5 text-[#666]" />
                     <textarea
                       value={storeDescription}
                       onChange={(e) => setStoreDescription(e.target.value)}
                       rows={4}
-                      className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 resize-none"
+                      className="w-full pl-12 pr-4 py-3 border border-[#2A2A2A] rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 resize-none"
                     />
                   </div>
                 </div>
@@ -318,70 +318,70 @@ export default function AdminSettingsPage() {
             {/* Delivery Settings */}
             {activeSection === 'delivery' && (
               <div className="space-y-6">
-                <div className="flex items-center gap-3 pb-4 border-b border-gray-100">
-                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <Truck className="w-5 h-5 text-blue-600" />
+                <div className="flex items-center gap-3 pb-4 border-b border-[#2A2A2A]">
+                  <div className="w-10 h-10 bg-blue-900/30 rounded-lg flex items-center justify-center">
+                    <Truck className="w-5 h-5 text-blue-400" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-semibold text-gray-900">Настройки доставки</h2>
-                    <p className="text-sm text-gray-500">Стоимость и условия доставки</p>
+                    <h2 className="text-lg font-semibold text-[#F5F5F5]">Настройки доставки</h2>
+                    <p className="text-sm text-[#A0A0A0]">Стоимость и условия доставки</p>
                   </div>
                 </div>
 
                 <div className="grid sm:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-[#C0C0C0] mb-2">
                       Стоимость доставки (тг)
                     </label>
                     <div className="relative">
-                      <Banknote className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <Banknote className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#666]" />
                       <input
                         type="number"
                         value={deliveryCost}
                         onChange={(e) => setDeliveryCost(e.target.value)}
-                        className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
+                        className="w-full pl-12 pr-4 py-3 border border-[#2A2A2A] rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-[#C0C0C0] mb-2">
                       Бесплатная доставка от (тг)
                     </label>
                     <div className="relative">
-                      <Wallet className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <Wallet className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#666]" />
                       <input
                         type="number"
                         value={freeDeliveryThreshold}
                         onChange={(e) => setFreeDeliveryThreshold(e.target.value)}
-                        className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
+                        className="w-full pl-12 pr-4 py-3 border border-[#2A2A2A] rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-[#C0C0C0] mb-2">
                       Срок доставки (дней)
                     </label>
                     <div className="relative">
-                      <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#666]" />
                       <input
                         type="text"
                         value={deliveryDays}
                         onChange={(e) => setDeliveryDays(e.target.value)}
                         placeholder="2-5"
-                        className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
+                        className="w-full pl-12 pr-4 py-3 border border-[#2A2A2A] rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500"
                       />
                     </div>
                   </div>
                 </div>
 
-                <div className="p-4 bg-blue-50 rounded-xl">
+                <div className="p-4 bg-blue-900/20 rounded-xl">
                   <div className="flex items-start gap-3">
-                    <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5" />
+                    <AlertCircle className="w-5 h-5 text-blue-400 mt-0.5" />
                     <div>
                       <p className="font-medium text-blue-900">Информация о доставке</p>
-                      <p className="text-sm text-blue-700 mt-1">
+                      <p className="text-sm text-blue-400 mt-1">
                         При заказе от {freeDeliveryThreshold} тг доставка бесплатная. 
                         Стандартная доставка занимает {deliveryDays} рабочих дней.
                       </p>
@@ -394,68 +394,68 @@ export default function AdminSettingsPage() {
             {/* Payment Settings */}
             {activeSection === 'payment' && (
               <div className="space-y-6">
-                <div className="flex items-center gap-3 pb-4 border-b border-gray-100">
-                  <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                    <CreditCard className="w-5 h-5 text-green-600" />
+                <div className="flex items-center gap-3 pb-4 border-b border-[#2A2A2A]">
+                  <div className="w-10 h-10 bg-green-900/30 rounded-lg flex items-center justify-center">
+                    <CreditCard className="w-5 h-5 text-green-400" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-semibold text-gray-900">Способы оплаты</h2>
-                    <p className="text-sm text-gray-500">Включите или отключите способы оплаты</p>
+                    <h2 className="text-lg font-semibold text-[#F5F5F5]">Способы оплаты</h2>
+                    <p className="text-sm text-[#A0A0A0]">Включите или отключите способы оплаты</p>
                   </div>
                 </div>
 
                 <div className="space-y-4">
-                  <label className="flex items-center justify-between p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
+                  <label className="flex items-center justify-between p-4 bg-[#121212] rounded-xl cursor-pointer hover:bg-[#252525] transition-colors">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                        <Banknote className="w-6 h-6 text-green-600" />
+                      <div className="w-12 h-12 bg-green-900/30 rounded-lg flex items-center justify-center">
+                        <Banknote className="w-6 h-6 text-green-400" />
                       </div>
                       <div>
-                        <p className="font-medium text-gray-900">Наличные при получении</p>
-                        <p className="text-sm text-gray-500">Оплата курьеру при доставке</p>
+                        <p className="font-medium text-[#F5F5F5]">Наличные при получении</p>
+                        <p className="text-sm text-[#A0A0A0]">Оплата курьеру при доставке</p>
                       </div>
                     </div>
                     <input
                       type="checkbox"
                       checked={cashEnabled}
                       onChange={(e) => setCashEnabled(e.target.checked)}
-                      className="w-5 h-5 text-orange-500 rounded focus:ring-orange-500"
+                      className="w-5 h-5 text-gold-500 rounded focus:ring-gold-500"
                     />
                   </label>
 
-                  <label className="flex items-center justify-between p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
+                  <label className="flex items-center justify-between p-4 bg-[#121212] rounded-xl cursor-pointer hover:bg-[#252525] transition-colors">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <CreditCard className="w-6 h-6 text-blue-600" />
+                      <div className="w-12 h-12 bg-blue-900/30 rounded-lg flex items-center justify-center">
+                        <CreditCard className="w-6 h-6 text-blue-400" />
                       </div>
                       <div>
-                        <p className="font-medium text-gray-900">Банковская карта</p>
-                        <p className="text-sm text-gray-500">Visa, MasterCard</p>
+                        <p className="font-medium text-[#F5F5F5]">Банковская карта</p>
+                        <p className="text-sm text-[#A0A0A0]">Visa, MasterCard</p>
                       </div>
                     </div>
                     <input
                       type="checkbox"
                       checked={cardEnabled}
                       onChange={(e) => setCardEnabled(e.target.checked)}
-                      className="w-5 h-5 text-orange-500 rounded focus:ring-orange-500"
+                      className="w-5 h-5 text-gold-500 rounded focus:ring-gold-500"
                     />
                   </label>
 
-                  <label className="flex items-center justify-between p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
+                  <label className="flex items-center justify-between p-4 bg-[#121212] rounded-xl cursor-pointer hover:bg-[#252525] transition-colors">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
-                        <Building2 className="w-6 h-6 text-red-600" />
+                      <div className="w-12 h-12 bg-red-900/30 rounded-lg flex items-center justify-center">
+                        <Building2 className="w-6 h-6 text-red-400" />
                       </div>
                       <div>
-                        <p className="font-medium text-gray-900">Kaspi QR / Перевод</p>
-                        <p className="text-sm text-gray-500">Оплата через Kaspi Bank</p>
+                        <p className="font-medium text-[#F5F5F5]">Kaspi QR / Перевод</p>
+                        <p className="text-sm text-[#A0A0A0]">Оплата через Kaspi Bank</p>
                       </div>
                     </div>
                     <input
                       type="checkbox"
                       checked={kaspiEnabled}
                       onChange={(e) => setKaspiEnabled(e.target.checked)}
-                      className="w-5 h-5 text-orange-500 rounded focus:ring-orange-500"
+                      className="w-5 h-5 text-gold-500 rounded focus:ring-gold-500"
                     />
                   </label>
                 </div>

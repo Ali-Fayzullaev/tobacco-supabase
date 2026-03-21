@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -147,23 +147,23 @@ function VerifyEmailContent() {
         </div>
 
         {/* Card */}
-        <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
+        <div className="bg-[#1E1E1E] rounded-2xl shadow-xl p-8 text-center">
           {/* Icon */}
-          <div className="w-20 h-20 mx-auto mb-6 bg-gold-100 rounded-full flex items-center justify-center">
+          <div className="w-20 h-20 mx-auto mb-6 bg-gold-500/15 rounded-full flex items-center justify-center">
             <Mail className="w-10 h-10 text-gold-600" />
           </div>
 
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+          <h1 className="text-2xl font-bold text-[#F5F5F5] mb-2">
             Введите код подтверждения
           </h1>
           
-          <p className="text-gray-600 mb-2">
+          <p className="text-[#A0A0A0] mb-2">
             Мы отправили 6-значный код на:
           </p>
 
           {email && (
-            <div className="bg-gray-100 rounded-lg px-4 py-2 mb-6 inline-block">
-              <span className="font-medium text-gray-900">{email}</span>
+            <div className="bg-[#252525] rounded-lg px-4 py-2 mb-6 inline-block">
+              <span className="font-medium text-[#F5F5F5]">{email}</span>
             </div>
           )}
 
@@ -182,7 +182,7 @@ function VerifyEmailContent() {
                 onPaste={handlePaste}
                 disabled={isVerifying}
                 className={`w-12 h-14 text-center text-2xl font-bold border-2 rounded-lg transition-colors
-                  ${error ? 'border-red-300 bg-red-50' : 'border-gray-300'}
+                  ${error ? 'border-red-300 bg-red-900/20' : 'border-[#333]'}
                   ${digit ? 'border-amber-500 bg-amber-50' : ''}
                   focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 focus:outline-none
                   disabled:opacity-50 disabled:cursor-not-allowed`}
@@ -192,7 +192,7 @@ function VerifyEmailContent() {
 
           {/* Error */}
           {error && (
-            <div className="flex items-center justify-center gap-2 text-red-600 mb-4">
+            <div className="flex items-center justify-center gap-2 text-red-400 mb-4">
               <AlertCircle className="w-4 h-4" />
               <span className="text-sm">{error}</span>
             </div>
@@ -220,13 +220,13 @@ function VerifyEmailContent() {
           <div className="space-y-3 mb-6 text-left">
             <div className="flex items-start gap-3">
               <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-              <span className="text-gray-600 text-sm">
+              <span className="text-[#A0A0A0] text-sm">
                 Код действителен 1 час
               </span>
             </div>
             <div className="flex items-start gap-3">
               <AlertCircle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
-              <span className="text-gray-600 text-sm">
+              <span className="text-[#A0A0A0] text-sm">
                 Проверьте папку «Спам», если письмо не пришло
               </span>
             </div>
@@ -237,8 +237,8 @@ function VerifyEmailContent() {
             onClick={handleResend}
             disabled={resendCooldown > 0 || !email}
             className="w-full flex items-center justify-center gap-2 px-4 py-3 
-              border border-gray-300 rounded-lg text-gray-700 
-              hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              border border-[#333] rounded-lg text-[#C0C0C0] 
+              hover:bg-[#121212] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             <RefreshCw className="w-5 h-5" />
             {resendCooldown > 0 
@@ -248,8 +248,8 @@ function VerifyEmailContent() {
           </button>
 
           {/* Back to register */}
-          <div className="mt-8 pt-6 border-t border-gray-200">
-            <p className="text-gray-600 text-sm">
+          <div className="mt-8 pt-6 border-t border-[#2A2A2A]">
+            <p className="text-[#A0A0A0] text-sm">
               Ошиблись с email?{' '}
               <Link href="/register" className="text-amber-600 hover:text-amber-700 font-medium">
                 Зарегистрироваться заново

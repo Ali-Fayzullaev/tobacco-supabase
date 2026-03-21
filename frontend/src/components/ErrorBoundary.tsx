@@ -69,16 +69,16 @@ export class ErrorBoundary extends Component<Props, State> {
 
     // UI — красивое сообщение и кнопка отправки отчета
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
-        <div className="max-w-2xl w-full bg-white shadow-lg rounded-2xl border border-gray-100 p-8 text-center">
-          <div className="text-orange-500 mb-4">
+      <div className="min-h-screen flex items-center justify-center bg-[#121212] p-6">
+        <div className="max-w-2xl w-full bg-[#1E1E1E] shadow-lg rounded-2xl border border-[#2A2A2A] p-8 text-center">
+          <div className="text-gold-500 mb-4">
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-12 h-12 mx-auto">
               <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
               <path d="M12 9v4"/><path d="M12 17h.01"/>
             </svg>
           </div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Что‑то пошло не так</h2>
-          <p className="text-gray-500 mb-6">Мы уже получили краткий отчёт об ошибке. Вы можете отправить дополнительную информацию разработчикам.</p>
+          <h2 className="text-xl font-semibold text-[#F5F5F5] mb-2">Что‑то пошло не так</h2>
+          <p className="text-[#A0A0A0] mb-6">Мы уже получили краткий отчёт об ошибке. Вы можете отправить дополнительную информацию разработчикам.</p>
 
           <div className="flex items-center justify-center gap-3">
             <button
@@ -86,7 +86,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 // Простая локальная перезагрузка страницы
                 window.location.reload();
               }}
-              className="px-4 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50"
+              className="px-4 py-2 rounded-lg border border-[#2A2A2A] text-[#C0C0C0] hover:bg-[#121212]"
             >
               Перезагрузить страницу
             </button>
@@ -108,15 +108,15 @@ export class ErrorBoundary extends Component<Props, State> {
                 }
               }}
               disabled={this.state.sending}
-              className="px-4 py-2 rounded-lg bg-orange-500 text-white hover:bg-orange-600 disabled:opacity-60"
+              className="px-4 py-2 rounded-lg bg-gold-500 text-white hover:bg-gold-600 disabled:opacity-60"
             >
               {this.state.sending ? 'Отправка...' : 'Отправить разработчикам'}
             </button>
           </div>
 
-          <details className="mt-6 text-xs text-gray-400 text-left max-h-48 overflow-auto p-3 bg-gray-50 rounded-md">
-            <summary className="cursor-pointer text-sm text-gray-600">Показать данные ошибки</summary>
-            <div className="mt-2 whitespace-pre-wrap text-xs text-gray-700">
+          <details className="mt-6 text-xs text-[#666] text-left max-h-48 overflow-auto p-3 bg-[#121212] rounded-md">
+            <summary className="cursor-pointer text-sm text-[#A0A0A0]">Показать данные ошибки</summary>
+            <div className="mt-2 whitespace-pre-wrap text-xs text-[#C0C0C0]">
               <strong>Message:</strong>
               <div>{this.state.error?.message}</div>
               <strong className="mt-2 block">Stack:</strong>

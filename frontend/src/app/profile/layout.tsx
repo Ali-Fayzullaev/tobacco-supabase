@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -43,7 +43,7 @@ export default function ProfileLayout({
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[#121212] flex items-center justify-center">
         <Loader2 className="w-8 h-8 text-gold-500 animate-spin" />
       </div>
     );
@@ -51,11 +51,11 @@ export default function ProfileLayout({
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-[#121212] flex items-center justify-center p-4">
         <div className="max-w-md text-center">
           <AlertTriangle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Доступ ограничен</h1>
-          <p className="text-gray-500 mb-6">
+          <h1 className="text-2xl font-bold text-[#F5F5F5] mb-4">Доступ ограничен</h1>
+          <p className="text-[#A0A0A0] mb-6">
             Для доступа к профилю необходимо войти в систему.
           </p>
           <Link
@@ -70,22 +70,22 @@ export default function ProfileLayout({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#121212]">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
+      <header className="bg-[#1E1E1E] border-b border-[#2A2A2A] sticky top-0 z-40">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             <Link href="/" className="text-xl font-bold text-gold-500">
               Shop Shop KZ
             </Link>
             <nav className="hidden md:flex items-center gap-6">
-              <Link href="/catalog" className="text-gray-600 hover:text-gray-900">
+              <Link href="/catalog" className="text-[#A0A0A0] hover:text-[#F5F5F5]">
                 Каталог
               </Link>
-              <Link href="/cart" className="text-gray-600 hover:text-gray-900">
+              <Link href="/cart" className="text-[#A0A0A0] hover:text-[#F5F5F5]">
                 Корзина
               </Link>
-              <Link href="/profile" className="text-gray-900 font-medium">
+              <Link href="/profile" className="text-[#F5F5F5] font-medium">
                 Профиль
               </Link>
             </nav>
@@ -103,17 +103,17 @@ export default function ProfileLayout({
         <div className="flex flex-col md:flex-row gap-8">
           {/* Sidebar */}
           <aside className={`md:w-64 flex-shrink-0 ${showMobileNav ? 'block' : 'hidden md:block'}`}>
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+            <div className="bg-[#1E1E1E] rounded-xl shadow-sm border border-[#2A2A2A] p-4">
               {/* User Info */}
-              <div className="flex items-center gap-3 pb-4 border-b border-gray-100 mb-4">
-                <div className="w-12 h-12 bg-gold-100 rounded-full flex items-center justify-center">
+              <div className="flex items-center gap-3 pb-4 border-b border-[#2A2A2A] mb-4">
+                <div className="w-12 h-12 bg-gold-500/15 rounded-full flex items-center justify-center">
                   <User className="w-6 h-6 text-gold-600" />
                 </div>
                 <div>
-                  <p className="font-medium text-gray-900">
+                  <p className="font-medium text-[#F5F5F5]">
                     {profile?.first_name} {profile?.last_name}
                   </p>
-                  <p className="text-sm text-gray-500">{user.email}</p>
+                  <p className="text-sm text-[#A0A0A0]">{user.email}</p>
                 </div>
               </div>
 
@@ -129,7 +129,7 @@ export default function ProfileLayout({
                       className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                         isActive
                           ? 'bg-gold-50 text-gold-700'
-                          : 'text-gray-600 hover:bg-gray-50'
+                          : 'text-[#A0A0A0] hover:bg-[#121212]'
                       }`}
                     >
                       <item.icon className="w-5 h-5" />
@@ -140,7 +140,7 @@ export default function ProfileLayout({
                 
                 <button
                   onClick={handleSignOut}
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition-colors"
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-400 hover:bg-red-900/20 transition-colors"
                 >
                   <LogOut className="w-5 h-5" />
                   Выйти
@@ -158,7 +158,7 @@ export default function ProfileLayout({
 
       {/* Health Warning */}
       <footer className="bg-slate-900 text-white py-4 mt-auto">
-        <div className="container mx-auto px-4 text-center text-sm text-gray-400">
+        <div className="container mx-auto px-4 text-center text-sm text-[#666]">
           Минздрав предупреждает: курение вредит Вашему здоровью
         </div>
       </footer>

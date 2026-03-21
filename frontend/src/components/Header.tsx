@@ -119,27 +119,27 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white shadow-sm">
+    <header className="sticky top-0 z-50 bg-[#1E1E1E] shadow-lg shadow-black/20 border-b border-[#2A2A2A]">
 
       {/* Main header */}
-      <div className="border-b border-gray-100">
+      <div className="border-b border-[#2A2A2A]">
         <div className="container mx-auto px-4">
           <div className="flex h-16 items-center gap-4 lg:gap-8">
             {/* Logo */}
             <Link href={isAuthenticated ? '/catalog' : '/'} className="flex items-center gap-2 flex-shrink-0">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg">
-                <span className="text-lg font-bold text-white">T</span>
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-gold-500 to-gold-600 shadow-lg shadow-gold-500/25">
+                <span className="text-lg font-bold text-[#121212]">T</span>
               </div>
               <div className="hidden sm:block">
-                <span className="text-xl font-bold text-gray-900">Shop</span>
-                <span className="text-xl font-bold text-orange-500">Shop</span>
+                <span className="text-xl font-bold text-[#F5F5F5]">Shop</span>
+                <span className="text-xl font-bold text-gold-500">Shop</span>
               </div>
             </Link>
 
             {/* Catalog Button */}
             <div className="hidden lg:block">
               <Link href="/catalog">
-                <Button className="bg-orange-500 hover:bg-orange-600 gap-2">
+                <Button className="bg-gold-500 hover:bg-gold-600 text-[#121212] font-semibold gap-2">
                   <Menu className="h-4 w-4" />
                   Каталог
                   <ChevronDown className="h-4 w-4" />
@@ -150,13 +150,13 @@ export function Header() {
             {/* Search */}
             <form onSubmit={handleSearch} className="flex-1 max-w-xl">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[#A0A0A0]" />
                 <Input
                   type="search"
                   placeholder="Поиск товаров..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 h-11 bg-gray-50 border-gray-200 focus:bg-white focus:border-orange-300"
+                  className="w-full pl-10 pr-4 h-11 bg-[#121212] border-[#2A2A2A] text-[#F5F5F5] placeholder:text-[#A0A0A0] focus:bg-[#121212] focus:border-gold-500"
                 />
               </div>
             </form>
@@ -171,8 +171,8 @@ export function Header() {
                       variant="ghost" 
                       size="icon" 
                       className={cn(
-                        "relative text-gray-600 hover:text-orange-600 hover:bg-orange-50",
-                        showNotifications && "bg-orange-50 text-orange-600"
+                        "relative text-[#A0A0A0] hover:text-gold-500 hover:bg-gold-500/10",
+                        showNotifications && "bg-gold-500/10 text-gold-500"
                       )}
                       onClick={() => {
                         setShowNotifications(!showNotifications);
@@ -181,7 +181,7 @@ export function Header() {
                     >
                       <Bell className="h-5 w-5" />
                       {unreadCount > 0 && (
-                        <span className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center animate-pulse">
+                        <span className="absolute -top-1 -right-1 h-5 w-5 bg-red-900/200 text-white text-[10px] font-bold rounded-full flex items-center justify-center animate-pulse">
                           {unreadCount > 9 ? '9+' : unreadCount}
                         </span>
                       )}
@@ -196,16 +196,16 @@ export function Header() {
                           onClick={() => setShowNotifications(false)} 
                         />
                         
-                        <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-gray-100 z-50 overflow-hidden">
-                          <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-gradient-to-r from-orange-50 to-amber-50">
-                            <h3 className="font-semibold text-gray-900 flex items-center gap-2">
-                              <Bell className="w-4 h-4 text-orange-500" />
+                        <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-[#1E1E1E] rounded-2xl shadow-2xl border border-[#2A2A2A] z-50 overflow-hidden">
+                          <div className="p-4 border-b border-[#2A2A2A] flex items-center justify-between bg-[#252525]">
+                            <h3 className="font-semibold text-[#F5F5F5] flex items-center gap-2">
+                              <Bell className="w-4 h-4 text-gold-500" />
                               Уведомления
                             </h3>
                             {unreadCount > 0 && (
                               <button
                                 onClick={markAllAsRead}
-                                className="text-sm text-orange-600 hover:text-orange-700 font-medium"
+                                className="text-sm text-gold-500 hover:text-gold-400 font-medium"
                               >
                                 Прочитать все
                               </button>
@@ -213,10 +213,10 @@ export function Header() {
                           </div>
                           <div className="max-h-[400px] overflow-y-auto">
                             {notifications.length === 0 ? (
-                              <div className="p-8 text-center text-gray-500">
-                                <Bell className="w-10 h-10 mx-auto mb-3 text-gray-300" />
+                              <div className="p-8 text-center text-[#A0A0A0]">
+                                <Bell className="w-10 h-10 mx-auto mb-3 text-[#3A3A3A]" />
                                 <p className="font-medium">Нет уведомлений</p>
-                                <p className="text-sm text-gray-400 mt-1">Здесь будут важные сообщения</p>
+                                <p className="text-sm text-[#666] mt-1">Здесь будут важные сообщения</p>
                               </div>
                             ) : (
                               notifications.map((notification) => (
@@ -224,41 +224,41 @@ export function Header() {
                                   key={notification.id}
                                   onClick={() => markAsRead(notification.id)}
                                   className={cn(
-                                    "p-4 border-b border-gray-50 cursor-pointer transition-all",
+                                    "p-4 border-b border-[#2A2A2A] cursor-pointer transition-all",
                                     !notification.is_read 
-                                      ? "bg-orange-50/70 hover:bg-orange-50" 
-                                      : "hover:bg-gray-50"
+                                      ? "bg-gold-500/5 hover:bg-gold-500/10" 
+                                      : "hover:bg-[#252525]"
                                   )}
                                 >
                                   <div className="flex gap-3">
                                     <div className={cn(
                                       "w-10 h-10 rounded-xl flex items-center justify-center shrink-0",
                                       notification.type === 'product_deleted' 
-                                        ? "bg-red-100" 
-                                        : "bg-blue-100"
+                                        ? "bg-red-900/30" 
+                                        : "bg-blue-900/30"
                                     )}>
                                       {notification.type === 'product_deleted' ? (
-                                        <AlertCircle className="w-5 h-5 text-red-600" />
+                                        <AlertCircle className="w-5 h-5 text-red-400" />
                                       ) : (
-                                        <Bell className="w-5 h-5 text-blue-600" />
+                                        <Bell className="w-5 h-5 text-blue-400" />
                                       )}
                                     </div>
                                     <div className="flex-1 min-w-0">
                                       <p className={cn(
                                         "font-medium text-sm",
-                                        !notification.is_read ? "text-gray-900" : "text-gray-600"
+                                        !notification.is_read ? "text-[#F5F5F5]" : "text-[#A0A0A0]"
                                       )}>
                                         {notification.title}
                                       </p>
-                                      <p className="text-sm text-gray-500 mt-1 line-clamp-2">
+                                      <p className="text-sm text-[#A0A0A0] mt-1 line-clamp-2">
                                         {notification.message}
                                       </p>
-                                      <p className="text-xs text-gray-400 mt-2">
+                                      <p className="text-xs text-[#666] mt-2">
                                         {formatDate(notification.created_at)}
                                       </p>
                                     </div>
                                     {!notification.is_read && (
-                                      <div className="w-2.5 h-2.5 bg-orange-500 rounded-full shrink-0 mt-1 animate-pulse" />
+                                      <div className="w-2.5 h-2.5 bg-gold-500 rounded-full shrink-0 mt-1 animate-pulse" />
                                     )}
                                   </div>
                                 </div>
@@ -266,11 +266,11 @@ export function Header() {
                             )}
                           </div>
                           {notifications.length > 0 && (
-                            <div className="p-3 border-t border-gray-100 bg-gray-50">
+                            <div className="p-3 border-t border-[#2A2A2A] bg-[#252525]">
                               <Link 
                                 href="/profile/orders"
                                 onClick={() => setShowNotifications(false)}
-                                className="block text-center text-sm text-orange-600 hover:text-orange-700 font-medium"
+                                className="block text-center text-sm text-gold-500 hover:text-gold-400 font-medium"
                               >
                                 Смотреть все заказы →
                               </Link>
@@ -283,10 +283,10 @@ export function Header() {
 
                   {/* Favorites */}
                   <Link href="/profile/favorites">
-                    <Button variant="ghost" size="icon" className="relative text-gray-600 hover:text-orange-600 hover:bg-orange-50">
+                    <Button variant="ghost" size="icon" className="relative text-[#A0A0A0] hover:text-gold-500 hover:bg-gold-500/10">
                       <Heart className="h-5 w-5" />
                       {favorites.length > 0 && (
-                        <span className="absolute -top-1 -right-1 h-5 w-5 bg-orange-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                        <span className="absolute -top-1 -right-1 h-5 w-5 bg-gold-500 text-[#121212] text-[10px] font-bold rounded-full flex items-center justify-center">
                           {favorites.length}
                         </span>
                       )}
@@ -295,10 +295,10 @@ export function Header() {
 
                   {/* Cart */}
                   <Link href="/cart">
-                    <Button variant="ghost" size="icon" className="relative text-gray-600 hover:text-orange-600 hover:bg-orange-50">
+                    <Button variant="ghost" size="icon" className="relative text-[#A0A0A0] hover:text-gold-500 hover:bg-gold-500/10">
                       <ShoppingCart className="h-5 w-5" />
                       {totalItems > 0 && (
-                        <span className="absolute -top-1 -right-1 h-5 w-5 bg-orange-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                        <span className="absolute -top-1 -right-1 h-5 w-5 bg-gold-500 text-[#121212] text-[10px] font-bold rounded-full flex items-center justify-center">
                           {totalItems > 99 ? '99+' : totalItems}
                         </span>
                       )}
@@ -311,8 +311,8 @@ export function Header() {
                       variant="ghost" 
                       size="icon"
                       className={cn(
-                        "relative text-gray-600 hover:text-orange-600 hover:bg-orange-50",
-                        showUserMenu && "bg-orange-50 text-orange-600"
+                        "relative text-[#A0A0A0] hover:text-gold-500 hover:bg-gold-500/10",
+                        showUserMenu && "bg-gold-500/10 text-gold-500"
                       )}
                       onClick={() => {
                         setShowUserMenu(!showUserMenu);
@@ -328,18 +328,18 @@ export function Header() {
                           className="fixed inset-0 z-40" 
                           onClick={() => setShowUserMenu(false)} 
                         />
-                        <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-2xl border border-gray-100 z-50 overflow-hidden">
+                        <div className="absolute right-0 mt-2 w-64 bg-[#1E1E1E] rounded-2xl shadow-2xl border border-[#2A2A2A] z-50 overflow-hidden">
                           {/* User info */}
-                          <div className="p-4 border-b border-gray-100 bg-gradient-to-r from-orange-50 to-amber-50">
+                          <div className="p-4 border-b border-[#2A2A2A] bg-[#252525]">
                             <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center">
-                                <User className="w-5 h-5 text-orange-600" />
+                              <div className="w-10 h-10 rounded-full bg-gold-500/10 flex items-center justify-center">
+                                <User className="w-5 h-5 text-gold-500" />
                               </div>
                               <div className="min-w-0">
-                                <p className="font-semibold text-gray-900 truncate">
+                                <p className="font-semibold text-[#F5F5F5] truncate">
                                   {profile?.first_name || 'Пользователь'}
                                 </p>
-                                <p className="text-xs text-gray-500 truncate">
+                                <p className="text-xs text-[#A0A0A0] truncate">
                                   {user?.email}
                                 </p>
                               </div>
@@ -351,7 +351,7 @@ export function Header() {
                             <Link
                               href="/profile"
                               onClick={() => setShowUserMenu(false)}
-                              className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors"
+                              className="flex items-center gap-3 px-4 py-2.5 text-sm text-[#A0A0A0] hover:bg-gold-500/10 hover:text-gold-500 transition-colors"
                             >
                               <User className="w-4 h-4" />
                               Мой профиль
@@ -359,7 +359,7 @@ export function Header() {
                             <Link
                               href="/profile/orders"
                               onClick={() => setShowUserMenu(false)}
-                              className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors"
+                              className="flex items-center gap-3 px-4 py-2.5 text-sm text-[#A0A0A0] hover:bg-gold-500/10 hover:text-gold-500 transition-colors"
                             >
                               <Package className="w-4 h-4" />
                               Мои заказы
@@ -367,7 +367,7 @@ export function Header() {
                             <Link
                               href="/profile/favorites"
                               onClick={() => setShowUserMenu(false)}
-                              className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors"
+                              className="flex items-center gap-3 px-4 py-2.5 text-sm text-[#A0A0A0] hover:bg-gold-500/10 hover:text-gold-500 transition-colors"
                             >
                               <Heart className="w-4 h-4" />
                               Избранное
@@ -375,18 +375,18 @@ export function Header() {
                             <Link
                               href="/profile/settings"
                               onClick={() => setShowUserMenu(false)}
-                              className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors"
+                              className="flex items-center gap-3 px-4 py-2.5 text-sm text-[#A0A0A0] hover:bg-gold-500/10 hover:text-gold-500 transition-colors"
                             >
                               <Settings className="w-4 h-4" />
                               Настройки
                             </Link>
                             {isAdmin && (
                               <>
-                                <div className="my-1 border-t border-gray-100" />
+                                <div className="my-1 border-t border-[#2A2A2A]" />
                                 <Link
                                   href="/admin"
                                   onClick={() => setShowUserMenu(false)}
-                                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-orange-600 hover:bg-orange-50 transition-colors"
+                                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-gold-500 hover:bg-gold-500/10 transition-colors"
                                 >
                                   <Settings className="w-4 h-4" />
                                   Админ-панель
@@ -396,13 +396,13 @@ export function Header() {
                           </div>
 
                           {/* Logout */}
-                          <div className="border-t border-gray-100">
+                          <div className="border-t border-[#2A2A2A]">
                             <button
                               onClick={() => {
                                 signOut();
                                 setShowUserMenu(false);
                               }}
-                              className="flex items-center gap-3 px-4 py-3 text-sm text-red-500 hover:bg-red-50 transition-colors w-full"
+                              className="flex items-center gap-3 px-4 py-3 text-sm text-red-400 hover:bg-red-900/20 transition-colors w-full"
                             >
                               <LogOut className="w-4 h-4" />
                               Выйти
@@ -416,12 +416,12 @@ export function Header() {
               ) : (
                 <div className="flex items-center gap-2">
                   <Link href="/login">
-                    <Button variant="ghost" className="text-gray-600 hover:text-orange-600">
+                    <Button variant="ghost" className="text-[#A0A0A0] hover:text-gold-500">
                       Войти
                     </Button>
                   </Link>
                   <Link href="/register" className="hidden sm:block">
-                    <Button className="bg-orange-500 hover:bg-orange-600">
+                    <Button className="bg-gold-500 hover:bg-gold-600 text-[#121212] font-semibold">
                       Регистрация
                     </Button>
                   </Link>
@@ -432,7 +432,7 @@ export function Header() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="lg:hidden text-gray-600"
+                className="lg:hidden text-[#A0A0A0]"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               >
                 {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -444,15 +444,15 @@ export function Header() {
 
       {/* Mobile menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-white border-t border-gray-100 shadow-lg">
+        <div className="lg:hidden bg-[#1E1E1E] border-t border-[#2A2A2A] shadow-lg">
           <div className="container mx-auto px-4 py-4">
             <nav className="flex flex-col gap-1">
               <Link
                 href="/catalog"
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-900 bg-orange-50 rounded-lg"
+                className="flex items-center gap-3 px-4 py-3 text-base font-medium text-[#F5F5F5] bg-gold-500/10 rounded-lg"
               >
-                <Menu className="h-5 w-5 text-orange-500" />
+                <Menu className="h-5 w-5 text-gold-500" />
                 Каталог
               </Link>
               
@@ -461,7 +461,7 @@ export function Header() {
                   key={cat.href}
                   href={cat.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="px-4 py-3 text-sm text-gray-600 hover:text-orange-600 hover:bg-orange-50 rounded-lg"
+                  className="px-4 py-3 text-sm text-[#A0A0A0] hover:text-gold-500 hover:bg-gold-500/10 rounded-lg"
                 >
                   {cat.label}
                 </Link>
@@ -469,11 +469,11 @@ export function Header() {
               
               {isAuthenticated && (
                 <>
-                  <div className="my-2 border-t border-gray-100" />
+                  <div className="my-2 border-t border-[#2A2A2A]" />
                   <Link
                     href="/profile"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-4 py-3 text-sm text-gray-600 hover:text-orange-600 hover:bg-orange-50 rounded-lg"
+                    className="flex items-center gap-3 px-4 py-3 text-sm text-[#A0A0A0] hover:text-gold-500 hover:bg-gold-500/10 rounded-lg"
                   >
                     <User className="h-5 w-5" />
                     Профиль
@@ -481,7 +481,7 @@ export function Header() {
                   <Link
                     href="/profile?tab=orders"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-4 py-3 text-sm text-gray-600 hover:text-orange-600 hover:bg-orange-50 rounded-lg"
+                    className="flex items-center gap-3 px-4 py-3 text-sm text-[#A0A0A0] hover:text-gold-500 hover:bg-gold-500/10 rounded-lg"
                   >
                     <Package className="h-5 w-5" />
                     Мои заказы
@@ -490,7 +490,7 @@ export function Header() {
                     <Link
                       href="/admin"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center gap-3 px-4 py-3 text-sm text-orange-600 hover:bg-orange-50 rounded-lg"
+                      className="flex items-center gap-3 px-4 py-3 text-sm text-gold-500 hover:bg-gold-500/10 rounded-lg"
                     >
                       <Settings className="h-5 w-5" />
                       Админ-панель
@@ -501,7 +501,7 @@ export function Header() {
                       signOut();
                       setMobileMenuOpen(false);
                     }}
-                    className="flex items-center gap-3 px-4 py-3 text-sm text-red-500 hover:bg-red-50 rounded-lg w-full text-left"
+                    className="flex items-center gap-3 px-4 py-3 text-sm text-red-400 hover:bg-red-900/20 rounded-lg w-full text-left"
                   >
                     <LogOut className="h-5 w-5" />
                     Выйти

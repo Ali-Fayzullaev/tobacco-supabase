@@ -87,21 +87,21 @@ function LoginFormContent() {
   if (isCheckingAuth) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
+        <Loader2 className="w-8 h-8 text-gold-500 animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-orange-50/30 to-white flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#121212] flex items-center justify-center p-4">
       {/* Background decorations */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-orange-500/5 rounded-full blur-3xl" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-gold-500/5 rounded-full blur-3xl" />
       
       <div className="w-full max-w-md relative z-10">
         {/* Back Link */}
         <Link 
           href="/" 
-          className="inline-flex items-center gap-2 text-gray-500 hover:text-orange-500 mb-8 transition-colors"
+          className="inline-flex items-center gap-2 text-[#A0A0A0] hover:text-gold-500 mb-8 transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           На главную
@@ -110,30 +110,30 @@ function LoginFormContent() {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/25">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-gold-500 to-gold-600 shadow-lg shadow-gold-500/25">
               <span className="text-xl font-bold text-white">T</span>
             </div>
             <div>
-              <span className="text-2xl font-bold text-gray-900">Shop</span>
-              <span className="text-2xl font-bold text-orange-500">Shop</span>
+              <span className="text-2xl font-bold text-[#F5F5F5]">Shop</span>
+              <span className="text-2xl font-bold text-gold-500">Shop</span>
             </div>
           </Link>
         </div>
 
         {/* Form Card */}
-        <Card className="bg-white border-gray-200 shadow-xl">
+        <Card className="bg-[#1E1E1E] border-[#2A2A2A] shadow-xl">
           <CardHeader className="text-center pb-4">
-            <CardTitle className="text-2xl text-gray-900">Вход в аккаунт</CardTitle>
-            <CardDescription className="text-gray-500">
+            <CardTitle className="text-2xl text-[#F5F5F5]">Вход в аккаунт</CardTitle>
+            <CardDescription className="text-[#A0A0A0]">
               Войдите для доступа к каталогу
             </CardDescription>
           </CardHeader>
           <CardContent>
             {/* Registration Success Message */}
             {isRegistered && (
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6 flex items-start gap-3">
+              <div className="bg-green-900/20 border border-green-800/30 rounded-lg p-4 mb-6 flex items-start gap-3">
                 <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                <p className="text-green-700 text-sm">
+                <p className="text-green-400 text-sm">
                   Аккаунт создан! Проверьте email и подтвердите регистрацию, 
                   затем войдите в систему.
                 </p>
@@ -143,13 +143,13 @@ function LoginFormContent() {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               {/* Email */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-[#C0C0C0] mb-2">
                   Email
                 </label>
                 <Input
                   {...register('email')}
                   type="email"
-                  className="bg-gray-50 border-gray-200 focus:border-orange-300 focus:ring-orange-500/20"
+                  className="bg-[#121212] border-[#2A2A2A] focus:border-gold-500/40 focus:ring-gold-500/20"
                   placeholder="example@mail.com"
                 />
                 {errors.email && (
@@ -159,20 +159,20 @@ function LoginFormContent() {
 
               {/* Password */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-[#C0C0C0] mb-2">
                   Пароль
                 </label>
                 <div className="relative">
                   <Input
                     {...register('password')}
                     type={showPassword ? 'text' : 'password'}
-                    className="bg-gray-50 border-gray-200 focus:border-orange-300 focus:ring-orange-500/20 pr-10"
+                    className="bg-[#121212] border-[#2A2A2A] focus:border-gold-500/40 focus:ring-gold-500/20 pr-10"
                     placeholder="Введите пароль"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#666] hover:text-[#A0A0A0] transition-colors"
                   >
                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
@@ -188,13 +188,13 @@ function LoginFormContent() {
                   <input
                     {...register('rememberMe')}
                     type="checkbox"
-                    className="w-4 h-4 rounded border-gray-300 bg-gray-50 text-orange-500 focus:ring-orange-500"
+                    className="w-4 h-4 rounded border-[#333] bg-[#121212] text-gold-500 focus:ring-gold-500"
                   />
-                  <span className="text-sm text-gray-600">Запомнить меня</span>
+                  <span className="text-sm text-[#A0A0A0]">Запомнить меня</span>
                 </label>
                 <Link
                   href="/auth/reset-password"
-                  className="text-sm text-orange-500 hover:text-orange-600 transition-colors"
+                  className="text-sm text-gold-500 hover:text-gold-600 transition-colors"
                 >
                   Забыли пароль?
                 </Link>
@@ -204,19 +204,19 @@ function LoginFormContent() {
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full h-12 text-base bg-orange-500 hover:bg-orange-600 shadow-lg shadow-orange-500/25"
+                className="w-full h-12 text-base bg-gold-500 hover:bg-gold-600 shadow-lg shadow-gold-500/25"
               >
                 {isSubmitting && <Loader2 className="w-5 h-5 animate-spin mr-2" />}
                 {isSubmitting ? 'Вход...' : 'Войти'}
               </Button>
             </form>
 
-            <Separator className="my-6 bg-gray-200" />
+            <Separator className="my-6 bg-[#2A2A2A]" />
 
             {/* Register Link */}
-            <p className="text-center text-gray-600">
+            <p className="text-center text-[#A0A0A0]">
               Нет аккаунта?{' '}
-              <Link href="/register" className="text-orange-500 hover:text-orange-600 font-medium transition-colors">
+              <Link href="/register" className="text-gold-500 hover:text-gold-600 font-medium transition-colors">
                 Зарегистрироваться
               </Link>
             </p>
@@ -224,8 +224,8 @@ function LoginFormContent() {
         </Card>
 
         {/* Age Warning */}
-        <div className="flex items-center justify-center gap-2 mt-6 text-gray-500 text-sm">
-          <AlertTriangle className="h-4 w-4 text-orange-500" />
+        <div className="flex items-center justify-center gap-2 mt-6 text-[#A0A0A0] text-sm">
+          <AlertTriangle className="h-4 w-4 text-gold-500" />
           <span>Доступ к сайту только для лиц старше 18 лет</span>
         </div>
       </div>
@@ -236,8 +236,8 @@ function LoginFormContent() {
 export default function LoginPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
+      <div className="min-h-screen bg-[#121212] flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-gold-500 animate-spin" />
       </div>
     }>
       <LoginFormContent />

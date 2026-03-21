@@ -87,15 +87,15 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-orange-50/30 to-white flex items-center justify-center p-4 py-12">
+    <div className="min-h-screen bg-[#121212] flex items-center justify-center p-4 py-12">
       {/* Background decorations */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-orange-500/5 rounded-full blur-3xl" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-gold-500/5 rounded-full blur-3xl" />
       
       <div className="w-full max-w-md relative z-10">
         {/* Back Link */}
         <Link 
           href="/" 
-          className="inline-flex items-center gap-2 text-gray-500 hover:text-orange-500 mb-8 transition-colors"
+          className="inline-flex items-center gap-2 text-[#A0A0A0] hover:text-gold-500 mb-8 transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           На главную
@@ -104,31 +104,31 @@ export default function RegisterPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/25">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-gold-500 to-gold-600 shadow-lg shadow-gold-500/25">
               <span className="text-xl font-bold text-white">T</span>
             </div>
             <div>
-              <span className="text-2xl font-bold text-gray-900">Shop</span>
-              <span className="text-2xl font-bold text-orange-500">Shop</span>
+              <span className="text-2xl font-bold text-[#F5F5F5]">Shop</span>
+              <span className="text-2xl font-bold text-gold-500">Shop</span>
             </div>
           </Link>
         </div>
 
         {/* Form Card */}
-        <Card className="bg-white border-gray-200 shadow-xl">
+        <Card className="bg-[#1E1E1E] border-[#2A2A2A] shadow-xl">
           <CardHeader className="text-center pb-4">
-            <CardTitle className="text-2xl text-gray-900">Регистрация</CardTitle>
-            <CardDescription className="text-gray-500">
+            <CardTitle className="text-2xl text-[#F5F5F5]">Регистрация</CardTitle>
+            <CardDescription className="text-[#A0A0A0]">
               Создайте аккаунт для доступа к каталогу
             </CardDescription>
           </CardHeader>
           <CardContent>
             {/* Age Warning */}
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 flex items-start gap-3">
+            <div className="bg-red-900/20 border border-red-800/30 rounded-lg p-4 mb-6 flex items-start gap-3">
               <AlertTriangle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-red-700 text-sm font-medium">18+</p>
-                <p className="text-red-600 text-xs">
+                <p className="text-red-400 text-sm font-medium">18+</p>
+                <p className="text-red-400 text-xs">
                   Регистрация доступна только для лиц, достигших 18-летнего возраста
                 </p>
               </div>
@@ -138,12 +138,12 @@ export default function RegisterPage() {
               {/* Name Fields */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-[#C0C0C0] mb-2">
                     Имя *
                   </label>
                   <Input
                     {...register('firstName')}
-                    className="bg-gray-50 border-gray-200 focus:border-orange-300 focus:ring-orange-500/20"
+                    className="bg-[#121212] border-[#2A2A2A] focus:border-gold-500/40 focus:ring-gold-500/20"
                     placeholder="Иван"
                   />
                   {errors.firstName && (
@@ -151,12 +151,12 @@ export default function RegisterPage() {
                   )}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-[#C0C0C0] mb-2">
                     Фамилия *
                   </label>
                   <Input
                     {...register('lastName')}
-                    className="bg-gray-50 border-gray-200 focus:border-orange-300 focus:ring-orange-500/20"
+                    className="bg-[#121212] border-[#2A2A2A] focus:border-gold-500/40 focus:ring-gold-500/20"
                     placeholder="Иванов"
                   />
                   {errors.lastName && (
@@ -167,13 +167,13 @@ export default function RegisterPage() {
 
               {/* Email */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-[#C0C0C0] mb-2">
                   Email *
                 </label>
                 <Input
                   {...register('email')}
                   type="email"
-                  className="bg-gray-50 border-gray-200 focus:border-orange-300 focus:ring-orange-500/20"
+                  className="bg-[#121212] border-[#2A2A2A] focus:border-gold-500/40 focus:ring-gold-500/20"
                   placeholder="example@mail.com"
                 />
                 {errors.email && (
@@ -183,27 +183,27 @@ export default function RegisterPage() {
 
               {/* Phone */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-[#C0C0C0] mb-2">
                   Телефон
                 </label>
                 <Input
                   {...register('phone')}
                   type="tel"
-                  className="bg-gray-50 border-gray-200 focus:border-orange-300 focus:ring-orange-500/20"
+                  className="bg-[#121212] border-[#2A2A2A] focus:border-gold-500/40 focus:ring-gold-500/20"
                   placeholder="+7 (777) 123-45-67"
                 />
               </div>
 
               {/* Birth Date */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-[#C0C0C0] mb-2">
                   Дата рождения *
                 </label>
                 <Input
                   {...register('birthDate')}
                   type="date"
                   max={getMaxBirthDate()}
-                  className="bg-gray-50 border-gray-200 focus:border-orange-300 focus:ring-orange-500/20"
+                  className="bg-[#121212] border-[#2A2A2A] focus:border-gold-500/40 focus:ring-gold-500/20"
                 />
                 {errors.birthDate && (
                   <p className="text-red-500 text-xs mt-1">{errors.birthDate.message}</p>
@@ -212,20 +212,20 @@ export default function RegisterPage() {
 
               {/* Password */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-[#C0C0C0] mb-2">
                   Пароль *
                 </label>
                 <div className="relative">
                   <Input
                     {...register('password')}
                     type={showPassword ? 'text' : 'password'}
-                    className="bg-gray-50 border-gray-200 focus:border-orange-300 focus:ring-orange-500/20 pr-10"
+                    className="bg-[#121212] border-[#2A2A2A] focus:border-gold-500/40 focus:ring-gold-500/20 pr-10"
                     placeholder="Минимум 8 символов"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#666] hover:text-[#A0A0A0] transition-colors"
                   >
                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
@@ -237,20 +237,20 @@ export default function RegisterPage() {
 
               {/* Confirm Password */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-[#C0C0C0] mb-2">
                   Подтверждение пароля *
                 </label>
                 <div className="relative">
                   <Input
                     {...register('confirmPassword')}
                     type={showConfirmPassword ? 'text' : 'password'}
-                    className="bg-gray-50 border-gray-200 focus:border-orange-300 focus:ring-orange-500/20 pr-10"
+                    className="bg-[#121212] border-[#2A2A2A] focus:border-gold-500/40 focus:ring-gold-500/20 pr-10"
                     placeholder="Повторите пароль"
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#666] hover:text-[#A0A0A0] transition-colors"
                   >
                     {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
@@ -260,7 +260,7 @@ export default function RegisterPage() {
                 )}
               </div>
 
-              <Separator className="my-4 bg-gray-200" />
+              <Separator className="my-4 bg-[#2A2A2A]" />
 
               {/* Checkboxes */}
               <div className="space-y-3">
@@ -268,9 +268,9 @@ export default function RegisterPage() {
                   <input
                     {...register('confirmAge')}
                     type="checkbox"
-                    className="w-5 h-5 mt-0.5 rounded border-gray-300 bg-gray-50 text-orange-500 focus:ring-orange-500"
+                    className="w-5 h-5 mt-0.5 rounded border-[#333] bg-[#121212] text-gold-500 focus:ring-gold-500"
                   />
-                  <span className="text-sm text-gray-600">
+                  <span className="text-sm text-[#A0A0A0]">
                     Подтверждаю, что мне исполнилось 18 лет
                   </span>
                 </label>
@@ -282,15 +282,15 @@ export default function RegisterPage() {
                   <input
                     {...register('acceptTerms')}
                     type="checkbox"
-                    className="w-5 h-5 mt-0.5 rounded border-gray-300 bg-gray-50 text-orange-500 focus:ring-orange-500"
+                    className="w-5 h-5 mt-0.5 rounded border-[#333] bg-[#121212] text-gold-500 focus:ring-gold-500"
                   />
-                  <span className="text-sm text-gray-600">
+                  <span className="text-sm text-[#A0A0A0]">
                     Принимаю{' '}
-                    <Link href="/terms" className="text-orange-500 hover:underline">
+                    <Link href="/terms" className="text-gold-500 hover:underline">
                       условия использования
                     </Link>{' '}
                     и{' '}
-                    <Link href="/privacy" className="text-orange-500 hover:underline">
+                    <Link href="/privacy" className="text-gold-500 hover:underline">
                       политику конфиденциальности
                     </Link>
                   </span>
@@ -304,19 +304,19 @@ export default function RegisterPage() {
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full h-12 text-base mt-6 bg-orange-500 hover:bg-orange-600 shadow-lg shadow-orange-500/25"
+                className="w-full h-12 text-base mt-6 bg-gold-500 hover:bg-gold-600 shadow-lg shadow-gold-500/25"
               >
                 {isSubmitting && <Loader2 className="w-5 h-5 animate-spin mr-2" />}
                 {isSubmitting ? 'Регистрация...' : 'Зарегистрироваться'}
               </Button>
             </form>
 
-            <Separator className="my-6 bg-gray-200" />
+            <Separator className="my-6 bg-[#2A2A2A]" />
 
             {/* Login Link */}
-            <p className="text-center text-gray-600">
+            <p className="text-center text-[#A0A0A0]">
               Уже есть аккаунт?{' '}
-              <Link href="/login" className="text-orange-500 hover:text-orange-600 font-medium transition-colors">
+              <Link href="/login" className="text-gold-500 hover:text-gold-600 font-medium transition-colors">
                 Войти
               </Link>
             </p>

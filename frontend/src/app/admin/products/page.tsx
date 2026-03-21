@@ -479,23 +479,23 @@ export default function AdminProductsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 flex items-center gap-3">
-            <Package className="w-8 h-8 text-orange-500" />
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#F5F5F5] flex items-center gap-3">
+            <Package className="w-8 h-8 text-gold-500" />
             Товары
           </h1>
-          <p className="text-gray-500 mt-1">Управление каталогом товаров</p>
+          <p className="text-[#A0A0A0] mt-1">Управление каталогом товаров</p>
         </div>
         <div className="flex items-center gap-3">
           <button
             onClick={loadProducts}
-            className="flex items-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-medium transition-colors"
+            className="flex items-center gap-2 px-4 py-2.5 bg-[#252525] hover:bg-[#2A2A2A] text-[#C0C0C0] rounded-xl font-medium transition-colors"
           >
             <RefreshCw className={cn("w-4 h-4", isLoading && "animate-spin")} />
             <span className="hidden sm:inline">Обновить</span>
           </button>
           <Link
             href="/admin/products/new"
-            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white rounded-xl font-semibold shadow-lg shadow-orange-500/30 transition-all"
+            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-gold-500 to-gold-500/50 hover:from-gold-600 hover:to-amber-600 text-white rounded-xl font-semibold shadow-lg shadow-gold-500/30 transition-all"
           >
             <Plus className="w-5 h-5" />
             Добавить товар
@@ -505,77 +505,77 @@ export default function AdminProductsPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl border border-gray-100 p-4">
+        <div className="bg-[#1E1E1E] rounded-xl border border-[#2A2A2A] p-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-              <Package className="w-5 h-5 text-purple-600" />
+            <div className="w-10 h-10 bg-purple-900/30 rounded-lg flex items-center justify-center">
+              <Package className="w-5 h-5 text-purple-400" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-gray-900">{totalCount}</p>
-              <p className="text-xs text-gray-500">Всего товаров</p>
+              <p className="text-2xl font-bold text-[#F5F5F5]">{totalCount}</p>
+              <p className="text-xs text-[#A0A0A0]">Всего товаров</p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl border border-gray-100 p-4">
+        <div className="bg-[#1E1E1E] rounded-xl border border-[#2A2A2A] p-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-              <Eye className="w-5 h-5 text-green-600" />
+            <div className="w-10 h-10 bg-green-900/30 rounded-lg flex items-center justify-center">
+              <Eye className="w-5 h-5 text-green-400" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-gray-900">{activeCount}</p>
-              <p className="text-xs text-gray-500">Активных</p>
+              <p className="text-2xl font-bold text-[#F5F5F5]">{activeCount}</p>
+              <p className="text-xs text-[#A0A0A0]">Активных</p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl border border-gray-100 p-4">
+        <div className="bg-[#1E1E1E] rounded-xl border border-[#2A2A2A] p-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-              <Archive className="w-5 h-5 text-blue-600" />
+            <div className="w-10 h-10 bg-blue-900/30 rounded-lg flex items-center justify-center">
+              <Archive className="w-5 h-5 text-blue-400" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-gray-900">{inStockCount}</p>
-              <p className="text-xs text-gray-500">В наличии</p>
+              <p className="text-2xl font-bold text-[#F5F5F5]">{inStockCount}</p>
+              <p className="text-xs text-[#A0A0A0]">В наличии</p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl border border-gray-100 p-4">
+        <div className="bg-[#1E1E1E] rounded-xl border border-[#2A2A2A] p-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-              <Tag className="w-5 h-5 text-orange-600" />
+            <div className="w-10 h-10 bg-gold-500/15 rounded-lg flex items-center justify-center">
+              <Tag className="w-5 h-5 text-gold-600" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-gray-900">{categories.length}</p>
-              <p className="text-xs text-gray-500">Категорий</p>
+              <p className="text-2xl font-bold text-[#F5F5F5]">{categories.length}</p>
+              <p className="text-xs text-[#A0A0A0]">Категорий</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+      <div className="bg-[#1E1E1E] rounded-2xl shadow-sm border border-[#2A2A2A] p-5">
         <div className="flex flex-col lg:flex-row gap-4">
           {/* Search */}
           <div className="relative flex-1">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#666]" />
             <input
               type="text"
               placeholder="Поиск по названию, SKU, бренду..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all"
+              className="w-full pl-12 pr-4 py-3 border border-[#2A2A2A] rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all"
             />
           </div>
 
           {/* Category Filter */}
-          <div className="flex items-center gap-3 bg-gray-50 px-4 rounded-xl">
-            <Filter className="w-5 h-5 text-gray-400" />
+          <div className="flex items-center gap-3 bg-[#121212] px-4 rounded-xl">
+            <Filter className="w-5 h-5 text-[#666]" />
             <select
               value={categoryFilter}
               onChange={(e) => {
                 setCategoryFilter(e.target.value);
                 setPage(1);
               }}
-              className="py-3 bg-transparent border-0 focus:ring-0 font-medium text-gray-700"
+              className="py-3 bg-transparent border-0 focus:ring-0 font-medium text-[#C0C0C0]"
             >
               <option value="">Все категории</option>
               {categories.map((cat) => {
@@ -595,15 +595,15 @@ export default function AdminProductsPage() {
           </div>
 
           {/* Stock Filter */}
-          <div className="flex items-center gap-3 bg-gray-50 px-4 rounded-xl">
-            <Archive className="w-5 h-5 text-gray-400" />
+          <div className="flex items-center gap-3 bg-[#121212] px-4 rounded-xl">
+            <Archive className="w-5 h-5 text-[#666]" />
             <select
               value={stockFilter}
               onChange={(e) => {
                 setStockFilter(e.target.value);
                 setPage(1);
               }}
-              className="py-3 bg-transparent border-0 focus:ring-0 font-medium text-gray-700"
+              className="py-3 bg-transparent border-0 focus:ring-0 font-medium text-[#C0C0C0]"
             >
               <option value="">Все товары</option>
               <option value="in_stock">В наличии</option>
@@ -612,15 +612,15 @@ export default function AdminProductsPage() {
           </div>
 
           {/* Status Filter */}
-          <div className="flex items-center gap-3 bg-gray-50 px-4 rounded-xl">
-            <Eye className="w-5 h-5 text-gray-400" />
+          <div className="flex items-center gap-3 bg-[#121212] px-4 rounded-xl">
+            <Eye className="w-5 h-5 text-[#666]" />
             <select
               value={statusFilter}
               onChange={(e) => {
                 setStatusFilter(e.target.value);
                 setPage(1);
               }}
-              className="py-3 bg-transparent border-0 focus:ring-0 font-medium text-gray-700"
+              className="py-3 bg-transparent border-0 focus:ring-0 font-medium text-[#C0C0C0]"
             >
               <option value="all">Все статусы</option>
               <option value="active">Активные</option>
@@ -631,17 +631,17 @@ export default function AdminProductsPage() {
       </div>
 
       {/* Products Table */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-[#1E1E1E] rounded-2xl shadow-sm border border-[#2A2A2A] overflow-hidden">
         {/* Bulk Actions Bar */}
         {selectedIds.size > 0 && (
-          <div className="bg-orange-50 border-b border-orange-100 px-6 py-3 flex items-center justify-between">
+          <div className="bg-gold-500/10 border-b border-gold-500/20 px-6 py-3 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <span className="font-medium text-orange-700">
+              <span className="font-medium text-gold-700">
                 Выбрано: {selectedIds.size}
               </span>
               <button
                 onClick={clearSelection}
-                className="text-sm text-orange-600 hover:text-orange-700 underline"
+                className="text-sm text-gold-600 hover:text-gold-700 underline"
               >
                 Снять выбор
               </button>
@@ -649,21 +649,21 @@ export default function AdminProductsPage() {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => toggleSelectedStatus(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-green-100 text-green-700 hover:bg-green-200 rounded-lg text-sm font-medium transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-green-900/30 text-green-400 hover:bg-green-900/40 rounded-lg text-sm font-medium transition-colors"
               >
                 <Eye className="w-4 h-4" />
                 Активировать
               </button>
               <button
                 onClick={() => toggleSelectedStatus(false)}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg text-sm font-medium transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-[#252525] text-[#C0C0C0] hover:bg-[#2A2A2A] rounded-lg text-sm font-medium transition-colors"
               >
                 <EyeOff className="w-4 h-4" />
                 Скрыть
               </button>
               <button
                 onClick={() => setShowDeleteConfirm(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-red-100 text-red-700 hover:bg-red-200 rounded-lg text-sm font-medium transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-red-900/30 text-red-400 hover:bg-red-900/40 rounded-lg text-sm font-medium transition-colors"
               >
                 <Trash2 className="w-4 h-4" />
                 Удалить
@@ -675,24 +675,24 @@ export default function AdminProductsPage() {
         {/* Delete Confirmation Modal - Professional Multi-Step */}
         {showDeleteConfirm && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden">
+            <div className="bg-[#1E1E1E] rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden">
               
               {/* Step 1: Initial Confirmation */}
               {deleteStep === 'confirm' && (
                 <>
-                  <div className="p-6 border-b border-gray-100">
+                  <div className="p-6 border-b border-[#2A2A2A]">
                     <div className="flex items-center gap-4">
                       <div className="w-14 h-14 bg-gradient-to-br from-red-500 to-rose-600 rounded-2xl flex items-center justify-center shadow-lg shadow-red-500/30">
                         <Trash2 className="w-7 h-7 text-white" />
                       </div>
                       <div>
-                        <h3 className="text-xl font-bold text-gray-900">Удаление товаров</h3>
-                        <p className="text-gray-500">Выбрано товаров: {selectedIds.size}</p>
+                        <h3 className="text-xl font-bold text-[#F5F5F5]">Удаление товаров</h3>
+                        <p className="text-[#A0A0A0]">Выбрано товаров: {selectedIds.size}</p>
                       </div>
                     </div>
                   </div>
                   <div className="p-6">
-                    <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
+                    <div className="bg-amber-50 border border-gold-500/30 rounded-xl p-4 mb-6">
                       <div className="flex gap-3">
                         <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
                         <div>
@@ -707,7 +707,7 @@ export default function AdminProductsPage() {
                     <div className="flex items-center gap-3 justify-end">
                       <button
                         onClick={closeDeleteModal}
-                        className="px-5 py-2.5 text-gray-700 hover:bg-gray-100 rounded-xl font-medium transition-colors"
+                        className="px-5 py-2.5 text-[#C0C0C0] hover:bg-[#252525] rounded-xl font-medium transition-colors"
                       >
                         Отмена
                       </button>
@@ -726,23 +726,23 @@ export default function AdminProductsPage() {
               {/* Step 2: Checking Orders */}
               {deleteStep === 'checking' && (
                 <div className="p-12 text-center">
-                  <Loader2 className="w-12 h-12 text-orange-500 animate-spin mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Проверяем заказы...</h3>
-                  <p className="text-gray-500">Анализируем связи товаров с заказами клиентов</p>
+                  <Loader2 className="w-12 h-12 text-gold-500 animate-spin mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-[#F5F5F5] mb-2">Проверяем заказы...</h3>
+                  <p className="text-[#A0A0A0]">Анализируем связи товаров с заказами клиентов</p>
                 </div>
               )}
 
               {/* Step 3: Products Have Orders */}
               {deleteStep === 'has_orders' && (
                 <>
-                  <div className="p-6 border-b border-gray-100">
+                  <div className="p-6 border-b border-[#2A2A2A]">
                     <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg shadow-amber-500/30">
+                      <div className="w-14 h-14 bg-gradient-to-br from-[#252525]0 to-gold-600 rounded-2xl flex items-center justify-center shadow-lg shadow-amber-500/30">
                         <ShoppingCart className="w-7 h-7 text-white" />
                       </div>
                       <div>
-                        <h3 className="text-xl font-bold text-gray-900">Товары есть в заказах!</h3>
-                        <p className="text-gray-500">
+                        <h3 className="text-xl font-bold text-[#F5F5F5]">Товары есть в заказах!</h3>
+                        <p className="text-[#A0A0A0]">
                           {productsWithOrders.length} из {selectedIds.size} товаров заказывали клиенты
                         </p>
                       </div>
@@ -753,13 +753,13 @@ export default function AdminProductsPage() {
                     {productsWithoutOrders.length > 0 && (
                       <div className="mb-6">
                         <div className="flex items-center gap-2 mb-3">
-                          <CheckCircle2 className="w-5 h-5 text-green-600" />
-                          <span className="font-medium text-gray-900">
+                          <CheckCircle2 className="w-5 h-5 text-green-400" />
+                          <span className="font-medium text-[#F5F5F5]">
                             Можно удалить ({productsWithoutOrders.length})
                           </span>
                         </div>
-                        <div className="bg-green-50 border border-green-200 rounded-xl p-3">
-                          <p className="text-sm text-green-700">
+                        <div className="bg-green-900/20 border border-green-800/30 rounded-xl p-3">
+                          <p className="text-sm text-green-400">
                             Эти товары никто не заказывал — они будут полностью удалены.
                           </p>
                         </div>
@@ -770,16 +770,16 @@ export default function AdminProductsPage() {
                     <div className="mb-6">
                       <div className="flex items-center gap-2 mb-3">
                         <AlertTriangle className="w-5 h-5 text-amber-600" />
-                        <span className="font-medium text-gray-900">
+                        <span className="font-medium text-[#F5F5F5]">
                           Есть в заказах ({productsWithOrders.length})
                         </span>
                       </div>
                       <div className="space-y-3">
                         {productsWithOrders.map((item) => (
-                          <div key={item.productId} className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+                          <div key={item.productId} className="bg-amber-50 border border-gold-500/30 rounded-xl p-4">
                             <div className="flex items-start justify-between gap-3 mb-3">
                               <div>
-                                <h4 className="font-semibold text-gray-900">{item.productName}</h4>
+                                <h4 className="font-semibold text-[#F5F5F5]">{item.productName}</h4>
                                 <p className="text-sm text-amber-700">
                                   Заказов: {item.orderCount}
                                 </p>
@@ -790,19 +790,19 @@ export default function AdminProductsPage() {
                             </div>
                             <div className="space-y-2">
                               {item.orders.map((order) => (
-                                <div key={order.id} className="flex items-center justify-between text-sm bg-white/60 rounded-lg px-3 py-2">
+                                <div key={order.id} className="flex items-center justify-between text-sm bg-[#1E1E1E]/60 rounded-lg px-3 py-2">
                                   <div className="flex items-center gap-2">
-                                    <span className="text-gray-600">{order.user_email}</span>
+                                    <span className="text-[#A0A0A0]">{order.user_email}</span>
                                   </div>
                                   <div className="flex items-center gap-2">
                                     <span className={cn(
                                       "px-2 py-0.5 rounded-full text-xs font-medium",
-                                      order.status === 'pending' && "bg-yellow-100 text-yellow-700",
-                                      order.status === 'confirmed' && "bg-blue-100 text-blue-700",
-                                      order.status === 'processing' && "bg-purple-100 text-purple-700",
-                                      order.status === 'shipped' && "bg-indigo-100 text-indigo-700",
-                                      order.status === 'delivered' && "bg-green-100 text-green-700",
-                                      order.status === 'cancelled' && "bg-red-100 text-red-700"
+                                      order.status === 'pending' && "bg-yellow-900/30 text-yellow-400",
+                                      order.status === 'confirmed' && "bg-blue-900/30 text-blue-400",
+                                      order.status === 'processing' && "bg-purple-900/30 text-purple-400",
+                                      order.status === 'shipped' && "bg-indigo-900/30 text-indigo-400",
+                                      order.status === 'delivered' && "bg-green-900/30 text-green-400",
+                                      order.status === 'cancelled' && "bg-red-900/30 text-red-400"
                                     )}>
                                       {order.status === 'pending' && 'Новый'}
                                       {order.status === 'confirmed' && 'Подтверждён'}
@@ -811,7 +811,7 @@ export default function AdminProductsPage() {
                                       {order.status === 'delivered' && 'Доставлен'}
                                       {order.status === 'cancelled' && 'Отменён'}
                                     </span>
-                                    <span className="text-gray-400">
+                                    <span className="text-[#666]">
                                       {new Date(order.created_at).toLocaleDateString('ru-RU')}
                                     </span>
                                   </div>
@@ -829,12 +829,12 @@ export default function AdminProductsPage() {
                     </div>
 
                     {/* Custom message for notification */}
-                    <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                    <div className="bg-blue-900/20 border border-blue-800/30 rounded-xl p-4">
                       <div className="flex items-start gap-3 mb-3">
-                        <MessageSquare className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
+                        <MessageSquare className="w-5 h-5 text-blue-400 shrink-0 mt-0.5" />
                         <div>
-                          <p className="text-blue-800 font-medium">Сообщение для клиентов</p>
-                          <p className="text-blue-700 text-sm">
+                          <p className="text-blue-400 font-medium">Сообщение для клиентов</p>
+                          <p className="text-blue-400 text-sm">
                             При полном удалении клиенты получат уведомление
                           </p>
                         </div>
@@ -843,56 +843,56 @@ export default function AdminProductsPage() {
                         value={customMessage}
                         onChange={(e) => setCustomMessage(e.target.value)}
                         placeholder="Уважаемый клиент! К сожалению, товары из вашего заказа были удалены из нашего ассортимента. Приносим извинения за неудобства..."
-                        className="w-full p-3 border border-blue-200 rounded-xl text-sm resize-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                        className="w-full p-3 border border-blue-800/30 rounded-xl text-sm resize-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
                         rows={3}
                       />
                     </div>
                   </div>
                   
                   {/* Action Buttons - 3 Options */}
-                  <div className="p-6 border-t border-gray-100 bg-gray-50">
-                    <p className="text-sm text-gray-500 mb-4 text-center">Выберите действие для товаров с заказами:</p>
+                  <div className="p-6 border-t border-[#2A2A2A] bg-[#121212]">
+                    <p className="text-sm text-[#A0A0A0] mb-4 text-center">Выберите действие для товаров с заказами:</p>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       {/* Option 1: Hide */}
                       <button
                         onClick={() => executeDelete(productsWithoutOrders, productsWithOrders.map(p => p.productId))}
-                        className="flex flex-col items-center gap-2 p-4 bg-white hover:bg-amber-50 border-2 border-amber-200 hover:border-amber-400 rounded-xl transition-all group"
+                        className="flex flex-col items-center gap-2 p-4 bg-[#1E1E1E] hover:bg-amber-50 border-2 border-gold-500/30 hover:border-amber-400 rounded-xl transition-all group"
                       >
                         <div className="w-12 h-12 bg-amber-100 group-hover:bg-amber-200 rounded-xl flex items-center justify-center transition-colors">
                           <EyeOff className="w-6 h-6 text-amber-600" />
                         </div>
-                        <span className="font-semibold text-gray-900">Скрыть</span>
-                        <span className="text-xs text-gray-500 text-center">Товары станут неактивными, история сохранится</span>
+                        <span className="font-semibold text-[#F5F5F5]">Скрыть</span>
+                        <span className="text-xs text-[#A0A0A0] text-center">Товары станут неактивными, история сохранится</span>
                       </button>
                       
                       {/* Option 2: Delete without notification */}
                       <button
                         onClick={() => forceDeleteWithOrders(false)}
-                        className="flex flex-col items-center gap-2 p-4 bg-white hover:bg-red-50 border-2 border-red-200 hover:border-red-400 rounded-xl transition-all group"
+                        className="flex flex-col items-center gap-2 p-4 bg-[#1E1E1E] hover:bg-red-900/20 border-2 border-red-800/30 hover:border-red-400 rounded-xl transition-all group"
                       >
-                        <div className="w-12 h-12 bg-red-100 group-hover:bg-red-200 rounded-xl flex items-center justify-center transition-colors">
-                          <Trash2 className="w-6 h-6 text-red-600" />
+                        <div className="w-12 h-12 bg-red-900/30 group-hover:bg-red-900/40 rounded-xl flex items-center justify-center transition-colors">
+                          <Trash2 className="w-6 h-6 text-red-400" />
                         </div>
-                        <span className="font-semibold text-gray-900">Удалить тихо</span>
-                        <span className="text-xs text-gray-500 text-center">Удалить без уведомления клиентов</span>
+                        <span className="font-semibold text-[#F5F5F5]">Удалить тихо</span>
+                        <span className="text-xs text-[#A0A0A0] text-center">Удалить без уведомления клиентов</span>
                       </button>
                       
                       {/* Option 3: Delete with notification */}
                       <button
                         onClick={() => forceDeleteWithOrders(true)}
-                        className="flex flex-col items-center gap-2 p-4 bg-gradient-to-br from-orange-50 to-red-50 hover:from-orange-100 hover:to-red-100 border-2 border-orange-300 hover:border-orange-500 rounded-xl transition-all group"
+                        className="flex flex-col items-center gap-2 p-4 bg-gradient-to-br from-gold-500/10 to-red-900/20 hover:from-gold-500/15 hover:to-red-900/15 border-2 border-gold-500/40 hover:border-gold-500 rounded-xl transition-all group"
                       >
-                        <div className="w-12 h-12 bg-gradient-to-br from-orange-400 to-red-500 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/30">
+                        <div className="w-12 h-12 bg-gradient-to-br from-gold-400 to-red-900/200 rounded-xl flex items-center justify-center shadow-lg shadow-gold-500/30">
                           <Send className="w-6 h-6 text-white" />
                         </div>
-                        <span className="font-semibold text-gray-900">Удалить + Уведомить</span>
-                        <span className="text-xs text-gray-500 text-center">Отправить извинения клиентам</span>
+                        <span className="font-semibold text-[#F5F5F5]">Удалить + Уведомить</span>
+                        <span className="text-xs text-[#A0A0A0] text-center">Отправить извинения клиентам</span>
                       </button>
                     </div>
                     
                     <button
                       onClick={closeDeleteModal}
-                      className="w-full mt-4 px-5 py-2.5 text-gray-600 hover:text-gray-800 hover:bg-gray-200 rounded-xl font-medium transition-colors text-center"
+                      className="w-full mt-4 px-5 py-2.5 text-[#A0A0A0] hover:text-[#E0E0E0] hover:bg-[#2A2A2A] rounded-xl font-medium transition-colors text-center"
                     >
                       Отмена
                     </button>
@@ -904,8 +904,8 @@ export default function AdminProductsPage() {
               {deleteStep === 'deleting' && (
                 <div className="p-12 text-center">
                   <Loader2 className="w-12 h-12 text-red-500 animate-spin mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Удаляем товары...</h3>
-                  <p className="text-gray-500">Пожалуйста, подождите</p>
+                  <h3 className="text-lg font-semibold text-[#F5F5F5] mb-2">Удаляем товары...</h3>
+                  <p className="text-[#A0A0A0]">Пожалуйста, подождите</p>
                 </div>
               )}
 
@@ -913,52 +913,52 @@ export default function AdminProductsPage() {
               {deleteStep === 'notifying' && (
                 <div className="p-12 text-center">
                   <Send className="w-12 h-12 text-blue-500 animate-pulse mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Отправляем уведомления...</h3>
-                  <p className="text-gray-500">Клиенты получат сообщения об изменениях</p>
+                  <h3 className="text-lg font-semibold text-[#F5F5F5] mb-2">Отправляем уведомления...</h3>
+                  <p className="text-[#A0A0A0]">Клиенты получат сообщения об изменениях</p>
                 </div>
               )}
 
               {/* Step 5: Done */}
               {deleteStep === 'done' && deleteResult && (
                 <>
-                  <div className="p-6 border-b border-gray-100">
+                  <div className="p-6 border-b border-[#2A2A2A]">
                     <div className="flex items-center gap-4">
                       <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg shadow-green-500/30">
                         <CheckCircle2 className="w-7 h-7 text-white" />
                       </div>
                       <div>
-                        <h3 className="text-xl font-bold text-gray-900">Готово!</h3>
-                        <p className="text-gray-500">Операция выполнена успешно</p>
+                        <h3 className="text-xl font-bold text-[#F5F5F5]">Готово!</h3>
+                        <p className="text-[#A0A0A0]">Операция выполнена успешно</p>
                       </div>
                     </div>
                   </div>
                   <div className="p-6">
                     <div className="grid grid-cols-3 gap-4 mb-6">
                       {deleteResult.deleted > 0 && (
-                        <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-center">
+                        <div className="bg-red-900/20 border border-red-800/30 rounded-xl p-4 text-center">
                           <Trash2 className="w-8 h-8 text-red-500 mx-auto mb-2" />
-                          <p className="text-2xl font-bold text-red-600">{deleteResult.deleted}</p>
-                          <p className="text-sm text-red-700">Удалено</p>
+                          <p className="text-2xl font-bold text-red-400">{deleteResult.deleted}</p>
+                          <p className="text-sm text-red-400">Удалено</p>
                         </div>
                       )}
                       {deleteResult.hidden > 0 && (
-                        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-center">
+                        <div className="bg-amber-50 border border-gold-500/30 rounded-xl p-4 text-center">
                           <EyeOff className="w-8 h-8 text-amber-500 mx-auto mb-2" />
                           <p className="text-2xl font-bold text-amber-600">{deleteResult.hidden}</p>
                           <p className="text-sm text-amber-700">Скрыто</p>
                         </div>
                       )}
                       {deleteResult.notified > 0 && (
-                        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-center">
+                        <div className="bg-blue-900/20 border border-blue-800/30 rounded-xl p-4 text-center">
                           <Send className="w-8 h-8 text-blue-500 mx-auto mb-2" />
-                          <p className="text-2xl font-bold text-blue-600">{deleteResult.notified}</p>
-                          <p className="text-sm text-blue-700">Уведомлено</p>
+                          <p className="text-2xl font-bold text-blue-400">{deleteResult.notified}</p>
+                          <p className="text-sm text-blue-400">Уведомлено</p>
                         </div>
                       )}
                     </div>
                     {deleteResult.notified > 0 && (
-                      <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-4">
-                        <div className="flex items-center gap-2 text-green-700">
+                      <div className="bg-green-900/20 border border-green-800/30 rounded-xl p-4 mb-4">
+                        <div className="flex items-center gap-2 text-green-400">
                           <CheckCircle2 className="w-5 h-5" />
                           <span className="font-medium">Клиенты получили уведомления об изменениях</span>
                         </div>
@@ -988,64 +988,64 @@ export default function AdminProductsPage() {
           <>
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50">
+                <thead className="bg-[#121212]">
                   <tr>
                     <th className="px-4 py-4 text-left">
                       <button
                         onClick={selectAll}
-                        className="p-1 hover:bg-gray-200 rounded transition-colors"
+                        className="p-1 hover:bg-[#2A2A2A] rounded transition-colors"
                       >
                         {selectedIds.size === filteredProducts.length && filteredProducts.length > 0 ? (
-                          <CheckSquare className="w-5 h-5 text-orange-500" />
+                          <CheckSquare className="w-5 h-5 text-gold-500" />
                         ) : (
-                          <Square className="w-5 h-5 text-gray-400" />
+                          <Square className="w-5 h-5 text-[#666]" />
                         )}
                       </button>
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-[#A0A0A0] uppercase tracking-wider">
                       Товар
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-[#A0A0A0] uppercase tracking-wider">
                       Категория
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-[#A0A0A0] uppercase tracking-wider">
                       Цена
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-[#A0A0A0] uppercase tracking-wider">
                       Наличие
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-[#A0A0A0] uppercase tracking-wider">
                       Статус
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-[#A0A0A0] uppercase tracking-wider">
                       Действия
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100">
+                <tbody className="divide-y divide-[#2A2A2A]">
                   {filteredProducts.map((product) => (
                     <tr 
                       key={product.id} 
                       className={cn(
-                        "hover:bg-orange-50/50 transition-colors group",
-                        selectedIds.has(product.id) && "bg-orange-50"
+                        "hover:bg-gold-500/10/50 transition-colors group",
+                        selectedIds.has(product.id) && "bg-gold-500/10"
                       )}
                     >
                       <td className="px-4 py-4">
                         <button
                           onClick={() => toggleSelect(product.id)}
-                          className="p-1 hover:bg-gray-200 rounded transition-colors"
+                          className="p-1 hover:bg-[#2A2A2A] rounded transition-colors"
                         >
                           {selectedIds.has(product.id) ? (
-                            <CheckSquare className="w-5 h-5 text-orange-500" />
+                            <CheckSquare className="w-5 h-5 text-gold-500" />
                           ) : (
-                            <Square className="w-5 h-5 text-gray-400" />
+                            <Square className="w-5 h-5 text-[#666]" />
                           )}
                         </button>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-4">
-                          <div className="relative w-14 h-14 bg-gray-100 rounded-xl overflow-hidden flex-shrink-0 ring-1 ring-gray-200">
+                          <div className="relative w-14 h-14 bg-[#252525] rounded-xl overflow-hidden flex-shrink-0 ring-1 ring-gray-200">
                             {product.image_url ? (
                               <Image
                                 src={product.image_url}
@@ -1062,16 +1062,16 @@ export default function AdminProductsPage() {
                           <div className="min-w-0">
                             <Link 
                               href={`/admin/products/${product.id}`}
-                              className="font-semibold text-gray-900 hover:text-orange-600 line-clamp-1 transition-colors"
+                              className="font-semibold text-[#F5F5F5] hover:text-gold-600 line-clamp-1 transition-colors"
                             >
                               {product.name}
                             </Link>
                             <div className="flex items-center gap-2 mt-0.5">
                               {product.sku && (
-                                <span className="text-xs text-gray-400">SKU: {product.sku}</span>
+                                <span className="text-xs text-[#666]">SKU: {product.sku}</span>
                               )}
                               {product.brand && (
-                                <span className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">
+                                <span className="text-xs bg-[#252525] text-[#A0A0A0] px-2 py-0.5 rounded-full">
                                   {product.brand}
                                 </span>
                               )}
@@ -1080,27 +1080,27 @@ export default function AdminProductsPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
+                        <span className="text-sm text-[#A0A0A0] bg-[#252525] px-3 py-1 rounded-full">
                           {(product as any).category?.name || 'Без категории'}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <p className="font-bold text-gray-900">{formatPrice(product.price)}</p>
+                        <p className="font-bold text-[#F5F5F5]">{formatPrice(product.price)}</p>
                         {product.old_price && (
-                          <p className="text-xs text-gray-400 line-through">
+                          <p className="text-xs text-[#666] line-through">
                             {formatPrice(product.old_price)}
                           </p>
                         )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {(product as any).stock > 0 ? (
-                          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-900/30 text-green-400 text-xs font-semibold rounded-full">
                             <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
                             {(product as any).stock} шт.
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-100 text-red-700 text-xs font-semibold rounded-full">
-                            <span className="w-1.5 h-1.5 bg-red-500 rounded-full"></span>
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-900/30 text-red-400 text-xs font-semibold rounded-full">
+                            <span className="w-1.5 h-1.5 bg-red-900/200 rounded-full"></span>
                             Нет
                           </span>
                         )}
@@ -1111,8 +1111,8 @@ export default function AdminProductsPage() {
                           className={cn(
                             "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all",
                             product.is_active
-                              ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                              ? 'bg-green-900/30 text-green-400 hover:bg-green-900/40'
+                              : 'bg-[#252525] text-[#A0A0A0] hover:bg-[#2A2A2A]'
                           )}
                         >
                           {product.is_active ? (
@@ -1131,21 +1131,21 @@ export default function AdminProductsPage() {
                           <Link
                             href={`/product/${product.slug}`}
                             target="_blank"
-                            className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            className="p-2 text-[#666] hover:text-blue-400 hover:bg-blue-900/20 rounded-lg transition-colors"
                             title="Открыть на сайте"
                           >
                             <ExternalLink className="w-4 h-4" />
                           </Link>
                           <Link
                             href={`/admin/products/${product.id}`}
-                            className="p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+                            className="p-2 text-[#666] hover:text-gold-600 hover:bg-gold-500/10 rounded-lg transition-colors"
                             title="Редактировать"
                           >
                             <Pencil className="w-4 h-4" />
                           </Link>
                           <button
                             onClick={() => deleteProduct(product.id)}
-                            className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                            className="p-2 text-[#666] hover:text-red-500 hover:bg-red-900/20 rounded-lg transition-colors"
                             title="Удалить"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -1158,8 +1158,8 @@ export default function AdminProductsPage() {
                     <tr>
                       <td colSpan={7} className="px-6 py-16 text-center">
                         <Package className="w-12 h-12 text-gray-200 mx-auto mb-3" />
-                        <p className="text-gray-500 font-medium">Товары не найдены</p>
-                        <p className="text-gray-400 text-sm mt-1">Попробуйте изменить фильтры</p>
+                        <p className="text-[#A0A0A0] font-medium">Товары не найдены</p>
+                        <p className="text-[#666] text-sm mt-1">Попробуйте изменить фильтры</p>
                       </td>
                     </tr>
                   )}
@@ -1169,25 +1169,25 @@ export default function AdminProductsPage() {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex items-center justify-between px-6 py-4 border-t border-gray-100 bg-gray-50">
-                <p className="text-sm text-gray-500">
+              <div className="flex items-center justify-between px-6 py-4 border-t border-[#2A2A2A] bg-[#121212]">
+                <p className="text-sm text-[#A0A0A0]">
                   Показано {(page - 1) * perPage + 1} - {Math.min(page * perPage, totalCount)} из {totalCount}
                 </p>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setPage(p => Math.max(1, p - 1))}
                     disabled={page === 1}
-                    className="p-2 border border-gray-200 bg-white rounded-lg disabled:opacity-50 hover:bg-gray-50 transition-colors"
+                    className="p-2 border border-[#2A2A2A] bg-[#1E1E1E] rounded-lg disabled:opacity-50 hover:bg-[#121212] transition-colors"
                   >
                     <ChevronLeft className="w-5 h-5" />
                   </button>
-                  <span className="px-4 py-2 text-sm font-medium text-gray-700">
+                  <span className="px-4 py-2 text-sm font-medium text-[#C0C0C0]">
                     {page} / {totalPages}
                   </span>
                   <button
                     onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                     disabled={page === totalPages}
-                    className="p-2 border border-gray-200 bg-white rounded-lg disabled:opacity-50 hover:bg-gray-50 transition-colors"
+                    className="p-2 border border-[#2A2A2A] bg-[#1E1E1E] rounded-lg disabled:opacity-50 hover:bg-[#121212] transition-colors"
                   >
                     <ChevronRight className="w-5 h-5" />
                   </button>

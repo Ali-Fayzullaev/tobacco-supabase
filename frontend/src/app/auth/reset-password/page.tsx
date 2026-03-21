@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, Suspense } from 'react';
 import Link from 'next/link';
@@ -58,26 +58,26 @@ function ResetPasswordForm() {
         </div>
 
         {/* Form Card */}
-        <div className="bg-white rounded-2xl shadow-xl p-8">
+        <div className="bg-[#1E1E1E] rounded-2xl shadow-xl p-8">
           {!isSubmitted ? (
             <>
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">
+              <h1 className="text-2xl font-bold text-[#F5F5F5] mb-2">
                 Восстановление пароля
               </h1>
-              <p className="text-gray-500 mb-6">
+              <p className="text-[#A0A0A0] mb-6">
                 Введите email, указанный при регистрации. Мы отправим ссылку для сброса пароля.
               </p>
 
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 {/* Email */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-[#C0C0C0] mb-1">
                     Email
                   </label>
                   <input
                     {...register('email')}
                     type="email"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-[#333] rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent"
                     placeholder="example@mail.com"
                   />
                   {errors.email && (
@@ -98,17 +98,17 @@ function ResetPasswordForm() {
             </>
           ) : (
             <div className="text-center">
-              <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-gold-500/15 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Mail className="w-8 h-8 text-gold-600" />
               </div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">
+              <h1 className="text-2xl font-bold text-[#F5F5F5] mb-2">
                 Проверьте почту
               </h1>
-              <p className="text-gray-500 mb-6">
+              <p className="text-[#A0A0A0] mb-6">
                 Мы отправили инструкции по восстановлению пароля на{' '}
-                <span className="font-medium text-gray-700">{submittedEmail}</span>
+                <span className="font-medium text-[#C0C0C0]">{submittedEmail}</span>
               </p>
-              <p className="text-sm text-gray-400 mb-6">
+              <p className="text-sm text-[#666] mb-6">
                 Если письмо не пришло, проверьте папку «Спам»
               </p>
               <button
@@ -123,7 +123,7 @@ function ResetPasswordForm() {
           {/* Back to Login */}
           <Link
             href="/login"
-            className="flex items-center justify-center gap-2 text-gray-500 hover:text-gray-700 mt-6 transition-colors"
+            className="flex items-center justify-center gap-2 text-[#A0A0A0] hover:text-[#C0C0C0] mt-6 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             Вернуться к входу

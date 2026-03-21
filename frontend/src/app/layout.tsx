@@ -1,12 +1,16 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Montserrat } from 'next/font/google';
 import './globals.css';
 import { Toaster } from 'sonner';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { AuthProvider } from '@/context/AuthContext';
 import { StoreSettingsProvider } from '@/hooks/useStoreSettings';
 
-const inter = Inter({ subsets: ['latin', 'cyrillic'] });
+const montserrat = Montserrat({ 
+  subsets: ['latin', 'cyrillic'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-montserrat',
+});
 
 export const metadata: Metadata = {
   title: 'Shop Shop KZ - Магазин табачных изделий',
@@ -24,7 +28,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ru">
-      <body className={inter.className}>
+      <body className={montserrat.className}>
         <AuthProvider>
           <StoreSettingsProvider>
             {/* Оборачиваем приложение в ErrorBoundary — перехват ошибок на клиенте */}

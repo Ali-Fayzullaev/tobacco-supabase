@@ -1,4 +1,4 @@
-import { type ClassValue, clsx } from 'clsx';
+﻿import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
@@ -178,12 +178,12 @@ export function getStatusLabel(status: string, locale: 'ru' | 'kk' = 'ru'): stri
 // Получить цвет статуса заказа
 export function getStatusColor(status: string): string {
   const colors: Record<string, string> = {
-    new: 'bg-blue-100 text-blue-800',
-    confirmed: 'bg-green-100 text-green-800',
-    processing: 'bg-yellow-100 text-yellow-800',
-    shipping: 'bg-purple-100 text-purple-800',
-    delivered: 'bg-green-100 text-green-800',
-    cancelled: 'bg-red-100 text-red-800',
+    new: 'bg-blue-900/30 text-blue-400',
+    confirmed: 'bg-green-900/30 text-green-400',
+    processing: 'bg-yellow-900/30 text-yellow-400',
+    shipping: 'bg-purple-900/30 text-purple-400',
+    delivered: 'bg-green-900/30 text-green-400',
+    cancelled: 'bg-red-900/30 text-red-400',
   };
-  return colors[status] || 'bg-gray-100 text-gray-800';
+  return colors[status] || 'bg-[#252525] text-[#C0C0C0]';
 }

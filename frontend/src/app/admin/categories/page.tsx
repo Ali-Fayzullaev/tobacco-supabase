@@ -248,17 +248,17 @@ export default function AdminCategoriesPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 flex items-center gap-3">
-            <FolderTree className="w-8 h-8 text-orange-500" />
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#F5F5F5] flex items-center gap-3">
+            <FolderTree className="w-8 h-8 text-gold-500" />
             Категории
           </h1>
-          <p className="text-gray-500 mt-1">
+          <p className="text-[#A0A0A0] mt-1">
             {parentCategories.length} категорий • {categories.length - parentCategories.length} подкатегорий
           </p>
         </div>
         <button
           onClick={() => startCreate()}
-          className="flex items-center gap-2 px-4 py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-medium transition-colors shadow-lg shadow-orange-500/20"
+          className="flex items-center gap-2 px-4 py-2.5 bg-gold-500 hover:bg-gold-600 text-white rounded-xl font-medium transition-colors shadow-lg shadow-gold-500/20"
         >
           <Plus className="w-5 h-5" />
           <span className="hidden sm:inline">Добавить</span>
@@ -267,9 +267,9 @@ export default function AdminCategoriesPage() {
 
       {/* Error */}
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center justify-between">
-          <p className="text-red-700 text-sm">{error}</p>
-          <button onClick={() => setError(null)} className="text-red-400 hover:text-red-600">
+        <div className="bg-red-900/20 border border-red-800/30 rounded-xl p-4 flex items-center justify-between">
+          <p className="text-red-400 text-sm">{error}</p>
+          <button onClick={() => setError(null)} className="text-red-400 hover:text-red-400">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -277,12 +277,12 @@ export default function AdminCategoriesPage() {
 
       {/* Form */}
       {(isCreating || editingCategory) && (
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+        <div className="bg-[#1E1E1E] rounded-2xl border border-[#2A2A2A] shadow-sm p-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-bold text-gray-900">
+            <h2 className="text-lg font-bold text-[#F5F5F5]">
               {editingCategory ? 'Редактировать категорию' : 'Новая категория'}
             </h2>
-            <button onClick={resetForm} className="text-gray-400 hover:text-gray-600">
+            <button onClick={resetForm} className="text-[#666] hover:text-[#A0A0A0]">
               <X className="w-5 h-5" />
             </button>
           </div>
@@ -290,7 +290,7 @@ export default function AdminCategoriesPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Name */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              <label className="block text-sm font-medium text-[#C0C0C0] mb-1.5">
                 Название *
               </label>
               <input
@@ -304,13 +304,13 @@ export default function AdminCategoriesPage() {
                   }));
                 }}
                 placeholder="Например: Сигареты"
-                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 outline-none"
+                className="w-full px-4 py-2.5 bg-[#121212] border border-[#2A2A2A] rounded-xl text-[#F5F5F5] focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 outline-none"
               />
             </div>
 
             {/* Name KK */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              <label className="block text-sm font-medium text-[#C0C0C0] mb-1.5">
                 Название (казахский)
               </label>
               <input
@@ -318,13 +318,13 @@ export default function AdminCategoriesPage() {
                 value={form.name_kk}
                 onChange={(e) => setForm(prev => ({ ...prev, name_kk: e.target.value }))}
                 placeholder="Қазақша атауы"
-                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 outline-none"
+                className="w-full px-4 py-2.5 bg-[#121212] border border-[#2A2A2A] rounded-xl text-[#F5F5F5] focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 outline-none"
               />
             </div>
 
             {/* Slug */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              <label className="block text-sm font-medium text-[#C0C0C0] mb-1.5">
                 URL (slug)
               </label>
               <input
@@ -332,19 +332,19 @@ export default function AdminCategoriesPage() {
                 value={form.slug}
                 onChange={(e) => setForm(prev => ({ ...prev, slug: e.target.value }))}
                 placeholder="cigarettes"
-                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 outline-none font-mono text-sm"
+                className="w-full px-4 py-2.5 bg-[#121212] border border-[#2A2A2A] rounded-xl text-[#F5F5F5] focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 outline-none font-mono text-sm"
               />
             </div>
 
             {/* Parent */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              <label className="block text-sm font-medium text-[#C0C0C0] mb-1.5">
                 Родительская категория
               </label>
               <select
                 value={form.parent_id || ''}
                 onChange={(e) => setForm(prev => ({ ...prev, parent_id: e.target.value || null }))}
-                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 outline-none"
+                className="w-full px-4 py-2.5 bg-[#121212] border border-[#2A2A2A] rounded-xl text-[#F5F5F5] focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 outline-none"
               >
                 <option value="">— Корневая категория —</option>
                 {parentCategories
@@ -358,7 +358,7 @@ export default function AdminCategoriesPage() {
 
             {/* Description */}
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              <label className="block text-sm font-medium text-[#C0C0C0] mb-1.5">
                 Описание
               </label>
               <textarea
@@ -366,28 +366,28 @@ export default function AdminCategoriesPage() {
                 onChange={(e) => setForm(prev => ({ ...prev, description: e.target.value }))}
                 placeholder="Описание категории..."
                 rows={2}
-                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 outline-none resize-none"
+                className="w-full px-4 py-2.5 bg-[#121212] border border-[#2A2A2A] rounded-xl text-[#F5F5F5] focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 outline-none resize-none"
               />
             </div>
 
             {/* Image */}
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              <label className="block text-sm font-medium text-[#C0C0C0] mb-1.5">
                 Изображение
               </label>
               <div className="flex gap-4 items-start">
                 {form.image_url ? (
-                  <div className="relative w-32 h-20 rounded-xl overflow-hidden border border-gray-200">
+                  <div className="relative w-32 h-20 rounded-xl overflow-hidden border border-[#2A2A2A]">
                     <img src={form.image_url} alt="" className="w-full h-full object-cover" />
                     <button
                       onClick={() => setForm(prev => ({ ...prev, image_url: '' }))}
-                      className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs"
+                      className="absolute top-1 right-1 w-6 h-6 bg-red-900/200 text-white rounded-full flex items-center justify-center text-xs"
                     >
                       <X className="w-3 h-3" />
                     </button>
                   </div>
                 ) : (
-                  <div className="w-32 h-20 rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center">
+                  <div className="w-32 h-20 rounded-xl border-2 border-dashed border-[#333] flex items-center justify-center">
                     <ImageIcon className="w-6 h-6 text-gray-300" />
                   </div>
                 )}
@@ -397,9 +397,9 @@ export default function AdminCategoriesPage() {
                     value={form.image_url}
                     onChange={(e) => setForm(prev => ({ ...prev, image_url: e.target.value }))}
                     placeholder="URL изображения или загрузите файл"
-                    className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 outline-none text-sm"
+                    className="w-full px-4 py-2.5 bg-[#121212] border border-[#2A2A2A] rounded-xl text-[#F5F5F5] focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 outline-none text-sm"
                   />
-                  <label className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl cursor-pointer transition-colors text-sm">
+                  <label className="inline-flex items-center gap-2 px-4 py-2 bg-[#252525] hover:bg-[#2A2A2A] text-[#C0C0C0] rounded-xl cursor-pointer transition-colors text-sm">
                     <Upload className="w-4 h-4" />
                     Загрузить
                     <input
@@ -416,12 +416,12 @@ export default function AdminCategoriesPage() {
             {/* Sort Order + Active */}
             <div className="flex items-center gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Порядок</label>
+                <label className="block text-sm font-medium text-[#C0C0C0] mb-1.5">Порядок</label>
                 <input
                   type="number"
                   value={form.sort_order}
                   onChange={(e) => setForm(prev => ({ ...prev, sort_order: parseInt(e.target.value) || 0 }))}
-                  className="w-24 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 outline-none"
+                  className="w-24 px-4 py-2.5 bg-[#121212] border border-[#2A2A2A] rounded-xl text-[#F5F5F5] focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 outline-none"
                 />
               </div>
               <label className="flex items-center gap-3 cursor-pointer mt-6">
@@ -433,31 +433,31 @@ export default function AdminCategoriesPage() {
                 />
                 <div className={cn(
                   "w-11 h-6 rounded-full transition-colors relative",
-                  form.is_active ? "bg-orange-500" : "bg-gray-300"
+                  form.is_active ? "bg-gold-500" : "bg-[#444]"
                 )}>
                   <div className={cn(
-                    "w-5 h-5 bg-white rounded-full absolute top-0.5 transition-transform shadow-sm",
+                    "w-5 h-5 bg-[#1E1E1E] rounded-full absolute top-0.5 transition-transform shadow-sm",
                     form.is_active ? "translate-x-5" : "translate-x-0.5"
                   )} />
                 </div>
-                <span className="text-sm text-gray-700">Активна</span>
+                <span className="text-sm text-[#C0C0C0]">Активна</span>
               </label>
             </div>
           </div>
 
           {/* Actions */}
-          <div className="flex gap-3 mt-6 pt-6 border-t border-gray-100">
+          <div className="flex gap-3 mt-6 pt-6 border-t border-[#2A2A2A]">
             <button
               onClick={handleSave}
               disabled={isSaving}
-              className="flex items-center gap-2 px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-medium transition-colors disabled:opacity-50"
+              className="flex items-center gap-2 px-6 py-2.5 bg-gold-500 hover:bg-gold-600 text-white rounded-xl font-medium transition-colors disabled:opacity-50"
             >
               {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
               {editingCategory ? 'Сохранить' : 'Создать'}
             </button>
             <button
               onClick={resetForm}
-              className="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-medium transition-colors"
+              className="px-6 py-2.5 bg-[#252525] hover:bg-[#2A2A2A] text-[#C0C0C0] rounded-xl font-medium transition-colors"
             >
               Отмена
             </button>
@@ -471,16 +471,16 @@ export default function AdminCategoriesPage() {
           const subs = getSubcategories(category.id);
           
           return (
-            <div key={category.id} className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+            <div key={category.id} className="bg-[#1E1E1E] rounded-2xl border border-[#2A2A2A] shadow-sm overflow-hidden">
               {/* Parent Category */}
-              <div className="flex items-center gap-4 p-4 hover:bg-gray-50 transition-colors">
+              <div className="flex items-center gap-4 p-4 hover:bg-[#121212] transition-colors">
                 {/* Image */}
-                <div className="w-16 h-12 rounded-xl overflow-hidden bg-gray-100 shrink-0">
+                <div className="w-16 h-12 rounded-xl overflow-hidden bg-[#252525] shrink-0">
                   {category.image_url ? (
                     <img src={category.image_url} alt={category.name} className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                      <FolderOpen className="w-5 h-5 text-gray-400" />
+                      <FolderOpen className="w-5 h-5 text-[#666]" />
                     </div>
                   )}
                 </div>
@@ -488,18 +488,18 @@ export default function AdminCategoriesPage() {
                 {/* Info */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <h3 className="font-bold text-gray-900">{category.name}</h3>
+                    <h3 className="font-bold text-[#F5F5F5]">{category.name}</h3>
                     {!category.is_active && (
-                      <span className="px-2 py-0.5 bg-gray-100 text-gray-500 text-xs rounded-full">Скрыта</span>
+                      <span className="px-2 py-0.5 bg-[#252525] text-[#A0A0A0] text-xs rounded-full">Скрыта</span>
                     )}
                     {subs.length > 0 && (
-                      <span className="px-2 py-0.5 bg-orange-100 text-orange-600 text-xs rounded-full flex items-center gap-1">
+                      <span className="px-2 py-0.5 bg-gold-500/15 text-gold-600 text-xs rounded-full flex items-center gap-1">
                         <Layers className="w-3 h-3" />
                         {subs.length}
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-[#A0A0A0]">
                     /{category.slug}
                     {category.description && ` • ${category.description}`}
                   </p>
@@ -510,14 +510,14 @@ export default function AdminCategoriesPage() {
                   <button
                     onClick={() => moveCategory(category.id, 'up')}
                     disabled={idx === 0}
-                    className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg disabled:opacity-30 transition-colors"
+                    className="p-2 text-[#666] hover:text-[#A0A0A0] hover:bg-[#252525] rounded-lg disabled:opacity-30 transition-colors"
                   >
                     <ArrowUp className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => moveCategory(category.id, 'down')}
                     disabled={idx === parentCategories.length - 1}
-                    className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg disabled:opacity-30 transition-colors"
+                    className="p-2 text-[#666] hover:text-[#A0A0A0] hover:bg-[#252525] rounded-lg disabled:opacity-30 transition-colors"
                   >
                     <ArrowDown className="w-4 h-4" />
                   </button>
@@ -526,8 +526,8 @@ export default function AdminCategoriesPage() {
                     className={cn(
                       "p-2 rounded-lg transition-colors",
                       category.is_active 
-                        ? "text-green-600 hover:bg-green-50" 
-                        : "text-gray-400 hover:bg-gray-100"
+                        ? "text-green-400 hover:bg-green-900/20" 
+                        : "text-[#666] hover:bg-[#252525]"
                     )}
                     title={category.is_active ? 'Скрыть' : 'Показать'}
                   >
@@ -535,20 +535,20 @@ export default function AdminCategoriesPage() {
                   </button>
                   <button
                     onClick={() => startCreate(category.id)}
-                    className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
+                    className="p-2 text-blue-500 hover:bg-blue-900/20 rounded-lg transition-colors"
                     title="Добавить подкатегорию"
                   >
                     <Plus className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => startEdit(category)}
-                    className="p-2 text-orange-500 hover:bg-orange-50 rounded-lg transition-colors"
+                    className="p-2 text-gold-500 hover:bg-gold-500/10 rounded-lg transition-colors"
                   >
                     <Pencil className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => deleteCategory(category)}
-                    className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    className="p-2 text-red-400 hover:text-red-400 hover:bg-red-900/20 rounded-lg transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -557,16 +557,16 @@ export default function AdminCategoriesPage() {
 
               {/* Subcategories */}
               {subs.length > 0 && (
-                <div className="border-t border-gray-100 bg-gray-50/50">
+                <div className="border-t border-[#2A2A2A] bg-[#1a1a1a]">
                   {subs.map((sub, subIdx) => (
                     <div 
                       key={sub.id}
-                      className="flex items-center gap-4 px-4 py-3 pl-10 hover:bg-gray-100/50 transition-colors border-b border-gray-100 last:border-0"
+                      className="flex items-center gap-4 px-4 py-3 pl-10 hover:bg-[#252525]/50 transition-colors border-b border-[#2A2A2A] last:border-0"
                     >
                       <ChevronRight className="w-4 h-4 text-gray-300 shrink-0" />
                       
                       {/* Sub Image */}
-                      <div className="w-12 h-9 rounded-lg overflow-hidden bg-gray-100 shrink-0">
+                      <div className="w-12 h-9 rounded-lg overflow-hidden bg-[#252525] shrink-0">
                         {sub.image_url ? (
                           <img src={sub.image_url} alt={sub.name} className="w-full h-full object-cover" />
                         ) : (
@@ -579,12 +579,12 @@ export default function AdminCategoriesPage() {
                       {/* Sub Info */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className="font-medium text-gray-800">{sub.name}</span>
+                          <span className="font-medium text-[#E0E0E0]">{sub.name}</span>
                           {!sub.is_active && (
-                            <span className="px-2 py-0.5 bg-gray-100 text-gray-500 text-xs rounded-full">Скрыта</span>
+                            <span className="px-2 py-0.5 bg-[#252525] text-[#A0A0A0] text-xs rounded-full">Скрыта</span>
                           )}
                         </div>
-                        <p className="text-xs text-gray-400">/{sub.slug}</p>
+                        <p className="text-xs text-[#666]">/{sub.slug}</p>
                       </div>
 
                       {/* Sub Actions */}
@@ -592,14 +592,14 @@ export default function AdminCategoriesPage() {
                         <button
                           onClick={() => moveCategory(sub.id, 'up')}
                           disabled={subIdx === 0}
-                          className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-200 rounded disabled:opacity-30"
+                          className="p-1.5 text-[#666] hover:text-[#A0A0A0] hover:bg-[#2A2A2A] rounded disabled:opacity-30"
                         >
                           <ArrowUp className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={() => moveCategory(sub.id, 'down')}
                           disabled={subIdx === subs.length - 1}
-                          className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-200 rounded disabled:opacity-30"
+                          className="p-1.5 text-[#666] hover:text-[#A0A0A0] hover:bg-[#2A2A2A] rounded disabled:opacity-30"
                         >
                           <ArrowDown className="w-3.5 h-3.5" />
                         </button>
@@ -607,20 +607,20 @@ export default function AdminCategoriesPage() {
                           onClick={() => toggleActive(sub)}
                           className={cn(
                             "p-1.5 rounded transition-colors",
-                            sub.is_active ? "text-green-500 hover:bg-green-50" : "text-gray-400 hover:bg-gray-200"
+                            sub.is_active ? "text-green-500 hover:bg-green-900/20" : "text-[#666] hover:bg-[#2A2A2A]"
                           )}
                         >
                           {sub.is_active ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
                         </button>
                         <button
                           onClick={() => startEdit(sub)}
-                          className="p-1.5 text-orange-500 hover:bg-orange-50 rounded transition-colors"
+                          className="p-1.5 text-gold-500 hover:bg-gold-500/10 rounded transition-colors"
                         >
                           <Pencil className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={() => deleteCategory(sub)}
-                          className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                          className="p-1.5 text-red-400 hover:text-red-400 hover:bg-red-900/20 rounded transition-colors"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -635,13 +635,13 @@ export default function AdminCategoriesPage() {
       </div>
 
       {categories.length === 0 && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-12 text-center">
+        <div className="bg-[#1E1E1E] rounded-2xl border border-[#2A2A2A] p-12 text-center">
           <FolderOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Нет категорий</h3>
-          <p className="text-gray-500 mb-6">Создайте первую категорию для каталога</p>
+          <h3 className="text-lg font-semibold text-[#F5F5F5] mb-2">Нет категорий</h3>
+          <p className="text-[#A0A0A0] mb-6">Создайте первую категорию для каталога</p>
           <button
             onClick={() => startCreate()}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-medium transition-colors"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-gold-500 hover:bg-gold-600 text-white rounded-xl font-medium transition-colors"
           >
             <Plus className="w-5 h-5" />
             Создать категорию

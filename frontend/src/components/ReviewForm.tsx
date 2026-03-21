@@ -85,9 +85,9 @@ export function ReviewForm({
   };
 
   return (
-    <Card className="bg-white border-gray-200 shadow-sm">
+    <Card className="bg-[#1E1E1E] border-[#2A2A2A] shadow-sm">
       <CardHeader>
-        <CardTitle className="text-lg text-gray-900">
+        <CardTitle className="text-lg text-[#F5F5F5]">
           {initialData ? 'Редактировать отзыв' : 'Оставить отзыв'}
         </CardTitle>
       </CardHeader>
@@ -95,7 +95,7 @@ export function ReviewForm({
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Rating */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-[#A0A0A0] mb-2">
               Ваша оценка *
             </label>
             <div className="flex items-center gap-4">
@@ -120,7 +120,7 @@ export function ReviewForm({
                   </button>
                 ))}
               </div>
-              <span className="text-sm text-gray-600">
+              <span className="text-sm text-[#A0A0A0]">
                 {getRatingText(hoveredRating || rating)}
               </span>
             </div>
@@ -129,28 +129,28 @@ export function ReviewForm({
 
           {/* Title */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-[#A0A0A0] mb-2">
               Заголовок отзыва
             </label>
             <Input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Кратко опишите впечатление"
-              className="bg-gray-50 border-gray-200"
+              className="bg-[#121212] border-[#2A2A2A] text-[#F5F5F5]"
               maxLength={100}
             />
           </div>
 
           {/* Comment */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-[#A0A0A0] mb-2">
               Комментарий
             </label>
             <textarea
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               placeholder="Расскажите подробнее о вашем опыте использования товара..."
-              className="w-full min-h-[120px] px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-300"
+              className="w-full min-h-[120px] px-3 py-2 bg-[#121212] border border-[#2A2A2A] rounded-lg resize-none text-[#F5F5F5] placeholder:text-[#666] focus:outline-none focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500"
               maxLength={1000}
             />
           </div>
@@ -158,26 +158,26 @@ export function ReviewForm({
           {/* Pros & Cons */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-[#A0A0A0] mb-2">
                 👍 Достоинства
               </label>
               <textarea
                 value={pros}
                 onChange={(e) => setPros(e.target.value)}
                 placeholder="Что понравилось?"
-                className="w-full min-h-[80px] px-3 py-2 bg-green-50 border border-green-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-300"
+                className="w-full min-h-[80px] px-3 py-2 bg-green-900/10 border border-green-800/30 rounded-lg resize-none text-[#F5F5F5] placeholder:text-[#666] focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-600"
                 maxLength={500}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-[#A0A0A0] mb-2">
                 👎 Недостатки
               </label>
               <textarea
                 value={cons}
                 onChange={(e) => setCons(e.target.value)}
                 placeholder="Что не понравилось?"
-                className="w-full min-h-[80px] px-3 py-2 bg-red-50 border border-red-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-300"
+                className="w-full min-h-[80px] px-3 py-2 bg-red-900/10 border border-red-800/30 rounded-lg resize-none text-[#F5F5F5] placeholder:text-[#666] focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-600"
                 maxLength={500}
               />
             </div>
@@ -188,7 +188,7 @@ export function ReviewForm({
             <Button
               type="submit"
               disabled={isLoading}
-              className="bg-orange-500 hover:bg-orange-600 gap-2"
+              className="bg-gold-500 hover:bg-gold-600 text-[#121212] font-semibold gap-2"
             >
               <Send className="h-4 w-4" />
               {initialData ? 'Сохранить' : 'Отправить отзыв'}
@@ -199,7 +199,7 @@ export function ReviewForm({
                 variant="outline"
                 onClick={onCancel}
                 disabled={isLoading}
-                className="border-gray-200"
+                className="border-[#2A2A2A] text-[#A0A0A0]"
               >
                 Отмена
               </Button>

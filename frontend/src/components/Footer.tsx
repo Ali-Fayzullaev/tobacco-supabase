@@ -31,37 +31,37 @@ export function Footer() {
   const paymentText = paymentMethods.length > 0 ? paymentMethods.join(', ') : 'Kaspi, карты, наличные';
 
   return (
-    <footer className="bg-gray-900 text-white">
+    <footer className="bg-[#0D0D0D] text-[#F5F5F5]">
       {/* Features bar */}
-      <div className="bg-orange-500">
+      <div className="bg-gradient-to-r from-gold-600 to-gold-500">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 py-4">
-            <div className="flex items-center gap-3 text-white">
+            <div className="flex items-center gap-3 text-[#121212]">
               <Truck className="h-6 w-6 flex-shrink-0" />
               <div>
                 <p className="font-medium text-sm">Бесплатная доставка</p>
-                <p className="text-xs text-orange-100">от {Number(freeDeliveryAmount).toLocaleString('ru-RU')} ₸</p>
+                <p className="text-xs text-[#121212]/70">от {Number(freeDeliveryAmount).toLocaleString('ru-RU')} ₸</p>
               </div>
             </div>
-            <div className="flex items-center gap-3 text-white">
+            <div className="flex items-center gap-3 text-[#121212]">
               <CreditCard className="h-6 w-6 flex-shrink-0" />
               <div>
                 <p className="font-medium text-sm">Удобная оплата</p>
-                <p className="text-xs text-orange-100">{paymentText}</p>
+                <p className="text-xs text-[#121212]/70">{paymentText}</p>
               </div>
             </div>
-            <div className="flex items-center gap-3 text-white">
+            <div className="flex items-center gap-3 text-[#121212]">
               <Shield className="h-6 w-6 flex-shrink-0" />
               <div>
                 <p className="font-medium text-sm">Гарантия качества</p>
-                <p className="text-xs text-orange-100">Только оригинал</p>
+                <p className="text-xs text-[#121212]/70">Только оригинал</p>
               </div>
             </div>
-            <div className="flex items-center gap-3 text-white">
+            <div className="flex items-center gap-3 text-[#121212]">
               <Phone className="h-6 w-6 flex-shrink-0" />
               <div>
                 <p className="font-medium text-sm">Поддержка 24/7</p>
-                <p className="text-xs text-orange-100">{storePhone}</p>
+                <p className="text-xs text-[#121212]/70">{storePhone}</p>
               </div>
             </div>
           </div>
@@ -74,27 +74,27 @@ export function Footer() {
           {/* Brand */}
           <div>
             <Link href="/" className="flex items-center gap-2 mb-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600">
-                <span className="text-lg font-bold text-white">{storeName.charAt(0)}</span>
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-gold-500 to-gold-600">
+                <span className="text-lg font-bold text-[#121212]">{storeName.charAt(0)}</span>
               </div>
               <div>
-                <span className="text-lg font-bold text-white">{storeName.split(' ')[0] || 'Shop'}</span>
-                <span className="text-lg font-bold text-orange-500">{storeName.split(' ').slice(1).join(' ') || 'Shop'}</span>
+                <span className="text-lg font-bold text-[#F5F5F5]">{storeName.split(' ')[0] || 'Shop'}</span>
+                <span className="text-lg font-bold text-gold-500">{storeName.split(' ').slice(1).join(' ') || 'Shop'}</span>
               </div>
             </Link>
-            <p className="text-gray-400 text-sm mb-4">
+            <p className="text-[#666] text-sm mb-4">
               {settings.store_description || 'Премиальные табачные изделия от лучших мировых производителей.'}
             </p>
             <div className="flex gap-3">
               <a 
                 href="#" 
-                className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-800 text-gray-400 hover:bg-orange-500 hover:text-white transition-colors"
+                className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#1E1E1E] text-[#A0A0A0] hover:bg-gold-500 hover:text-[#121212] transition-colors"
               >
                 <Instagram className="h-5 w-5" />
               </a>
               <a 
                 href="#" 
-                className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-800 text-gray-400 hover:bg-orange-500 hover:text-white transition-colors"
+                className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#1E1E1E] text-[#A0A0A0] hover:bg-gold-500 hover:text-[#121212] transition-colors"
               >
                 <MessageCircle className="h-5 w-5" />
               </a>
@@ -103,7 +103,7 @@ export function Footer() {
 
           {/* Catalog */}
           <div>
-            <h3 className="text-white font-semibold mb-4">Каталог</h3>
+            <h3 className="text-[#F5F5F5] font-semibold mb-4">Каталог</h3>
             <ul className="space-y-2">
               {[
                 { href: '/catalog?category=cigarettes', label: 'Сигареты' },
@@ -115,7 +115,7 @@ export function Footer() {
                 <li key={link.href}>
                   <Link 
                     href={link.href}
-                    className="text-gray-400 hover:text-orange-500 transition-colors text-sm"
+                    className="text-[#A0A0A0] hover:text-gold-500 transition-colors text-sm"
                   >
                     {link.label}
                   </Link>
@@ -126,7 +126,7 @@ export function Footer() {
 
           {/* Info */}
           <div>
-            <h3 className="text-white font-semibold mb-4">Информация</h3>
+            <h3 className="text-[#F5F5F5] font-semibold mb-4">Информация</h3>
             <ul className="space-y-2">
               {[
                 { href: '/about', label: 'О компании' },
@@ -138,7 +138,7 @@ export function Footer() {
                 <li key={link.href}>
                   <Link 
                     href={link.href}
-                    className="text-gray-400 hover:text-orange-500 transition-colors text-sm"
+                    className="text-[#A0A0A0] hover:text-gold-500 transition-colors text-sm"
                   >
                     {link.label}
                   </Link>
@@ -149,35 +149,35 @@ export function Footer() {
 
           {/* Contacts */}
           <div>
-            <h3 className="text-white font-semibold mb-4">Контакты</h3>
+            <h3 className="text-[#F5F5F5] font-semibold mb-4">Контакты</h3>
             <ul className="space-y-3">
               <li>
                 <a 
                   href={`tel:${storePhone.replace(/[^+\d]/g, '')}`}
-                  className="flex items-center gap-3 text-gray-400 hover:text-orange-500 transition-colors"
+                  className="flex items-center gap-3 text-[#A0A0A0] hover:text-gold-500 transition-colors"
                 >
-                  <Phone className="h-4 w-4 text-orange-500" />
+                  <Phone className="h-4 w-4 text-gold-500" />
                   <span className="text-sm">{storePhone}</span>
                 </a>
               </li>
               <li>
                 <a 
                   href={`mailto:${storeEmail}`}
-                  className="flex items-center gap-3 text-gray-400 hover:text-orange-500 transition-colors"
+                  className="flex items-center gap-3 text-[#A0A0A0] hover:text-gold-500 transition-colors"
                 >
-                  <Mail className="h-4 w-4 text-orange-500" />
+                  <Mail className="h-4 w-4 text-gold-500" />
                   <span className="text-sm">{storeEmail}</span>
                 </a>
               </li>
-              <li className="flex items-start gap-3 text-gray-400">
-                <MapPin className="h-4 w-4 text-orange-500 flex-shrink-0 mt-0.5" />
+              <li className="flex items-start gap-3 text-[#A0A0A0]">
+                <MapPin className="h-4 w-4 text-gold-500 flex-shrink-0 mt-0.5" />
                 <span className="text-sm">{storeAddress}</span>
               </li>
             </ul>
             
-            <div className="mt-4 p-3 rounded-lg bg-gray-800">
-              <p className="text-sm text-white font-medium">Режим работы:</p>
-              <p className="text-sm text-gray-400">Пн-Вс: 09:00 - 21:00</p>
+            <div className="mt-4 p-3 rounded-lg bg-[#1E1E1E]">
+              <p className="text-sm text-[#F5F5F5] font-medium">Режим работы:</p>
+              <p className="text-sm text-[#A0A0A0]">Пн-Вс: 09:00 - 21:00</p>
             </div>
           </div>
         </div>
@@ -194,14 +194,14 @@ export function Footer() {
       </div>
 
       {/* Bottom */}
-      <div className="border-t border-gray-800">
+      <div className="border-t border-[#1E1E1E]">
         <div className="container mx-auto px-4 py-4">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-gray-500 text-sm">
+            <p className="text-[#A0A0A0] text-sm">
               © {new Date().getFullYear()} {storeName}. Все права защищены.
             </p>
             <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2 text-gray-500 text-sm">
+              <div className="flex items-center gap-2 text-[#A0A0A0] text-sm">
                 <span className="text-lg">🇰🇿</span>
                 <span>Казахстан</span>
               </div>

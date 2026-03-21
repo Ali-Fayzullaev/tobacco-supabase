@@ -4,33 +4,34 @@
 
 @layer base {
   :root {
-    --background: 0 0% 98%;
-    --foreground: 222 47% 11%;
+    /* Тёмная премиальная тема */
+    --background: 0 0% 7.1%;         /* #121212 — глубокий антрацит */
+    --foreground: 0 0% 96.1%;        /* #F5F5F5 — молочно-белый */
 
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card: 0 0% 11.8%;              /* #1E1E1E — тёмно-серый (карточки/блоки) */
+    --card-foreground: 0 0% 96.1%;   /* #F5F5F5 */
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover: 0 0% 11.8%;           /* #1E1E1E */
+    --popover-foreground: 0 0% 96.1%;
 
-    --primary: 24 95% 53%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 43 75% 52%;           /* #D4AF37 — матовое золото */
+    --primary-foreground: 0 0% 7.1%; /* #121212 */
 
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222 47% 11%;
+    --secondary: 0 0% 15%;           /* #262626 */
+    --secondary-foreground: 0 0% 96.1%;
 
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 0 0% 15%;               /* #262626 */
+    --muted-foreground: 0 0% 62.7%;  /* #A0A0A0 — серый (второстепенный текст) */
 
-    --accent: 24 95% 53%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 43 75% 52%;            /* #D4AF37 — матовое золото */
+    --accent-foreground: 0 0% 7.1%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 24 95% 53%;
+    --border: 0 0% 18%;              /* #2E2E2E */
+    --input: 0 0% 18%;               /* #2E2E2E */
+    --ring: 43 75% 52%;              /* #D4AF37 */
 
     --radius: 0.5rem;
   }
@@ -50,11 +51,11 @@
 
 /* Кастомные стили для предупреждения о вреде курения */
 .smoking-warning {
-  @apply bg-red-50 border-l-4 border-red-500 p-4 my-4;
+  @apply bg-red-900/30 border-l-4 border-red-500 p-4 my-4;
 }
 
 .smoking-warning-text {
-  @apply text-red-700 text-sm font-medium;
+  @apply text-red-400 text-sm font-medium;
 }
 
 /* Золотой градиент для премиальных элементов */
@@ -85,4 +86,16 @@
 
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+/* Skeleton shimmer для тёмной темы */
+@keyframes skeleton-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton-dark {
+  background: linear-gradient(90deg, #1E1E1E 25%, #2A2A2A 50%, #1E1E1E 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
 }

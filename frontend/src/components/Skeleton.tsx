@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 
@@ -7,7 +7,7 @@ export function Skeleton({ className = '', style }: { className?: string; style?
   return (
     <div
       aria-hidden
-      className={`bg-gray-200/60 dark:bg-gray-700/30 animate-pulse ${className}`}
+      className={`skeleton-dark rounded ${className}`}
       style={style}
     />
   );
@@ -23,8 +23,8 @@ export function ProductCardSkeleton({ size = 'normal' }: { size?: 'compact' | 'n
   const s = sizes[size] || sizes.normal;
 
   return (
-    <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden flex flex-col h-full">
-      <div className={`relative bg-gray-100 ${s.imgH} w-full`}>
+    <div className="bg-[#1E1E1E] rounded-xl border border-[#2A2A2A] shadow-sm overflow-hidden flex flex-col h-full">
+      <div className={`relative bg-[#252525] ${s.imgH} w-full`}>
         <div className="absolute inset-3 rounded-md overflow-hidden">
           <Skeleton className="w-full h-full rounded-md" />
         </div>
@@ -49,8 +49,8 @@ export function ProductCardSkeleton({ size = 'normal' }: { size?: 'compact' | 'n
 // Compact variant для списка
 export function ProductCardCompactSkeleton() {
   return (
-    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-3 flex gap-3 items-center">
-      <div className="w-20 h-16 bg-gray-100 rounded-md shrink-0">
+    <div className="bg-[#1E1E1E] rounded-xl border border-[#2A2A2A] shadow-sm p-3 flex gap-3 items-center">
+      <div className="w-20 h-16 bg-[#252525] rounded-md shrink-0">
         <Skeleton className="w-full h-full rounded-md" />
       </div>
       <div className="flex-1 space-y-2">
@@ -84,9 +84,9 @@ export function TableRowSkeleton({ cols = 6 }: { cols?: number }) {
 // Skeleton для карточки статистики (дашборд)
 export function StatCardSkeleton() {
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm">
+    <div className="bg-[#1E1E1E] rounded-2xl border border-[#2A2A2A] p-4 shadow-sm">
       <div className="flex items-center gap-4">
-        <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+        <div className="w-12 h-12 bg-[#252525] rounded-lg flex items-center justify-center">
           <Skeleton className="w-8 h-8 rounded-md" />
         </div>
         <div className="flex-1">
@@ -101,20 +101,20 @@ export function StatCardSkeleton() {
 // Skeleton для таблицы — заголовок + ряд(ы)
 export function TableSkeleton({ cols = 6, rows = 6 }: { cols?: number; rows?: number }) {
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+    <div className="bg-[#1E1E1E] rounded-2xl border border-[#2A2A2A] shadow-sm overflow-hidden">
       <div className="p-4">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50">
+            <thead className="bg-[#252525]">
               <tr>
                 {Array.from({ length: cols }).map((_, i) => (
-                  <th key={i} className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  <th key={i} className="px-6 py-4 text-left text-xs font-semibold text-[#A0A0A0] uppercase tracking-wider">
                     <Skeleton className="rounded-md" style={{ height: 12, width: i === 0 ? 36 : '80%' }} />
                   </th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-[#2A2A2A]">
               {Array.from({ length: rows }).map((_, r) => (
                 <TableRowSkeleton key={r} cols={cols} />
               ))}
@@ -137,9 +137,9 @@ export function CenteredPageSkeleton({
   subtitle?: string;
 }) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-amber-50 flex items-center justify-center">
+    <div className="min-h-screen bg-[#121212] flex items-center justify-center">
       <div className="text-center">
-        <div className="w-16 h-16 bg-gradient-to-br from-orange-400 to-amber-400 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl ring-1 ring-amber-100 border border-white/10">
+        <div className="w-16 h-16 bg-gradient-to-br from-gold-500 to-gold-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-gold-500/20">
           {icon ? <div className="w-8 h-8">{icon}</div> : <Skeleton className="w-8 h-8 rounded-md" />}
         </div>
         <Skeleton className="h-4 w-36 rounded-md mx-auto mb-3" />
@@ -155,7 +155,7 @@ export function OrderSkeleton({ items = 3 }: { items?: number }) {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-4 w-full sm:w-auto">
-          <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+          <div className="w-12 h-12 bg-[#252525] rounded-lg flex items-center justify-center">
             <Skeleton className="w-6 h-6 rounded-md" />
           </div>
           <div className="flex-1">
@@ -171,9 +171,9 @@ export function OrderSkeleton({ items = 3 }: { items?: number }) {
       <div className="grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-4">
           {Array.from({ length: items }).map((_, i) => (
-            <div key={i} className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm">
+            <div key={i} className="bg-[#1E1E1E] rounded-xl border border-[#2A2A2A] p-4 shadow-sm">
               <div className="flex items-center gap-4">
-                <div className="w-20 h-16 bg-gray-100 rounded-md shrink-0">
+                <div className="w-20 h-16 bg-[#252525] rounded-md shrink-0">
                   <Skeleton className="w-full h-full rounded-md" />
                 </div>
                 <div className="flex-1 space-y-2">
@@ -189,11 +189,11 @@ export function OrderSkeleton({ items = 3 }: { items?: number }) {
         </div>
 
         <div className="space-y-4">
-          <div className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm">
+          <div className="bg-[#1E1E1E] rounded-xl border border-[#2A2A2A] p-4 shadow-sm">
             <Skeleton className="h-4 w-32 rounded-md mb-3" />
             <Skeleton className="h-10 w-full rounded-md" />
           </div>
-          <div className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm">
+          <div className="bg-[#1E1E1E] rounded-xl border border-[#2A2A2A] p-4 shadow-sm">
             <Skeleton className="h-4 w-20 rounded-md mb-3" />
             <Skeleton className="h-6 w-full rounded-md" />
           </div>
@@ -208,11 +208,11 @@ export function AdminDashboardSkeleton() {
   return (
     <div className="space-y-8">
       {/* Hero */}
-      <div className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white rounded-2xl p-6 shadow-lg overflow-hidden">
+      <div className="bg-gradient-to-r from-[#1E1E1E] via-[#252525] to-[#1E1E1E] text-[#F5F5F5] rounded-2xl p-6 shadow-lg overflow-hidden">
         <div className="flex flex-col lg:flex-row lg:items-center gap-6">
           <div className="flex-1">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-lg bg-orange-500/90 flex items-center justify-center shadow-lg">
+              <div className="w-12 h-12 rounded-lg bg-gold-500/90 flex items-center justify-center shadow-lg">
                 <Skeleton className="w-6 h-6 rounded-md" />
               </div>
               <div className="flex-1">
@@ -233,8 +233,8 @@ export function AdminDashboardSkeleton() {
 
           <div className="w-full lg:w-64 flex flex-col gap-3">
             {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="bg-white/6 rounded-xl p-3 flex items-center gap-3">
-                <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center">
+              <div key={i} className="bg-[#1E1E1E]/6 rounded-xl p-3 flex items-center gap-3">
+                <div className="w-10 h-10 bg-[#1E1E1E]/10 rounded-lg flex items-center justify-center">
                   <Skeleton className="w-6 h-6 rounded-md" />
                 </div>
                 <div className="flex-1">
@@ -259,9 +259,9 @@ export function AdminDashboardSkeleton() {
       {/* Charts + Activity */}
       <div className="grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm">
+          <div className="bg-[#1E1E1E] rounded-2xl border border-[#2A2A2A] p-4 shadow-sm">
             <Skeleton className="h-10 w-48 rounded-md mb-4" />
-            <div className="h-56 bg-gray-50 rounded-lg p-4">
+            <div className="h-56 bg-[#252525] rounded-lg p-4">
               <div className="h-full flex items-end gap-3">
                 {Array.from({ length: 12 }).map((_, i) => (
                   <div key={i} className="flex-1">
@@ -274,12 +274,12 @@ export function AdminDashboardSkeleton() {
         </div>
 
         <div className="space-y-4">
-          <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm">
+          <div className="bg-[#1E1E1E] rounded-2xl border border-[#2A2A2A] p-4 shadow-sm">
             <Skeleton className="h-4 w-32 rounded-md mb-3" />
             <div className="space-y-3">
               {Array.from({ length: 4 }).map((_, i) => (
                 <div key={i} className="flex items-center gap-3">
-                  <div className="w-9 h-9 bg-gray-100 rounded-full"><Skeleton className="w-full h-full rounded-full" /></div>
+                  <div className="w-9 h-9 bg-[#252525] rounded-full"><Skeleton className="w-full h-full rounded-full" /></div>
                   <div className="flex-1">
                     <Skeleton className="h-3 w-3/4 rounded-md mb-2" />
                     <Skeleton className="h-2 w-1/3 rounded-md" />
@@ -289,7 +289,7 @@ export function AdminDashboardSkeleton() {
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm">
+          <div className="bg-[#1E1E1E] rounded-2xl border border-[#2A2A2A] p-4 shadow-sm">
             <Skeleton className="h-4 w-28 rounded-md mb-3" />
             <Skeleton className="h-10 w-full rounded-md" />
           </div>
@@ -323,8 +323,8 @@ export function AdminCategoriesSkeleton() {
       {/* Top cards / showcase */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm flex items-center gap-3">
-            <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+          <div key={i} className="bg-[#1E1E1E] rounded-2xl border border-[#2A2A2A] p-4 shadow-sm flex items-center gap-3">
+            <div className="w-12 h-12 bg-[#252525] rounded-lg flex items-center justify-center">
               <Skeleton className="w-6 h-6 rounded-md" />
             </div>
             <div className="flex-1">
@@ -337,14 +337,14 @@ export function AdminCategoriesSkeleton() {
 
       <div className="lg:flex lg:gap-8">
         <main className="flex-1">
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 sm:p-6 mb-6">
+          <div className="bg-[#1E1E1E] rounded-2xl border border-[#2A2A2A] shadow-sm p-4 sm:p-6 mb-6">
             <Skeleton className="h-6 w-48 rounded-md" />
           </div>
 
           {/* Categories grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
             {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="relative overflow-hidden rounded-2xl bg-gray-100 aspect-[4/3]">
+              <div key={i} className="relative overflow-hidden rounded-2xl bg-[#252525] aspect-[4/3]">
                 <div className="absolute inset-0 p-4 flex flex-col justify-end">
                   <Skeleton className="h-5 w-3/4 rounded-md mb-2" />
                   <Skeleton className="h-3 w-1/2 rounded-md" />
@@ -354,7 +354,7 @@ export function AdminCategoriesSkeleton() {
           </div>
 
           {/* Table of categories */}
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          <div className="bg-[#1E1E1E] rounded-2xl border border-[#2A2A2A] shadow-sm overflow-hidden">
             <div className="p-4">
               <TableSkeleton cols={6} rows={6} />
             </div>
@@ -363,7 +363,7 @@ export function AdminCategoriesSkeleton() {
 
         {/* Right column — form preview */}
         <aside className="w-80 flex-shrink-0">
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 space-y-4">
+          <div className="bg-[#1E1E1E] rounded-2xl border border-[#2A2A2A] shadow-sm p-4 space-y-4">
             <Skeleton className="h-6 w-36 rounded-md" />
             <Skeleton className="h-10 w-full rounded-md" />
             <Skeleton className="h-10 w-full rounded-md" />

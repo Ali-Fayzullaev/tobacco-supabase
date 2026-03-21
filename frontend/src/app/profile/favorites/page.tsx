@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect } from 'react';
 import Link from 'next/link';
@@ -30,14 +30,14 @@ export default function FavoritesPage() {
   if (favorites.length === 0) {
     return (
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold text-gray-900">Избранное</h1>
+        <h1 className="text-2xl font-bold text-[#F5F5F5]">Избранное</h1>
         
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center">
+        <div className="bg-[#1E1E1E] rounded-xl shadow-sm border border-[#2A2A2A] p-12 text-center">
           <Heart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <h2 className="text-xl font-medium text-gray-900 mb-2">
+          <h2 className="text-xl font-medium text-[#F5F5F5] mb-2">
             Список избранного пуст
           </h2>
-          <p className="text-gray-500 mb-6">
+          <p className="text-[#A0A0A0] mb-6">
             Добавляйте понравившиеся товары, нажимая на сердечко
           </p>
           <Link
@@ -54,8 +54,8 @@ export default function FavoritesPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Избранное</h1>
-        <span className="text-gray-500">{favorites.length} товаров</span>
+        <h1 className="text-2xl font-bold text-[#F5F5F5]">Избранное</h1>
+        <span className="text-[#A0A0A0]">{favorites.length} товаров</span>
       </div>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -66,10 +66,10 @@ export default function FavoritesPage() {
           return (
             <div
               key={item.id}
-              className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden group"
+              className="bg-[#1E1E1E] rounded-xl shadow-sm border border-[#2A2A2A] overflow-hidden group"
             >
               <Link href={`/product/${product.slug}`}>
-                <div className="relative aspect-square bg-gray-100">
+                <div className="relative aspect-square bg-[#252525]">
                   {product.image_url ? (
                     <Image
                       src={product.image_url}
@@ -78,7 +78,7 @@ export default function FavoritesPage() {
                       className="object-cover group-hover:scale-105 transition-transform"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-400">
+                    <div className="w-full h-full flex items-center justify-center text-[#666]">
                       Нет фото
                     </div>
                   )}
@@ -92,10 +92,10 @@ export default function FavoritesPage() {
 
               <div className="p-4">
                 <Link href={`/product/${product.slug}`} className="hover:text-gold-600">
-                  <h3 className="font-medium text-gray-900 line-clamp-2">{product.name}</h3>
+                  <h3 className="font-medium text-[#F5F5F5] line-clamp-2">{product.name}</h3>
                 </Link>
                 {product.brand && (
-                  <p className="text-sm text-gray-500 mt-1">{product.brand}</p>
+                  <p className="text-sm text-[#A0A0A0] mt-1">{product.brand}</p>
                 )}
                 
                 <div className="flex items-center justify-between mt-3">
@@ -105,7 +105,7 @@ export default function FavoritesPage() {
                   <div className="flex items-center gap-1">
                     <button
                       onClick={() => toggleFavorite(product.id)}
-                      className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                      className="p-2 text-red-500 hover:bg-red-900/20 rounded-lg transition-colors"
                       title="Удалить из избранного"
                     >
                       <Trash2 className="w-5 h-5" />

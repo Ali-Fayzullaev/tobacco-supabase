@@ -274,29 +274,29 @@ export default function ProductEditPage() {
       <div className="flex items-center gap-4">
         <Link
           href="/admin/products"
-          className="p-2 hover:bg-gray-100 rounded-lg"
+          className="p-2 hover:bg-[#252525] rounded-lg"
         >
           <ArrowLeft className="w-5 h-5" />
         </Link>
-        <h1 className="text-2xl font-bold text-gray-900">
+        <h1 className="text-2xl font-bold text-[#F5F5F5]">
           {isNew ? 'Новый товар' : 'Редактирование товара'}
         </h1>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Basic Info */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Основная информация</h2>
+        <div className="bg-[#1E1E1E] rounded-xl shadow-sm border border-[#2A2A2A] p-6">
+          <h2 className="text-lg font-semibold text-[#F5F5F5] mb-4">Основная информация</h2>
           
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[#C0C0C0] mb-1">
                 Название (RU) *
               </label>
               <input
                 {...register('name')}
                 type="text"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500"
+                className="w-full px-4 py-2 border border-[#333] rounded-lg focus:ring-2 focus:ring-gold-500"
               />
               {errors.name && (
                 <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
@@ -304,24 +304,24 @@ export default function ProductEditPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[#C0C0C0] mb-1">
                 Название (KZ)
               </label>
               <input
                 {...register('name_kk')}
                 type="text"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500"
+                className="w-full px-4 py-2 border border-[#333] rounded-lg focus:ring-2 focus:ring-gold-500"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[#C0C0C0] mb-1">
                 URL (slug) *
               </label>
               <input
                 {...register('slug')}
                 type="text"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500"
+                className="w-full px-4 py-2 border border-[#333] rounded-lg focus:ring-2 focus:ring-gold-500"
               />
               {errors.slug && (
                 <p className="text-red-500 text-xs mt-1">{errors.slug.message}</p>
@@ -329,12 +329,12 @@ export default function ProductEditPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[#C0C0C0] mb-1">
                 Категория *
               </label>
               <select
                 {...register('category_id')}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500"
+                className="w-full px-4 py-2 border border-[#333] rounded-lg focus:ring-2 focus:ring-gold-500"
               >
                 <option value="">Выберите категорию</option>
                 {categories.filter(c => !c.parent_id).map((parent) => {
@@ -357,65 +357,65 @@ export default function ProductEditPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[#C0C0C0] mb-1">
                 SKU
               </label>
               <input
                 {...register('sku')}
                 type="text"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500"
+                className="w-full px-4 py-2 border border-[#333] rounded-lg focus:ring-2 focus:ring-gold-500"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[#C0C0C0] mb-1">
                 Бренд
               </label>
               <input
                 {...register('brand')}
                 type="text"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500"
+                className="w-full px-4 py-2 border border-[#333] rounded-lg focus:ring-2 focus:ring-gold-500"
               />
             </div>
           </div>
 
           <div className="mt-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-[#C0C0C0] mb-1">
               Описание (RU)
             </label>
             <textarea
               {...register('description')}
               rows={4}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500"
+              className="w-full px-4 py-2 border border-[#333] rounded-lg focus:ring-2 focus:ring-gold-500"
             />
           </div>
 
           <div className="mt-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-[#C0C0C0] mb-1">
               Описание (KZ)
             </label>
             <textarea
               {...register('description_kk')}
               rows={4}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500"
+              className="w-full px-4 py-2 border border-[#333] rounded-lg focus:ring-2 focus:ring-gold-500"
             />
           </div>
         </div>
 
         {/* Pricing */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Цена и наличие</h2>
+        <div className="bg-[#1E1E1E] rounded-xl shadow-sm border border-[#2A2A2A] p-6">
+          <h2 className="text-lg font-semibold text-[#F5F5F5] mb-4">Цена и наличие</h2>
           
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[#C0C0C0] mb-1">
                 Цена (₸) *
               </label>
               <input
                 {...register('price', { valueAsNumber: true })}
                 type="number"
                 min="0"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500"
+                className="w-full px-4 py-2 border border-[#333] rounded-lg focus:ring-2 focus:ring-gold-500"
               />
               {errors.price && (
                 <p className="text-red-500 text-xs mt-1">{errors.price.message}</p>
@@ -423,33 +423,33 @@ export default function ProductEditPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[#C0C0C0] mb-1">
                 Старая цена (₸)
               </label>
               <input
                 {...register('old_price', { valueAsNumber: true })}
                 type="number"
                 min="0"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500"
+                className="w-full px-4 py-2 border border-[#333] rounded-lg focus:ring-2 focus:ring-gold-500"
               />
             </div>
           </div>
 
           <div className="grid md:grid-cols-2 gap-4 mt-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[#C0C0C0] mb-1">
                 Остаток на складе (шт.)
               </label>
               <input
                 {...register('stock', { valueAsNumber: true })}
                 type="number"
                 min="0"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500"
+                className="w-full px-4 py-2 border border-[#333] rounded-lg focus:ring-2 focus:ring-gold-500"
               />
               {errors.stock && (
                 <p className="text-red-500 text-xs mt-1">{errors.stock.message}</p>
               )}
-              <p className="text-gray-400 text-xs mt-1">Наличие обновится автоматически (stock &gt; 0 = в наличии)</p>
+              <p className="text-[#666] text-xs mt-1">Наличие обновится автоматически (stock &gt; 0 = в наличии)</p>
             </div>
           </div>
 
@@ -460,7 +460,7 @@ export default function ProductEditPage() {
                 type="checkbox"
                 className="w-4 h-4 text-gold-500 rounded"
               />
-              <span className="text-gray-700">Активен</span>
+              <span className="text-[#C0C0C0]">Активен</span>
             </label>
 
             <label className="flex items-center gap-2">
@@ -469,14 +469,14 @@ export default function ProductEditPage() {
                 type="checkbox"
                 className="w-4 h-4 text-gold-500 rounded"
               />
-              <span className="text-gray-700">Рекомендуемый</span>
+              <span className="text-[#C0C0C0]">Рекомендуемый</span>
             </label>
           </div>
         </div>
 
         {/* Images */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Изображения</h2>
+        <div className="bg-[#1E1E1E] rounded-xl shadow-sm border border-[#2A2A2A] p-6">
+          <h2 className="text-lg font-semibold text-[#F5F5F5] mb-4">Изображения</h2>
           <ImageUploader
             images={images}
             onChange={setImages}
@@ -485,9 +485,9 @@ export default function ProductEditPage() {
         </div>
 
         {/* Attributes */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <div className="bg-[#1E1E1E] rounded-xl shadow-sm border border-[#2A2A2A] p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">Характеристики</h2>
+            <h2 className="text-lg font-semibold text-[#F5F5F5]">Характеристики</h2>
             <button
               type="button"
               onClick={addAttribute}
@@ -506,26 +506,26 @@ export default function ProductEditPage() {
                   value={attr.name}
                   onChange={(e) => updateAttribute(index, 'name', e.target.value)}
                   placeholder="Название"
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                  className="flex-1 px-3 py-2 border border-[#333] rounded-lg text-sm"
                 />
                 <input
                   type="text"
                   value={attr.value}
                   onChange={(e) => updateAttribute(index, 'value', e.target.value)}
                   placeholder="Значение"
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                  className="flex-1 px-3 py-2 border border-[#333] rounded-lg text-sm"
                 />
                 <button
                   type="button"
                   onClick={() => removeAttribute(index)}
-                  className="p-2 text-gray-400 hover:text-red-500"
+                  className="p-2 text-[#666] hover:text-red-500"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
             ))}
             {attributes.length === 0 && (
-              <p className="text-gray-500 text-sm">Характеристики не добавлены</p>
+              <p className="text-[#A0A0A0] text-sm">Характеристики не добавлены</p>
             )}
           </div>
         </div>
@@ -542,7 +542,7 @@ export default function ProductEditPage() {
           </button>
           <Link
             href="/admin/products"
-            className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg"
+            className="px-6 py-2 border border-[#333] text-[#C0C0C0] rounded-lg"
           >
             Отмена
           </Link>

@@ -38,17 +38,17 @@ export function ReviewCard({ review, isOwn, onEdit, onDelete, onHelpful }: Revie
   };
 
   return (
-    <Card className="bg-white border-gray-200 shadow-sm">
+    <Card className="bg-[#1E1E1E] border-[#2A2A2A] shadow-sm">
       <CardContent className="p-5">
         {/* Header */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-3">
             <Avatar className="h-10 w-10">
-              <AvatarFallback className="bg-orange-100 text-orange-600">{initials}</AvatarFallback>
+              <AvatarFallback className="bg-gold-500/10 text-gold-500">{initials}</AvatarFallback>
             </Avatar>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-medium text-gray-900">{userName}</span>
+                <span className="font-medium text-[#F5F5F5]">{userName}</span>
                 {review.is_verified_purchase && (
                   <Badge variant="success" className="text-xs gap-1">
                     <CheckCircle className="h-3 w-3" />
@@ -56,7 +56,7 @@ export function ReviewCard({ review, isOwn, onEdit, onDelete, onHelpful }: Revie
                   </Badge>
                 )}
               </div>
-              <p className="text-sm text-gray-500">{formatDate(review.created_at)}</p>
+              <p className="text-sm text-[#A0A0A0]">{formatDate(review.created_at)}</p>
             </div>
           </div>
 
@@ -78,35 +78,35 @@ export function ReviewCard({ review, isOwn, onEdit, onDelete, onHelpful }: Revie
 
         {/* Title */}
         {review.title && (
-          <h4 className="font-semibold text-gray-900 mb-2">{review.title}</h4>
+          <h4 className="font-semibold text-[#F5F5F5] mb-2">{review.title}</h4>
         )}
 
         {/* Comment */}
         {review.comment && (
-          <p className="text-gray-600 mb-4">{review.comment}</p>
+          <p className="text-[#A0A0A0] mb-4">{review.comment}</p>
         )}
 
         {/* Pros & Cons */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           {review.pros && (
-            <div className="p-3 bg-green-50 rounded-lg border border-green-100">
-              <p className="text-sm font-medium text-green-700 mb-1">👍 Достоинства</p>
-              <p className="text-sm text-green-600">{review.pros}</p>
+            <div className="p-3 bg-green-900/20 rounded-lg border border-green-800/30">
+              <p className="text-sm font-medium text-green-400 mb-1">👍 Достоинства</p>
+              <p className="text-sm text-green-300/80">{review.pros}</p>
             </div>
           )}
           {review.cons && (
-            <div className="p-3 bg-red-50 rounded-lg border border-red-100">
-              <p className="text-sm font-medium text-red-700 mb-1">👎 Недостатки</p>
-              <p className="text-sm text-red-600">{review.cons}</p>
+            <div className="p-3 bg-red-900/20 rounded-lg border border-red-800/30">
+              <p className="text-sm font-medium text-red-400 mb-1">👎 Недостатки</p>
+              <p className="text-sm text-red-300/80">{review.cons}</p>
             </div>
           )}
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+        <div className="flex items-center justify-between pt-3 border-t border-[#2A2A2A]">
           <button
             onClick={onHelpful}
-            className="flex items-center gap-2 text-sm text-gray-500 hover:text-orange-500 transition-colors"
+            className="flex items-center gap-2 text-sm text-[#A0A0A0] hover:text-gold-500 transition-colors"
           >
             <ThumbsUp className="h-4 w-4" />
             <span>Полезно ({review.helpful_count})</span>
@@ -114,11 +114,11 @@ export function ReviewCard({ review, isOwn, onEdit, onDelete, onHelpful }: Revie
 
           {isOwn && (
             <div className="flex items-center gap-2">
-              <Button variant="ghost" size="sm" onClick={onEdit} className="gap-1 text-gray-500">
+              <Button variant="ghost" size="sm" onClick={onEdit} className="gap-1 text-[#A0A0A0]">
                 <Edit2 className="h-4 w-4" />
                 Изменить
               </Button>
-              <Button variant="ghost" size="sm" onClick={onDelete} className="gap-1 text-red-500 hover:text-red-600 hover:bg-red-50">
+              <Button variant="ghost" size="sm" onClick={onDelete} className="gap-1 text-red-400 hover:text-red-300 hover:bg-red-900/20">
                 <Trash2 className="h-4 w-4" />
                 Удалить
               </Button>
@@ -138,12 +138,12 @@ export function ReviewStatsCard({ stats }: ReviewStatsProps) {
   const maxCount = Math.max(...Object.values(stats.rating_distribution), 1);
 
   return (
-    <Card className="bg-white border-gray-200 shadow-sm">
+    <Card className="bg-[#1E1E1E] border-[#2A2A2A] shadow-sm">
       <CardContent className="p-6">
         <div className="flex items-start gap-8">
           {/* Average Rating */}
           <div className="text-center">
-            <div className="text-5xl font-bold text-gray-900">
+            <div className="text-5xl font-bold text-[#F5F5F5]">
               {stats.average_rating.toFixed(1)}
             </div>
             <div className="flex items-center justify-center gap-1 my-2">
@@ -159,7 +159,7 @@ export function ReviewStatsCard({ stats }: ReviewStatsProps) {
                 />
               ))}
             </div>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-[#A0A0A0]">
               {stats.total_reviews} {getReviewWord(stats.total_reviews)}
             </p>
           </div>
@@ -174,15 +174,15 @@ export function ReviewStatsCard({ stats }: ReviewStatsProps) {
                 <div key={rating} className="flex items-center gap-3">
                   <div className="flex items-center gap-1 w-8">
                     <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
-                    <span className="text-sm text-gray-600">{rating}</span>
+                    <span className="text-sm text-[#A0A0A0]">{rating}</span>
                   </div>
-                  <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <div className="flex-1 h-2 bg-[#2A2A2A] rounded-full overflow-hidden">
                     <div 
                       className="h-full bg-yellow-400 rounded-full transition-all"
                       style={{ width: `${percentage}%` }}
                     />
                   </div>
-                  <span className="text-sm text-gray-500 w-8 text-right">{count}</span>
+                  <span className="text-sm text-[#A0A0A0] w-8 text-right">{count}</span>
                 </div>
               );
             })}

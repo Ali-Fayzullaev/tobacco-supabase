@@ -136,13 +136,13 @@ export default function ProductPage() {
   // Loading state
   if (isAuthLoading || productLoading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-[#121212]">
         <Header />
         <div className="container mx-auto px-4 py-16 lg:py-24">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
             {/* Image skeleton */}
-            <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-              <div className="relative aspect-square bg-gray-100">
+            <div className="bg-[#1E1E1E] rounded-xl border border-[#2A2A2A] shadow-sm overflow-hidden">
+              <div className="relative aspect-square bg-[#252525]">
                 <Skeleton className="w-full h-full" />
               </div>
               <div className="p-4">
@@ -169,7 +169,7 @@ export default function ProductPage() {
           </div>
 
           <div className="mt-8 lg:mt-10">
-            <div className="bg-white border border-gray-100 rounded-xl p-4">
+            <div className="bg-[#1E1E1E] border border-[#2A2A2A] rounded-xl p-4">
               <Skeleton className="rounded-md" style={{ height: 20, width: '40%' }} />
               <div className="mt-4">
                 <Skeleton className="rounded-md" style={{ height: 160, width: '100%' }} />
@@ -185,18 +185,18 @@ export default function ProductPage() {
   // Auth check
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <Card className="max-w-md w-full bg-white border-gray-200 shadow-lg">
+      <div className="min-h-screen bg-[#121212] flex items-center justify-center p-4">
+        <Card className="max-w-md w-full bg-[#1E1E1E] border-[#2A2A2A] shadow-lg">
           <CardContent className="p-8 text-center">
-            <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="w-20 h-20 bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
               <AlertTriangle className="w-10 h-10 text-red-500" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">Доступ ограничен</h1>
-            <p className="text-gray-500 mb-6">
+            <h1 className="text-2xl font-bold text-[#F5F5F5] mb-4">Доступ ограничен</h1>
+            <p className="text-[#A0A0A0] mb-6">
               Для просмотра товаров необходимо войти в систему.
             </p>
             <Link href={`/login?redirect=/product/${slug}`}>
-              <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white">
+              <Button className="w-full bg-gold-500 hover:bg-gold-600 text-white">
                 Войти в аккаунт
               </Button>
             </Link>
@@ -208,18 +208,18 @@ export default function ProductPage() {
 
   if (!isAdult) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <Card className="max-w-md w-full bg-white border-gray-200 shadow-lg">
+      <div className="min-h-screen bg-[#121212] flex items-center justify-center p-4">
+        <Card className="max-w-md w-full bg-[#1E1E1E] border-[#2A2A2A] shadow-lg">
           <CardContent className="p-8 text-center">
-            <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="w-20 h-20 bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
               <AlertTriangle className="w-10 h-10 text-red-500" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">Доступ запрещён</h1>
-            <p className="text-gray-500 mb-6">
+            <h1 className="text-2xl font-bold text-[#F5F5F5] mb-4">Доступ запрещён</h1>
+            <p className="text-[#A0A0A0] mb-6">
               Продажа табачной продукции лицам младше 18 лет запрещена законодательством РК.
             </p>
             <Link href="/">
-              <Button variant="outline" className="w-full border-gray-300 text-gray-700">
+              <Button variant="outline" className="w-full border-[#333] text-[#C0C0C0]">
                 На главную
               </Button>
             </Link>
@@ -231,24 +231,24 @@ export default function ProductPage() {
 
   if (!product) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <Card className="max-w-3xl w-full bg-white border-gray-200 shadow-lg">
+      <div className="min-h-screen bg-[#121212] flex items-center justify-center p-4">
+        <Card className="max-w-3xl w-full bg-[#1E1E1E] border-[#2A2A2A] shadow-lg">
           <div className="grid md:grid-cols-2 gap-6">
             <div className="p-6 flex items-center justify-center">
-              <div className="w-40 h-40 bg-gray-100 rounded-md overflow-hidden">
+              <div className="w-40 h-40 bg-[#252525] rounded-md overflow-hidden">
                 <Skeleton className="w-full h-full rounded-md" />
               </div>
             </div>
             <CardContent className="p-8 text-center md:text-left flex flex-col justify-center">
-              <h1 className="text-2xl font-bold text-gray-900 mb-4">Товар не найден</h1>
-              <p className="text-gray-500 mb-6">
+              <h1 className="text-2xl font-bold text-[#F5F5F5] mb-4">Товар не найден</h1>
+              <p className="text-[#A0A0A0] mb-6">
                 Возможно, товар был удалён или перемещён.
               </p>
               <div className="mb-4">
                 <Skeleton className="rounded-md mx-auto md:mx-0" style={{ height: 12, width: 200 }} />
               </div>
               <Link href="/catalog" className="w-full md:w-auto mx-auto md:mx-0">
-                <Button className="w-full md:w-auto bg-orange-500 hover:bg-orange-600 text-white">
+                <Button className="w-full md:w-auto bg-gold-500 hover:bg-gold-600 text-white">
                   Перейти в каталог
                 </Button>
               </Link>
@@ -295,22 +295,22 @@ export default function ProductPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#121212]">
       <Header />
 
       {/* Breadcrumb */}
-      <div className="bg-white border-b border-gray-100">
+      <div className="bg-[#1E1E1E] border-b border-[#2A2A2A]">
         <div className="container mx-auto px-4 py-3">
           <nav className="flex items-center gap-2 text-sm">
-            <Link href="/" className="text-gray-500 hover:text-orange-600 transition-colors">
+            <Link href="/" className="text-[#A0A0A0] hover:text-gold-600 transition-colors">
               Главная
             </Link>
-            <ChevronRight className="h-4 w-4 text-gray-400" />
-            <Link href="/catalog" className="text-gray-500 hover:text-orange-600 transition-colors">
+            <ChevronRight className="h-4 w-4 text-[#666]" />
+            <Link href="/catalog" className="text-[#A0A0A0] hover:text-gold-600 transition-colors">
               Каталог
             </Link>
-            <ChevronRight className="h-4 w-4 text-gray-400" />
-            <span className="text-gray-900 font-medium truncate">{product.name}</span>
+            <ChevronRight className="h-4 w-4 text-[#666]" />
+            <span className="text-[#F5F5F5] font-medium truncate">{product.name}</span>
           </nav>
         </div>
       </div>
@@ -320,7 +320,7 @@ export default function ProductPage() {
           {/* Image Gallery */}
           <div className="space-y-4">
             {/* Main Image */}
-            <Card className="bg-white border-gray-200 shadow-sm overflow-hidden">
+            <Card className="bg-[#1E1E1E] border-[#2A2A2A] shadow-sm overflow-hidden">
               <div className="relative aspect-square">
                 {/* Badges */}
                 <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
@@ -330,12 +330,12 @@ export default function ProductPage() {
                     </Badge>
                   )}
                   {product.is_bestseller && (
-                    <Badge className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1">
+                    <Badge className="bg-gold-500 hover:bg-gold-600 text-white px-3 py-1">
                       Хит продаж
                     </Badge>
                   )}
                   {discount > 0 && (
-                    <Badge className="bg-red-500 hover:bg-red-600 text-white px-3 py-1">
+                    <Badge className="bg-red-900/200 hover:bg-red-600 text-white px-3 py-1">
                       -{discount}%
                     </Badge>
                   )}
@@ -349,8 +349,8 @@ export default function ProductPage() {
                     className={cn(
                       "p-2.5 rounded-full shadow-sm transition-all hover:scale-110",
                       isFav 
-                        ? "bg-red-50 text-red-500" 
-                        : "bg-white/90 backdrop-blur-sm text-gray-400 hover:text-red-500"
+                        ? "bg-red-900/20 text-red-500" 
+                        : "bg-[#1E1E1E]/90 backdrop-blur-sm text-[#666] hover:text-red-500"
                     )}
                   >
                     <Heart className={cn("h-5 w-5", isFav && "fill-current")} />
@@ -366,7 +366,7 @@ export default function ProductPage() {
                     priority
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-gray-300 bg-gray-50">
+                  <div className="w-full h-full flex items-center justify-center text-gray-300 bg-[#121212]">
                     <ShoppingCart className="h-20 w-20" />
                   </div>
                 )}
@@ -376,15 +376,15 @@ export default function ProductPage() {
                   <>
                     <button
                       onClick={() => setSelectedImageIndex(i => i > 0 ? i - 1 : images.length - 1)}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-white/90 hover:bg-white rounded-full shadow-lg transition-colors"
+                      className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-[#1E1E1E]/90 hover:bg-[#1E1E1E] rounded-full shadow-lg transition-colors"
                     >
-                      <ChevronLeft className="w-5 h-5 text-gray-600" />
+                      <ChevronLeft className="w-5 h-5 text-[#A0A0A0]" />
                     </button>
                     <button
                       onClick={() => setSelectedImageIndex(i => i < images.length - 1 ? i + 1 : 0)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-white/90 hover:bg-white rounded-full shadow-lg transition-colors"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-[#1E1E1E]/90 hover:bg-[#1E1E1E] rounded-full shadow-lg transition-colors"
                     >
-                      <ChevronRight className="w-5 h-5 text-gray-600" />
+                      <ChevronRight className="w-5 h-5 text-[#A0A0A0]" />
                     </button>
                   </>
                 )}
@@ -399,10 +399,10 @@ export default function ProductPage() {
                     key={img.id}
                     onClick={() => setSelectedImageIndex(idx)}
                     className={cn(
-                      "relative w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden border-2 transition-all bg-white",
+                      "relative w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden border-2 transition-all bg-[#1E1E1E]",
                       idx === selectedImageIndex 
-                        ? 'border-orange-500 shadow-md' 
-                        : 'border-gray-200 hover:border-orange-300'
+                        ? 'border-gold-500 shadow-md' 
+                        : 'border-[#2A2A2A] hover:border-gold-500/40'
                     )}
                   >
                     {img.image_url ? (
@@ -413,7 +413,7 @@ export default function ProductPage() {
                         className="object-contain p-2"
                       />
                     ) : (
-                      <div className="w-full h-full bg-gray-100" />
+                      <div className="w-full h-full bg-[#252525]" />
                     )}
                   </button>
                 ))}
@@ -433,7 +433,7 @@ export default function ProductPage() {
             )}
 
             {/* Name */}
-            <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">{product.name}</h1>
+            <h1 className="text-2xl lg:text-3xl font-bold text-[#F5F5F5]">{product.name}</h1>
 
             {/* Rating */}
             <div className="flex items-center gap-4">
@@ -449,12 +449,12 @@ export default function ProductPage() {
                     )}
                   />
                 ))}
-                <span className="ml-2 font-medium text-gray-900">{rating.toFixed(1)}</span>
+                <span className="ml-2 font-medium text-[#F5F5F5]">{rating.toFixed(1)}</span>
               </div>
               {reviewsCount > 0 && (
                 <button 
                   onClick={() => setActiveTab('reviews')}
-                  className="flex items-center gap-1 text-sm text-gray-500 hover:text-orange-600 transition-colors"
+                  className="flex items-center gap-1 text-sm text-[#A0A0A0] hover:text-gold-600 transition-colors"
                 >
                   <MessageSquare className="h-4 w-4" />
                   {reviewsCount} отзывов
@@ -465,28 +465,28 @@ export default function ProductPage() {
             {/* Price */}
             {canBuy ? (
               <div className="flex items-baseline gap-4 flex-wrap">
-                <span className="text-3xl lg:text-4xl font-bold text-orange-600">
+                <span className="text-3xl lg:text-4xl font-bold text-gold-600">
                   {formatPrice(product.price)}
                 </span>
                 {product.old_price && (
-                  <span className="text-xl text-gray-400 line-through">
+                  <span className="text-xl text-[#666] line-through">
                     {formatPrice(product.old_price)}
                   </span>
                 )}
                 {discount > 0 && (
-                  <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
+                  <Badge className="bg-green-900/30 text-green-400 hover:bg-green-900/30">
                     Экономия {formatPrice(product.old_price! - product.price)}
                   </Badge>
                 )}
               </div>
             ) : (
-              <div className="bg-orange-50 border border-orange-200 rounded-xl p-4">
-                <p className="text-sm text-orange-700 font-medium">
+              <div className="bg-gold-500/10 border border-gold-500/30 rounded-xl p-4">
+                <p className="text-sm text-gold-700 font-medium">
                   {!user ? 'Войдите в аккаунт, чтобы видеть цены и совершать покупки' : 'Покупка доступна только для лиц старше 18 лет'}
                 </p>
                 {!user && (
                   <Link href={`/login?redirect=/product/${slug}`}>
-                    <Button size="sm" className="mt-2 bg-orange-500 hover:bg-orange-600 text-white">
+                    <Button size="sm" className="mt-2 bg-gold-500 hover:bg-gold-600 text-white">
                       Войти
                     </Button>
                   </Link>
@@ -497,7 +497,7 @@ export default function ProductPage() {
             {/* Stock Status */}
             <div className="flex items-center gap-2">
               {product.in_stock ? (
-                <Badge className="bg-green-100 text-green-700 hover:bg-green-100 gap-1">
+                <Badge className="bg-green-900/30 text-green-400 hover:bg-green-900/30 gap-1">
                   <Check className="w-4 h-4" />
                   В наличии
                 </Badge>
@@ -515,35 +515,35 @@ export default function ProductPage() {
               )}
             </div>
 
-            <Separator className="bg-gray-200" />
+            <Separator className="bg-[#2A2A2A]" />
 
             {/* Quantity & Add to Cart */}
             {canBuy && (
             <div className="space-y-4">
               <div className="flex items-center gap-4">
                 {/* Quantity Selector */}
-                <div className="flex items-center border border-gray-200 rounded-xl bg-white">
+                <div className="flex items-center border border-[#2A2A2A] rounded-xl bg-[#1E1E1E]">
                   <button
                     onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                    className="p-3 hover:bg-gray-50 transition-colors rounded-l-xl"
+                    className="p-3 hover:bg-[#121212] transition-colors rounded-l-xl"
                     disabled={quantity <= 1}
                   >
-                    <Minus className="w-4 h-4 text-gray-600" />
+                    <Minus className="w-4 h-4 text-[#A0A0A0]" />
                   </button>
-                  <span className="w-14 text-center font-semibold text-gray-900">{quantity}</span>
+                  <span className="w-14 text-center font-semibold text-[#F5F5F5]">{quantity}</span>
                   <button
                     onClick={() => setQuantity(q => q + 1)}
-                    className="p-3 hover:bg-gray-50 transition-colors rounded-r-xl"
+                    className="p-3 hover:bg-[#121212] transition-colors rounded-r-xl"
                     disabled={product.stock !== undefined && quantity >= product.stock}
                   >
-                    <Plus className="w-4 h-4 text-gray-600" />
+                    <Plus className="w-4 h-4 text-[#A0A0A0]" />
                   </button>
                 </div>
 
                 {/* Total Price */}
                 <div className="text-right">
-                  <p className="text-sm text-gray-500">Итого:</p>
-                  <p className="text-xl font-bold text-gray-900">
+                  <p className="text-sm text-[#A0A0A0]">Итого:</p>
+                  <p className="text-xl font-bold text-[#F5F5F5]">
                     {formatPrice(product.price * quantity)}
                   </p>
                 </div>
@@ -554,7 +554,7 @@ export default function ProductPage() {
                 <Button
                   onClick={handleAddToCart}
                   disabled={isCartLoading || !product.in_stock}
-                  className="flex-1 h-12 bg-orange-500 hover:bg-orange-600 text-white font-semibold text-base"
+                  className="flex-1 h-12 bg-gold-500 hover:bg-gold-600 text-white font-semibold text-base"
                 >
                   {isCartLoading ? (
                     <Loader2 className="w-5 h-5 animate-spin" />
@@ -567,7 +567,7 @@ export default function ProductPage() {
                   onClick={handleQuickBuy}
                   disabled={!product.in_stock}
                   variant="outline"
-                  className="flex-1 h-12 border-orange-300 text-orange-600 hover:bg-orange-50 font-semibold text-base"
+                  className="flex-1 h-12 border-gold-500/40 text-gold-600 hover:bg-gold-500/10 font-semibold text-base"
                 >
                   <Zap className="w-5 h-5 mr-2" />
                   Купить сейчас
@@ -576,30 +576,30 @@ export default function ProductPage() {
             </div>
             )}
 
-            <Separator className="bg-gray-200" />
+            <Separator className="bg-[#2A2A2A]" />
 
             {/* Features */}
             <div className="grid grid-cols-3 gap-3">
-              <div className="text-center p-3 sm:p-4 bg-white rounded-xl border border-gray-100">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                  <Truck className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />
+              <div className="text-center p-3 sm:p-4 bg-[#1E1E1E] rounded-xl border border-[#2A2A2A]">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gold-500/15 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <Truck className="w-5 h-5 sm:w-6 sm:h-6 text-gold-600" />
                 </div>
-                <p className="text-xs sm:text-sm font-medium text-gray-900">Доставка</p>
-                <p className="text-[10px] sm:text-xs text-gray-500">по всему КЗ</p>
+                <p className="text-xs sm:text-sm font-medium text-[#F5F5F5]">Доставка</p>
+                <p className="text-[10px] sm:text-xs text-[#A0A0A0]">по всему КЗ</p>
               </div>
-              <div className="text-center p-3 sm:p-4 bg-white rounded-xl border border-gray-100">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                  <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
+              <div className="text-center p-3 sm:p-4 bg-[#1E1E1E] rounded-xl border border-[#2A2A2A]">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-green-400" />
                 </div>
-                <p className="text-xs sm:text-sm font-medium text-gray-900">Гарантия</p>
-                <p className="text-[10px] sm:text-xs text-gray-500">качества</p>
+                <p className="text-xs sm:text-sm font-medium text-[#F5F5F5]">Гарантия</p>
+                <p className="text-[10px] sm:text-xs text-[#A0A0A0]">качества</p>
               </div>
-              <div className="text-center p-3 sm:p-4 bg-white rounded-xl border border-gray-100">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                  <Package className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
+              <div className="text-center p-3 sm:p-4 bg-[#1E1E1E] rounded-xl border border-[#2A2A2A]">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <Package className="w-5 h-5 sm:w-6 sm:h-6 text-blue-400" />
                 </div>
-                <p className="text-xs sm:text-sm font-medium text-gray-900">Оригинал</p>
-                <p className="text-[10px] sm:text-xs text-gray-500">100%</p>
+                <p className="text-xs sm:text-sm font-medium text-[#F5F5F5]">Оригинал</p>
+                <p className="text-[10px] sm:text-xs text-[#A0A0A0]">100%</p>
               </div>
             </div>
           </div>
@@ -608,36 +608,36 @@ export default function ProductPage() {
         {/* Tabs Section */}
         <div className="mt-8 lg:mt-10">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="w-full justify-start bg-white border border-gray-200 rounded-xl p-1 h-auto flex-wrap gap-1">
+            <TabsList className="w-full justify-start bg-[#1E1E1E] border border-[#2A2A2A] rounded-xl p-1 h-auto flex-wrap gap-1">
               <TabsTrigger 
                 value="description" 
-                className="data-[state=active]:bg-orange-500 data-[state=active]:text-white rounded-lg px-4 sm:px-6 py-2 sm:py-2.5 text-sm"
+                className="data-[state=active]:bg-gold-500 data-[state=active]:text-white rounded-lg px-4 sm:px-6 py-2 sm:py-2.5 text-sm"
               >
                 Описание
               </TabsTrigger>
               <TabsTrigger 
                 value="specs" 
-                className="data-[state=active]:bg-orange-500 data-[state=active]:text-white rounded-lg px-4 sm:px-6 py-2 sm:py-2.5 text-sm"
+                className="data-[state=active]:bg-gold-500 data-[state=active]:text-white rounded-lg px-4 sm:px-6 py-2 sm:py-2.5 text-sm"
               >
                 Характеристики
               </TabsTrigger>
               <TabsTrigger 
                 value="reviews" 
-                className="data-[state=active]:bg-orange-500 data-[state=active]:text-white rounded-lg px-4 sm:px-6 py-2 sm:py-2.5 text-sm"
+                className="data-[state=active]:bg-gold-500 data-[state=active]:text-white rounded-lg px-4 sm:px-6 py-2 sm:py-2.5 text-sm"
               >
                 Отзывы ({reviewsCount})
               </TabsTrigger>
             </TabsList>
 
             <TabsContent value="description" className="mt-6">
-              <Card className="bg-white border-gray-200 shadow-sm">
+              <Card className="bg-[#1E1E1E] border-[#2A2A2A] shadow-sm">
                 <CardContent className="p-4 sm:p-6">
                   {product.description ? (
-                    <p className="text-gray-600 leading-relaxed whitespace-pre-wrap">
+                    <p className="text-[#A0A0A0] leading-relaxed whitespace-pre-wrap">
                       {product.description}
                     </p>
                   ) : (
-                    <p className="text-gray-500 text-center py-8">
+                    <p className="text-[#A0A0A0] text-center py-8">
                       Описание товара отсутствует
                     </p>
                   )}
@@ -646,19 +646,19 @@ export default function ProductPage() {
             </TabsContent>
 
             <TabsContent value="specs" className="mt-6">
-              <Card className="bg-white border-gray-200 shadow-sm">
+              <Card className="bg-[#1E1E1E] border-[#2A2A2A] shadow-sm">
                 <CardContent className="p-4 sm:p-6">
                   {product.attributes && product.attributes.length > 0 ? (
-                    <dl className="divide-y divide-gray-100">
+                    <dl className="divide-y divide-[#2A2A2A]">
                       {product.attributes.map((attr: ProductAttribute) => (
                         <div key={attr.id} className="flex justify-between py-3 sm:py-4 first:pt-0 last:pb-0">
-                          <dt className="text-gray-500 text-sm sm:text-base">{attr.name}</dt>
-                          <dd className="text-gray-900 font-medium text-sm sm:text-base">{attr.value}</dd>
+                          <dt className="text-[#A0A0A0] text-sm sm:text-base">{attr.name}</dt>
+                          <dd className="text-[#F5F5F5] font-medium text-sm sm:text-base">{attr.value}</dd>
                         </div>
                       ))}
                     </dl>
                   ) : (
-                    <p className="text-gray-500 text-center py-8">
+                    <p className="text-[#A0A0A0] text-center py-8">
                       Характеристики не указаны
                     </p>
                   )}
@@ -668,11 +668,11 @@ export default function ProductPage() {
 
             <TabsContent value="reviews" id="reviews" className="mt-6 space-y-6">
               {/* Reviews Summary */}
-              <Card className="bg-white border-gray-200 shadow-sm">
+              <Card className="bg-[#1E1E1E] border-[#2A2A2A] shadow-sm">
                 <CardContent className="p-4 sm:p-6">
-                  <div className="flex flex-col sm:flex-row items-center gap-6 mb-6 pb-6 border-b border-gray-100">
+                  <div className="flex flex-col sm:flex-row items-center gap-6 mb-6 pb-6 border-b border-[#2A2A2A]">
                     <div className="text-center">
-                      <div className="text-4xl sm:text-5xl font-bold text-gray-900">
+                      <div className="text-4xl sm:text-5xl font-bold text-[#F5F5F5]">
                         {rating > 0 ? rating.toFixed(1) : '—'}
                       </div>
                       <div className="flex items-center justify-center mt-2">
@@ -688,7 +688,7 @@ export default function ProductPage() {
                           />
                         ))}
                       </div>
-                      <p className="text-sm text-gray-500 mt-1">{reviewsCount} отзывов</p>
+                      <p className="text-sm text-[#A0A0A0] mt-1">{reviewsCount} отзывов</p>
                     </div>
                     <div className="flex-1 w-full sm:w-auto">
                       {[5, 4, 3, 2, 1].map((stars) => {
@@ -696,15 +696,15 @@ export default function ProductPage() {
                         const percentage = reviewsCount > 0 ? (count / reviewsCount) * 100 : 0;
                         return (
                           <div key={stars} className="flex items-center gap-2 mb-1">
-                            <span className="text-sm text-gray-500 w-3">{stars}</span>
+                            <span className="text-sm text-[#A0A0A0] w-3">{stars}</span>
                             <Star className="h-4 w-4 text-amber-400 fill-amber-400" />
-                            <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                            <div className="flex-1 h-2 bg-[#252525] rounded-full overflow-hidden">
                               <div 
                                 className="h-full bg-amber-400 rounded-full transition-all"
                                 style={{ width: `${percentage}%` }}
                               />
                             </div>
-                            <span className="text-xs text-gray-400 w-6">{count}</span>
+                            <span className="text-xs text-[#666] w-6">{count}</span>
                           </div>
                         );
                       })}
@@ -716,7 +716,7 @@ export default function ProductPage() {
                     {user ? (
                       userReview && !editingReview ? (
                         <div className="space-y-3">
-                          <p className="text-sm text-gray-600">Вы уже оставили отзыв</p>
+                          <p className="text-sm text-[#A0A0A0]">Вы уже оставили отзыв</p>
                           <div className="flex justify-center gap-3">
                             <Button 
                               variant="outline"
@@ -724,14 +724,14 @@ export default function ProductPage() {
                                 setEditingReview(true);
                                 setShowReviewForm(true);
                               }}
-                              className="border-orange-300 text-orange-600 hover:bg-orange-50"
+                              className="border-gold-500/40 text-gold-600 hover:bg-gold-500/10"
                             >
                               Редактировать
                             </Button>
                             <Button 
                               variant="outline"
                               onClick={handleDeleteReview}
-                              className="border-red-300 text-red-600 hover:bg-red-50"
+                              className="border-red-300 text-red-400 hover:bg-red-900/20"
                             >
                               Удалить
                             </Button>
@@ -740,7 +740,7 @@ export default function ProductPage() {
                       ) : (
                         <Button 
                           onClick={() => setShowReviewForm(!showReviewForm)}
-                          className="bg-orange-500 hover:bg-orange-600 text-white"
+                          className="bg-gold-500 hover:bg-gold-600 text-white"
                         >
                           <MessageSquare className="w-4 h-4 mr-2" />
                           {showReviewForm ? 'Отменить' : 'Написать отзыв'}
@@ -748,9 +748,9 @@ export default function ProductPage() {
                       )
                     ) : (
                       <div className="space-y-3">
-                        <p className="text-sm text-gray-500">Войдите, чтобы оставить отзыв</p>
+                        <p className="text-sm text-[#A0A0A0]">Войдите, чтобы оставить отзыв</p>
                         <Link href={`/login?redirect=/product/${slug}`}>
-                          <Button className="bg-orange-500 hover:bg-orange-600 text-white">
+                          <Button className="bg-gold-500 hover:bg-gold-600 text-white">
                             Войти
                           </Button>
                         </Link>
@@ -783,7 +783,7 @@ export default function ProductPage() {
               {/* Reviews List */}
               {isReviewsLoading ? (
                 <div className="flex justify-center py-8">
-                  <Loader2 className="w-6 h-6 text-orange-500 animate-spin" />
+                  <Loader2 className="w-6 h-6 text-gold-500 animate-spin" />
                 </div>
               ) : reviews.length > 0 ? (
                 <div className="space-y-4">
@@ -802,10 +802,10 @@ export default function ProductPage() {
                   ))}
                 </div>
               ) : !showReviewForm && (
-                <Card className="bg-white border-gray-200 shadow-sm">
+                <Card className="bg-[#1E1E1E] border-[#2A2A2A] shadow-sm">
                   <CardContent className="p-8 text-center">
                     <MessageSquare className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                    <p className="text-gray-500">
+                    <p className="text-[#A0A0A0]">
                       Пока нет отзывов. Будьте первым!
                     </p>
                   </CardContent>

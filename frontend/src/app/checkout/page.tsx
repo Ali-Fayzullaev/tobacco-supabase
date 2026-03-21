@@ -136,10 +136,10 @@ export default function CheckoutPage() {
   // Auth checks
   if (isAuthLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[#121212] flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-12 h-12 text-orange-500 animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">Загрузка...</p>
+          <Loader2 className="w-12 h-12 text-gold-500 animate-spin mx-auto mb-4" />
+          <p className="text-[#A0A0A0]">Загрузка...</p>
         </div>
       </div>
     );
@@ -147,20 +147,20 @@ export default function CheckoutPage() {
 
   if (!user || !isAdult) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-[#121212]">
         <Header />
         <div className="flex items-center justify-center py-20 px-4">
-          <div className="max-w-md text-center bg-white rounded-2xl shadow-lg p-8">
-            <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+          <div className="max-w-md text-center bg-[#1E1E1E] rounded-2xl shadow-lg p-8">
+            <div className="w-20 h-20 bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
               <AlertTriangle className="w-10 h-10 text-red-500" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-3">Доступ ограничен</h1>
-            <p className="text-gray-600 mb-6">
+            <h1 className="text-2xl font-bold text-[#F5F5F5] mb-3">Доступ ограничен</h1>
+            <p className="text-[#A0A0A0] mb-6">
               Для оформления заказа необходимо войти в аккаунт и подтвердить возраст (18+)
             </p>
             <Link 
               href="/login" 
-              className="inline-flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white py-3 px-8 rounded-xl font-medium transition-colors"
+              className="inline-flex items-center justify-center gap-2 bg-gold-500 hover:bg-gold-600 text-white py-3 px-8 rounded-xl font-medium transition-colors"
             >
               Войти в систему
               <ChevronRight className="w-5 h-5" />
@@ -174,20 +174,20 @@ export default function CheckoutPage() {
 
   if (cartItems.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-[#121212]">
         <Header />
         <div className="flex items-center justify-center py-20 px-4">
-          <div className="max-w-md text-center bg-white rounded-2xl shadow-lg p-8">
-            <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Package className="w-10 h-10 text-gray-400" />
+          <div className="max-w-md text-center bg-[#1E1E1E] rounded-2xl shadow-lg p-8">
+            <div className="w-20 h-20 bg-[#252525] rounded-full flex items-center justify-center mx-auto mb-6">
+              <Package className="w-10 h-10 text-[#666]" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-3">Корзина пуста</h1>
-            <p className="text-gray-600 mb-6">
+            <h1 className="text-2xl font-bold text-[#F5F5F5] mb-3">Корзина пуста</h1>
+            <p className="text-[#A0A0A0] mb-6">
               Добавьте товары в корзину, чтобы оформить заказ
             </p>
             <Link
               href="/catalog"
-              className="inline-flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white py-3 px-8 rounded-xl font-medium transition-colors"
+              className="inline-flex items-center justify-center gap-2 bg-gold-500 hover:bg-gold-600 text-white py-3 px-8 rounded-xl font-medium transition-colors"
             >
               Перейти в каталог
               <ChevronRight className="w-5 h-5" />
@@ -200,7 +200,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#121212]">
       <Header />
       
       <main className="py-8">
@@ -208,7 +208,7 @@ export default function CheckoutPage() {
           {/* Back Link */}
           <Link
             href="/cart"
-            className="inline-flex items-center gap-2 text-gray-600 hover:text-orange-600 mb-6 transition-colors"
+            className="inline-flex items-center gap-2 text-[#A0A0A0] hover:text-gold-600 mb-6 transition-colors"
           >
             <ChevronLeft className="w-5 h-5" />
             Вернуться в корзину
@@ -216,12 +216,12 @@ export default function CheckoutPage() {
 
           {/* Title */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Оформление заказа</h1>
-            <p className="text-gray-600 mt-1">Заполните данные для доставки</p>
+            <h1 className="text-3xl font-bold text-[#F5F5F5]">Оформление заказа</h1>
+            <p className="text-[#A0A0A0] mt-1">Заполните данные для доставки</p>
           </div>
 
           {/* Progress Steps */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8">
+          <div className="bg-[#1E1E1E] rounded-2xl shadow-sm border border-[#2A2A2A] p-6 mb-8">
             <div className="flex items-center justify-between max-w-3xl mx-auto">
               {steps.map((s, idx) => (
                 <div key={s.num} className="flex items-center flex-1">
@@ -239,8 +239,8 @@ export default function CheckoutPage() {
                         step > s.num 
                           ? "bg-green-500 text-white" 
                           : step === s.num 
-                            ? "bg-orange-500 text-white shadow-lg shadow-orange-500/30" 
-                            : "bg-gray-100 text-gray-400"
+                            ? "bg-gold-500 text-white shadow-lg shadow-gold-500/30" 
+                            : "bg-[#252525] text-[#666]"
                       )}
                     >
                       {step > s.num ? (
@@ -252,13 +252,13 @@ export default function CheckoutPage() {
                     <div className="hidden sm:block text-left">
                       <p className={cn(
                         "text-xs uppercase tracking-wide",
-                        step >= s.num ? "text-orange-600" : "text-gray-400"
+                        step >= s.num ? "text-gold-600" : "text-[#666]"
                       )}>
                         Шаг {s.num}
                       </p>
                       <p className={cn(
                         "font-medium",
-                        step >= s.num ? "text-gray-900" : "text-gray-400"
+                        step >= s.num ? "text-[#F5F5F5]" : "text-[#666]"
                       )}>
                         {s.label}
                       </p>
@@ -268,7 +268,7 @@ export default function CheckoutPage() {
                     <div className="flex-1 mx-4">
                       <div className={cn(
                         "h-1 rounded-full transition-all",
-                        step > s.num ? "bg-green-500" : "bg-gray-200"
+                        step > s.num ? "bg-green-500" : "bg-[#2A2A2A]"
                       )} />
                     </div>
                   )}
@@ -282,8 +282,8 @@ export default function CheckoutPage() {
             <div className="lg:col-span-2 space-y-6">
               {/* Step 1: Address */}
               {step === 1 && (
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                  <div className="bg-gradient-to-r from-orange-500 to-orange-600 px-6 py-4">
+                <div className="bg-[#1E1E1E] rounded-2xl shadow-sm border border-[#2A2A2A] overflow-hidden">
+                  <div className="bg-gradient-to-r from-gold-500 to-gold-600 px-6 py-4">
                     <h2 className="text-lg font-semibold text-white flex items-center gap-2">
                       <MapPin className="w-5 h-5" />
                       Адрес доставки
@@ -292,15 +292,15 @@ export default function CheckoutPage() {
                   <form onSubmit={handleSubmit(handleAddressSubmit)} className="p-6 space-y-5">
                     <div className="grid sm:grid-cols-2 gap-5">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-[#C0C0C0] mb-2">
                           Город <span className="text-red-500">*</span>
                         </label>
                         <input
                           {...register('city')}
                           type="text"
                           className={cn(
-                            "w-full px-4 py-3 border rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all outline-none",
-                            errors.city ? "border-red-300" : "border-gray-200"
+                            "w-full px-4 py-3 border rounded-xl bg-[#121212] focus:bg-[#1E1E1E] focus:ring-2 focus:ring-gold-500 focus:border-gold-500 transition-all outline-none",
+                            errors.city ? "border-red-300" : "border-[#2A2A2A]"
                           )}
                           placeholder="Алматы"
                         />
@@ -309,15 +309,15 @@ export default function CheckoutPage() {
                         )}
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-[#C0C0C0] mb-2">
                           Телефон <span className="text-red-500">*</span>
                         </label>
                         <input
                           {...register('phone')}
                           type="tel"
                           className={cn(
-                            "w-full px-4 py-3 border rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all outline-none",
-                            errors.phone ? "border-red-300" : "border-gray-200"
+                            "w-full px-4 py-3 border rounded-xl bg-[#121212] focus:bg-[#1E1E1E] focus:ring-2 focus:ring-gold-500 focus:border-gold-500 transition-all outline-none",
+                            errors.phone ? "border-red-300" : "border-[#2A2A2A]"
                           )}
                           placeholder="+7 777 123 45 67"
                         />
@@ -328,15 +328,15 @@ export default function CheckoutPage() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-[#C0C0C0] mb-2">
                         Адрес <span className="text-red-500">*</span>
                       </label>
                       <input
                         {...register('address')}
                         type="text"
                         className={cn(
-                          "w-full px-4 py-3 border rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all outline-none",
-                          errors.address ? "border-red-300" : "border-gray-200"
+                          "w-full px-4 py-3 border rounded-xl bg-[#121212] focus:bg-[#1E1E1E] focus:ring-2 focus:ring-gold-500 focus:border-gold-500 transition-all outline-none",
+                          errors.address ? "border-red-300" : "border-[#2A2A2A]"
                         )}
                         placeholder="ул. Абая, д. 10"
                       />
@@ -347,44 +347,44 @@ export default function CheckoutPage() {
 
                     <div className="grid sm:grid-cols-2 gap-5">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-[#C0C0C0] mb-2">
                           Квартира/Офис
                         </label>
                         <input
                           {...register('apartment')}
                           type="text"
-                          className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all outline-none"
+                          className="w-full px-4 py-3 border border-[#2A2A2A] rounded-xl bg-[#121212] focus:bg-[#1E1E1E] focus:ring-2 focus:ring-gold-500 focus:border-gold-500 transition-all outline-none"
                           placeholder="кв. 15"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-[#C0C0C0] mb-2">
                           Индекс
                         </label>
                         <input
                           {...register('postalCode')}
                           type="text"
-                          className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all outline-none"
+                          className="w-full px-4 py-3 border border-[#2A2A2A] rounded-xl bg-[#121212] focus:bg-[#1E1E1E] focus:ring-2 focus:ring-gold-500 focus:border-gold-500 transition-all outline-none"
                           placeholder="050000"
                         />
                       </div>
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-[#C0C0C0] mb-2">
                         Комментарий к заказу
                       </label>
                       <textarea
                         {...register('comment')}
                         rows={3}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all resize-none outline-none"
+                        className="w-full px-4 py-3 border border-[#2A2A2A] rounded-xl bg-[#121212] focus:bg-[#1E1E1E] focus:ring-2 focus:ring-gold-500 focus:border-gold-500 transition-all resize-none outline-none"
                         placeholder="Дополнительная информация для курьера..."
                       />
                     </div>
 
                     <button
                       type="submit"
-                      className="w-full bg-orange-500 hover:bg-orange-600 text-white py-4 rounded-xl font-medium transition-all shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 flex items-center justify-center gap-2"
+                      className="w-full bg-gold-500 hover:bg-gold-600 text-white py-4 rounded-xl font-medium transition-all shadow-lg shadow-gold-500/30 hover:shadow-xl hover:shadow-gold-500/40 flex items-center justify-center gap-2"
                     >
                       Продолжить
                       <ChevronRight className="w-5 h-5" />
@@ -395,8 +395,8 @@ export default function CheckoutPage() {
 
               {/* Step 2: Delivery */}
               {step === 2 && (
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                  <div className="bg-gradient-to-r from-orange-500 to-orange-600 px-6 py-4">
+                <div className="bg-[#1E1E1E] rounded-2xl shadow-sm border border-[#2A2A2A] overflow-hidden">
+                  <div className="bg-gradient-to-r from-gold-500 to-gold-600 px-6 py-4">
                     <h2 className="text-lg font-semibold text-white flex items-center gap-2">
                       <Truck className="w-5 h-5" />
                       Способ доставки
@@ -410,38 +410,38 @@ export default function CheckoutPage() {
                           className={cn(
                             "flex items-center justify-between p-5 border-2 rounded-xl cursor-pointer transition-all",
                             deliveryMethod === method.id
-                              ? "border-orange-500 bg-orange-50 shadow-lg shadow-orange-500/10"
-                              : "border-gray-200 hover:border-orange-300 hover:bg-gray-50"
+                              ? "border-gold-500 bg-gold-500/10 shadow-lg shadow-gold-500/10"
+                              : "border-[#2A2A2A] hover:border-gold-500/40 hover:bg-[#121212]"
                           )}
                         >
                           <div className="flex items-center gap-4">
                             <div className={cn(
                               "w-12 h-12 rounded-xl flex items-center justify-center text-2xl",
-                              deliveryMethod === method.id ? "bg-orange-100" : "bg-gray-100"
+                              deliveryMethod === method.id ? "bg-gold-500/15" : "bg-[#252525]"
                             )}>
                               {method.icon}
                             </div>
                             <div>
-                              <p className="font-semibold text-gray-900">{method.name}</p>
-                              <p className="text-sm text-gray-500">{method.description}</p>
+                              <p className="font-semibold text-[#F5F5F5]">{method.name}</p>
+                              <p className="text-sm text-[#A0A0A0]">{method.description}</p>
                               <div className="flex items-center gap-2 mt-1">
-                                <Clock className="w-3.5 h-3.5 text-gray-400" />
-                                <span className="text-xs text-gray-500">{method.time}</span>
+                                <Clock className="w-3.5 h-3.5 text-[#666]" />
+                                <span className="text-xs text-[#A0A0A0]">{method.time}</span>
                               </div>
                             </div>
                           </div>
                           <div className="flex items-center gap-3">
                             <span className={cn(
                               "font-bold text-lg",
-                              method.price === 0 ? "text-green-600" : "text-gray-900"
+                              method.price === 0 ? "text-green-400" : "text-[#F5F5F5]"
                             )}>
                               {method.price === 0 ? 'Бесплатно' : formatPrice(method.price)}
                             </span>
                             <div className={cn(
                               "w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all",
                               deliveryMethod === method.id 
-                                ? "border-orange-500 bg-orange-500" 
-                                : "border-gray-300"
+                                ? "border-gold-500 bg-gold-500" 
+                                : "border-[#333]"
                             )}>
                               {deliveryMethod === method.id && (
                                 <Check className="w-4 h-4 text-white" />
@@ -461,14 +461,14 @@ export default function CheckoutPage() {
                     <div className="flex gap-4">
                       <button
                         onClick={() => setStep(1)}
-                        className="flex-1 border-2 border-gray-200 text-gray-700 hover:bg-gray-50 py-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2"
+                        className="flex-1 border-2 border-[#2A2A2A] text-[#C0C0C0] hover:bg-[#121212] py-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2"
                       >
                         <ChevronLeft className="w-5 h-5" />
                         Назад
                       </button>
                       <button
                         onClick={handleDeliverySubmit}
-                        className="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-4 rounded-xl font-medium transition-all shadow-lg shadow-orange-500/30 flex items-center justify-center gap-2"
+                        className="flex-1 bg-gold-500 hover:bg-gold-600 text-white py-4 rounded-xl font-medium transition-all shadow-lg shadow-gold-500/30 flex items-center justify-center gap-2"
                       >
                         Продолжить
                         <ChevronRight className="w-5 h-5" />
@@ -480,8 +480,8 @@ export default function CheckoutPage() {
 
               {/* Step 3: Payment */}
               {step === 3 && (
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                  <div className="bg-gradient-to-r from-orange-500 to-orange-600 px-6 py-4">
+                <div className="bg-[#1E1E1E] rounded-2xl shadow-sm border border-[#2A2A2A] overflow-hidden">
+                  <div className="bg-gradient-to-r from-gold-500 to-gold-600 px-6 py-4">
                     <h2 className="text-lg font-semibold text-white flex items-center gap-2">
                       <CreditCard className="w-5 h-5" />
                       Способ оплаты
@@ -495,27 +495,27 @@ export default function CheckoutPage() {
                           className={cn(
                             "flex items-center justify-between p-5 border-2 rounded-xl cursor-pointer transition-all",
                             paymentMethod === method.id
-                              ? "border-orange-500 bg-orange-50 shadow-lg shadow-orange-500/10"
-                              : "border-gray-200 hover:border-orange-300 hover:bg-gray-50"
+                              ? "border-gold-500 bg-gold-500/10 shadow-lg shadow-gold-500/10"
+                              : "border-[#2A2A2A] hover:border-gold-500/40 hover:bg-[#121212]"
                           )}
                         >
                           <div className="flex items-center gap-4">
                             <div className={cn(
                               "w-12 h-12 rounded-xl flex items-center justify-center text-2xl",
-                              paymentMethod === method.id ? "bg-orange-100" : "bg-gray-100"
+                              paymentMethod === method.id ? "bg-gold-500/15" : "bg-[#252525]"
                             )}>
                               {method.icon}
                             </div>
                             <div>
-                              <p className="font-semibold text-gray-900">{method.name}</p>
-                              <p className="text-sm text-gray-500">{method.description}</p>
+                              <p className="font-semibold text-[#F5F5F5]">{method.name}</p>
+                              <p className="text-sm text-[#A0A0A0]">{method.description}</p>
                             </div>
                           </div>
                           <div className={cn(
                             "w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all",
                             paymentMethod === method.id 
-                              ? "border-orange-500 bg-orange-500" 
-                              : "border-gray-300"
+                              ? "border-gold-500 bg-gold-500" 
+                              : "border-[#333]"
                           )}>
                             {paymentMethod === method.id && (
                               <Check className="w-4 h-4 text-white" />
@@ -533,11 +533,11 @@ export default function CheckoutPage() {
                     </div>
 
                     {/* Security Notice */}
-                    <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-6 flex items-start gap-3">
-                      <Shield className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <div className="bg-green-900/20 border border-green-800/30 rounded-xl p-4 mb-6 flex items-start gap-3">
+                      <Shield className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
                       <div>
-                        <p className="font-medium text-green-800">Безопасная оплата</p>
-                        <p className="text-sm text-green-600">
+                        <p className="font-medium text-green-400">Безопасная оплата</p>
+                        <p className="text-sm text-green-400">
                           Все платежи защищены шифрованием SSL
                         </p>
                       </div>
@@ -546,14 +546,14 @@ export default function CheckoutPage() {
                     <div className="flex gap-4">
                       <button
                         onClick={() => setStep(2)}
-                        className="flex-1 border-2 border-gray-200 text-gray-700 hover:bg-gray-50 py-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2"
+                        className="flex-1 border-2 border-[#2A2A2A] text-[#C0C0C0] hover:bg-[#121212] py-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2"
                       >
                         <ChevronLeft className="w-5 h-5" />
                         Назад
                       </button>
                       <button
                         onClick={handlePaymentSubmit}
-                        className="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-4 rounded-xl font-medium transition-all shadow-lg shadow-orange-500/30 flex items-center justify-center gap-2"
+                        className="flex-1 bg-gold-500 hover:bg-gold-600 text-white py-4 rounded-xl font-medium transition-all shadow-lg shadow-gold-500/30 flex items-center justify-center gap-2"
                       >
                         Продолжить
                         <ChevronRight className="w-5 h-5" />
@@ -567,8 +567,8 @@ export default function CheckoutPage() {
               {step === 4 && (
                 <div className="space-y-6">
                   {/* Order Summary Card */}
-                  <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div className="bg-gradient-to-r from-orange-500 to-orange-600 px-6 py-4">
+                  <div className="bg-[#1E1E1E] rounded-2xl shadow-sm border border-[#2A2A2A] overflow-hidden">
+                    <div className="bg-gradient-to-r from-gold-500 to-gold-600 px-6 py-4">
                       <h2 className="text-lg font-semibold text-white flex items-center gap-2">
                         <CheckCircle className="w-5 h-5" />
                         Подтверждение заказа
@@ -576,68 +576,68 @@ export default function CheckoutPage() {
                     </div>
                     <div className="p-6">
                       {/* Address Summary */}
-                      <div className="flex justify-between items-start pb-5 border-b border-gray-100">
+                      <div className="flex justify-between items-start pb-5 border-b border-[#2A2A2A]">
                         <div className="flex gap-4">
-                          <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-                            <MapPin className="w-5 h-5 text-orange-600" />
+                          <div className="w-10 h-10 bg-gold-500/15 rounded-lg flex items-center justify-center">
+                            <MapPin className="w-5 h-5 text-gold-600" />
                           </div>
                           <div>
-                            <p className="font-semibold text-gray-900 mb-1">Адрес доставки</p>
-                            <p className="text-gray-600">
+                            <p className="font-semibold text-[#F5F5F5] mb-1">Адрес доставки</p>
+                            <p className="text-[#A0A0A0]">
                               {addressData?.city}, {addressData?.address}
                               {addressData?.apartment && `, ${addressData.apartment}`}
                             </p>
-                            <p className="text-gray-500 text-sm mt-1">Тел: {addressData?.phone}</p>
+                            <p className="text-[#A0A0A0] text-sm mt-1">Тел: {addressData?.phone}</p>
                           </div>
                         </div>
                         <button
                           onClick={() => setStep(1)}
-                          className="text-orange-600 hover:text-orange-700 text-sm font-medium"
+                          className="text-gold-600 hover:text-gold-700 text-sm font-medium"
                         >
                           Изменить
                         </button>
                       </div>
 
                       {/* Delivery Summary */}
-                      <div className="flex justify-between items-start py-5 border-b border-gray-100">
+                      <div className="flex justify-between items-start py-5 border-b border-[#2A2A2A]">
                         <div className="flex gap-4">
-                          <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-                            <Truck className="w-5 h-5 text-orange-600" />
+                          <div className="w-10 h-10 bg-gold-500/15 rounded-lg flex items-center justify-center">
+                            <Truck className="w-5 h-5 text-gold-600" />
                           </div>
                           <div>
-                            <p className="font-semibold text-gray-900 mb-1">Способ доставки</p>
-                            <p className="text-gray-600">
+                            <p className="font-semibold text-[#F5F5F5] mb-1">Способ доставки</p>
+                            <p className="text-[#A0A0A0]">
                               {deliveryMethods.find(d => d.id === deliveryMethod)?.name}
                             </p>
-                            <p className="text-gray-500 text-sm mt-1">
+                            <p className="text-[#A0A0A0] text-sm mt-1">
                               {deliveryMethods.find(d => d.id === deliveryMethod)?.time}
                             </p>
                           </div>
                         </div>
                         <button
                           onClick={() => setStep(2)}
-                          className="text-orange-600 hover:text-orange-700 text-sm font-medium"
+                          className="text-gold-600 hover:text-gold-700 text-sm font-medium"
                         >
                           Изменить
                         </button>
                       </div>
 
                       {/* Payment Summary */}
-                      <div className="flex justify-between items-start py-5 border-b border-gray-100">
+                      <div className="flex justify-between items-start py-5 border-b border-[#2A2A2A]">
                         <div className="flex gap-4">
-                          <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-                            <CreditCard className="w-5 h-5 text-orange-600" />
+                          <div className="w-10 h-10 bg-gold-500/15 rounded-lg flex items-center justify-center">
+                            <CreditCard className="w-5 h-5 text-gold-600" />
                           </div>
                           <div>
-                            <p className="font-semibold text-gray-900 mb-1">Способ оплаты</p>
-                            <p className="text-gray-600">
+                            <p className="font-semibold text-[#F5F5F5] mb-1">Способ оплаты</p>
+                            <p className="text-[#A0A0A0]">
                               {paymentMethods.find(p => p.id === paymentMethod)?.name}
                             </p>
                           </div>
                         </div>
                         <button
                           onClick={() => setStep(3)}
-                          className="text-orange-600 hover:text-orange-700 text-sm font-medium"
+                          className="text-gold-600 hover:text-gold-700 text-sm font-medium"
                         >
                           Изменить
                         </button>
@@ -645,14 +645,14 @@ export default function CheckoutPage() {
 
                       {/* Items */}
                       <div className="pt-5">
-                        <p className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <Package className="w-5 h-5 text-gray-400" />
+                        <p className="font-semibold text-[#F5F5F5] mb-4 flex items-center gap-2">
+                          <Package className="w-5 h-5 text-[#666]" />
                           Товары в заказе
                         </p>
                         <div className="space-y-3">
                           {cartItems.map((item) => (
-                            <div key={item.id} className="flex gap-4 p-3 bg-gray-50 rounded-xl">
-                              <div className="relative w-16 h-16 bg-white rounded-lg overflow-hidden flex-shrink-0 border border-gray-200">
+                            <div key={item.id} className="flex gap-4 p-3 bg-[#121212] rounded-xl">
+                              <div className="relative w-16 h-16 bg-[#1E1E1E] rounded-lg overflow-hidden flex-shrink-0 border border-[#2A2A2A]">
                                 {item.product?.image_url && (
                                   <Image
                                     src={item.product.image_url}
@@ -663,10 +663,10 @@ export default function CheckoutPage() {
                                 )}
                               </div>
                               <div className="flex-1 min-w-0">
-                                <p className="font-medium text-gray-900 truncate">{item.product?.name}</p>
-                                <p className="text-sm text-gray-500">{item.quantity} шт.</p>
+                                <p className="font-medium text-[#F5F5F5] truncate">{item.product?.name}</p>
+                                <p className="text-sm text-[#A0A0A0]">{item.quantity} шт.</p>
                               </div>
-                              <span className="font-semibold text-gray-900">
+                              <span className="font-semibold text-[#F5F5F5]">
                                 {formatPrice((item.product?.price || 0) * item.quantity)}
                               </span>
                             </div>
@@ -680,7 +680,7 @@ export default function CheckoutPage() {
                   <div className="flex gap-4">
                     <button
                       onClick={() => setStep(3)}
-                      className="flex-1 border-2 border-gray-200 text-gray-700 hover:bg-gray-50 py-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2"
+                      className="flex-1 border-2 border-[#2A2A2A] text-[#C0C0C0] hover:bg-[#121212] py-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2"
                     >
                       <ChevronLeft className="w-5 h-5" />
                       Назад
@@ -688,7 +688,7 @@ export default function CheckoutPage() {
                     <button
                       onClick={handleConfirmOrder}
                       disabled={isOrderLoading}
-                      className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white py-4 rounded-xl font-medium transition-all shadow-lg shadow-orange-500/30 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      className="flex-1 bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-white py-4 rounded-xl font-medium transition-all shadow-lg shadow-gold-500/30 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
                       {isOrderLoading ? (
                         <>
@@ -709,7 +709,7 @@ export default function CheckoutPage() {
 
             {/* Order Summary Sidebar */}
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden sticky top-24">
+              <div className="bg-[#1E1E1E] rounded-2xl shadow-sm border border-[#2A2A2A] overflow-hidden sticky top-24">
                 <div className="bg-gray-900 px-6 py-4">
                   <h2 className="text-lg font-semibold text-white">Ваш заказ</h2>
                 </div>
@@ -719,7 +719,7 @@ export default function CheckoutPage() {
                   <div className="space-y-4 mb-6 max-h-72 overflow-y-auto pr-2">
                     {cartItems.map((item) => (
                       <div key={item.id} className="flex gap-3">
-                        <div className="relative w-14 h-14 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 border border-gray-200">
+                        <div className="relative w-14 h-14 bg-[#252525] rounded-lg overflow-hidden flex-shrink-0 border border-[#2A2A2A]">
                           {item.product?.image_url && (
                             <Image
                               src={item.product.image_url}
@@ -730,9 +730,9 @@ export default function CheckoutPage() {
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-gray-900 truncate">{item.product?.name}</p>
-                          <p className="text-xs text-gray-500">{item.quantity} шт.</p>
-                          <p className="text-sm font-semibold text-gray-900 mt-1">
+                          <p className="text-sm font-medium text-[#F5F5F5] truncate">{item.product?.name}</p>
+                          <p className="text-xs text-[#A0A0A0]">{item.quantity} шт.</p>
+                          <p className="text-sm font-semibold text-[#F5F5F5] mt-1">
                             {formatPrice((item.product?.price || 0) * item.quantity)}
                           </p>
                         </div>
@@ -741,29 +741,29 @@ export default function CheckoutPage() {
                   </div>
 
                   {/* Totals */}
-                  <div className="border-t border-gray-200 pt-4 space-y-3">
-                    <div className="flex justify-between text-gray-600">
+                  <div className="border-t border-[#2A2A2A] pt-4 space-y-3">
+                    <div className="flex justify-between text-[#A0A0A0]">
                       <span>Товары ({totalItems})</span>
                       <span className="font-medium">{formatPrice(totalAmount)}</span>
                     </div>
-                    <div className="flex justify-between text-gray-600">
+                    <div className="flex justify-between text-[#A0A0A0]">
                       <span>Доставка</span>
                       <span className={cn(
                         "font-medium",
-                        deliveryPrice === 0 && "text-green-600"
+                        deliveryPrice === 0 && "text-green-400"
                       )}>
                         {deliveryPrice === 0 ? 'Бесплатно' : formatPrice(deliveryPrice)}
                       </span>
                     </div>
-                    <div className="flex justify-between text-xl font-bold pt-3 border-t border-gray-200">
-                      <span className="text-gray-900">Итого</span>
-                      <span className="text-orange-600">{formatPrice(finalTotal)}</span>
+                    <div className="flex justify-between text-xl font-bold pt-3 border-t border-[#2A2A2A]">
+                      <span className="text-[#F5F5F5]">Итого</span>
+                      <span className="text-gold-600">{formatPrice(finalTotal)}</span>
                     </div>
                   </div>
 
                   {/* Promo Badge */}
-                  <div className="mt-6 bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-xl p-4 text-center">
-                    <p className="text-sm font-medium text-orange-800">
+                  <div className="mt-6 bg-gradient-to-r from-gold-500/10 to-gold-500/5 border border-gold-500/30 rounded-xl p-4 text-center">
+                    <p className="text-sm font-medium text-gold-400">
                       🎉 Бесплатная доставка от 15 000 ₸
                     </p>
                   </div>

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Heart, ShoppingCart, Star, Eye, Lock, Loader2, Check } from 'lucide-react';
+import { Heart, ShoppingCart, Star, Eye, Lock, Loader2, Check, MessageCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -282,26 +282,42 @@ export function ProductCard({ product, size = 'normal', className, showPrice = t
 
           {/* Add to Cart Button */}
           {showPrice ? (
-            <Button
-              onClick={handleAddToCart}
-              disabled={!product.in_stock || addingToCart}
-              className={cn(
-                "w-full mt-2 font-medium transition-all",
-                addedToCart
-                  ? "bg-green-600 hover:bg-green-700 text-white"
-                  : "bg-gold-500 hover:bg-gold-600 text-[#121212]",
-                s.buttonSize
-              )}
-            >
-              {addingToCart ? (
-                <Loader2 className={cn(s.iconSize, "mr-1.5 animate-spin")} />
-              ) : addedToCart ? (
-                <Check className={cn(s.iconSize, "mr-1.5")} />
-              ) : (
-                <ShoppingCart className={cn(s.iconSize, "mr-1.5")} />
-              )}
-              {addingToCart ? 'Добавляем...' : addedToCart ? 'Добавлено!' : 'В корзину'}
-            </Button>
+            !product.in_stock ? (
+              <a
+                href={`https://wa.me/77008001800?text=${encodeURIComponent(`Здравствуйте! Интересует наличие: ${product.name}`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className={cn(
+                  "w-full mt-2 font-medium inline-flex items-center justify-center bg-green-600/20 text-green-400 hover:bg-green-600/30 rounded-md transition-all",
+                  s.buttonSize
+                )}
+              >
+                <MessageCircle className={cn(s.iconSize, "mr-1.5")} />
+                Уточнить наличие
+              </a>
+            ) : (
+              <Button
+                onClick={handleAddToCart}
+                disabled={addingToCart}
+                className={cn(
+                  "w-full mt-2 font-medium transition-all",
+                  addedToCart
+                    ? "bg-green-600 hover:bg-green-700 text-white"
+                    : "bg-gold-500 hover:bg-gold-600 text-[#121212]",
+                  s.buttonSize
+                )}
+              >
+                {addingToCart ? (
+                  <Loader2 className={cn(s.iconSize, "mr-1.5 animate-spin")} />
+                ) : addedToCart ? (
+                  <Check className={cn(s.iconSize, "mr-1.5")} />
+                ) : (
+                  <ShoppingCart className={cn(s.iconSize, "mr-1.5")} />
+                )}
+                {addingToCart ? 'Добавляем...' : addedToCart ? 'Добавлено!' : 'В корзину'}
+              </Button>
+            )
           ) : (
             <Link href="/login" className="w-full">
               <Button
@@ -436,25 +452,36 @@ export function ProductCardCompact({ product, showPrice = true }: { product: Pro
           <Heart className={cn("h-4 w-4", isFav && "fill-current")} />
         </button>
         {showPrice ? (
-          <Button
-            size="sm"
-            onClick={handleAddToCart}
-            disabled={!product.in_stock || addingToCart}
-            className={cn(
-              "h-9 px-3 transition-all",
-              addedToCart
-                ? "bg-green-600 hover:bg-green-700"
-                : "bg-gold-500 hover:bg-gold-600 text-[#121212]"
-            )}
-          >
-            {addingToCart ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : addedToCart ? (
-              <Check className="h-4 w-4" />
-            ) : (
-              <ShoppingCart className="h-4 w-4" />
-            )}
-          </Button>
+          !product.in_stock ? (
+            <a
+              href={`https://wa.me/77008001800?text=${encodeURIComponent(`Здравствуйте! Интересует наличие: ${product.name}`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 rounded-lg bg-green-600/20 text-green-400 hover:bg-green-600/30 transition-colors"
+            >
+              <MessageCircle className="h-4 w-4" />
+            </a>
+          ) : (
+            <Button
+              size="sm"
+              onClick={handleAddToCart}
+              disabled={addingToCart}
+              className={cn(
+                "h-9 px-3 transition-all",
+                addedToCart
+                  ? "bg-green-600 hover:bg-green-700"
+                  : "bg-gold-500 hover:bg-gold-600 text-[#121212]"
+              )}
+            >
+              {addingToCart ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : addedToCart ? (
+                <Check className="h-4 w-4" />
+              ) : (
+                <ShoppingCart className="h-4 w-4" />
+              )}
+            </Button>
+          )
         ) : (
           <Link href="/login">
             <Button size="sm" variant="outline" className="border-gold-500/30 text-gold-500 h-9 px-3">

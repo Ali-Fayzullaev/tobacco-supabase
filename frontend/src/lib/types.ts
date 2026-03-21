@@ -60,6 +60,7 @@ export interface Product {
   is_featured: boolean;
   is_new?: boolean;
   is_bestseller?: boolean;
+  order_step?: number;
   rating?: number;
   reviews_count?: number;
   created_at: string;

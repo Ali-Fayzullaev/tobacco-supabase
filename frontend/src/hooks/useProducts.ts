@@ -19,6 +19,8 @@ export interface ProductSearchResult {
   is_featured: boolean;
   is_new?: boolean;
   is_bestseller?: boolean;
+  stock?: number;
+  order_step?: number;
   rating?: number;
   reviews_count?: number;
 }
@@ -189,6 +191,8 @@ export function useProducts() {
         is_featured: item.is_featured || false,
         is_new: item.is_new || false,
         is_bestseller: item.is_bestseller || false,
+        stock: item.stock ?? undefined,
+        order_step: item.order_step ?? 1,
         rating: item.rating || 0,
         reviews_count: item.reviews_count || 0,
       }));

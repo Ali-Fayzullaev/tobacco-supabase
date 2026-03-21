@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { toast } from 'sonner';
 import { 
   Search, 
   SlidersHorizontal, 
@@ -15,8 +16,9 @@ import {
   ArrowUpDown,
   ChevronRight,
   ArrowLeft,
-  Layers,
-  Tag
+  Tag,
+  Table2,
+  MessageCircle
 } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
@@ -36,7 +38,8 @@ import {
 import { useAuth } from '@/hooks';
 import { useProducts } from '@/hooks/useProducts';
 import { useCategories } from '@/hooks/useCategories';
-import { cn } from '@/lib/utils';
+import { useCart } from '@/hooks/useCart';
+import { cn, formatPrice } from '@/lib/utils';
 import type { Category } from '@/lib/types';
 
 type SortOption = 'newest' | 'price_asc' | 'price_desc' | 'popular';
@@ -97,211 +100,6 @@ const categoryGradients: Record<string, string> = {
   'e-cigarettes': 'from-cyan-700 via-cyan-800 to-cyan-950',
   'accessories': 'from-slate-600 via-slate-700 to-slate-900',
 };
-
-const categoryEmojis: Record<string, string> = {
-  'cigarettes': '🚬',
-  'papirosy': '🚬',
-  'cigarillos': '🚬',
-  'cigars': '🚬',
-  'tobacco': '🍂',
-  'smoking-tobacco': '🍂',
-  'hookah-tobacco': '💨',
-  'pipe-tobacco': '🪈',
-  'e-cigarettes': '💨',
-  'accessories': '🔥',
-};
-
-/* ─────────────────────────────────────────────
-   Карточка категории
-   ───────────────────────────────────────────── */
-function CategoryCard({ 
-  category, 
-  subcategoryCount = 0,
-  onClick,
-  className,
-}: { 
-  category: Category; 
-  subcategoryCount?: number;
-  onClick: () => void;
-  className?: string;
-}) {
-  const gradient = categoryGradients[category.slug] || 'from-gray-700 via-gray-800 to-gray-900';
-  const emoji = categoryEmojis[category.slug] || '📦';
-
-  return (
-    <button
-      onClick={onClick}
-      className={cn(
-        "group relative overflow-hidden rounded-2xl cursor-pointer transition-all duration-500",
-        "hover:shadow-2xl hover:shadow-black/30 hover:-translate-y-1.5",
-        "focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2",
-        className
-      )}
-    >
-      {category.image_url ? (
-        <img 
-          src={category.image_url} 
-          alt={category.name}
-          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-          loading="lazy"
-        />
-      ) : (
-        <div className={cn("absolute inset-0 bg-gradient-to-br", gradient)}>
-          <div className="absolute inset-0 flex items-center justify-center opacity-20 group-hover:opacity-30 transition-opacity duration-500">
-            <span className="text-8xl select-none">{emoji}</span>
-          </div>
-          <div className="absolute top-0 right-0 w-32 h-32 bg-[#1E1E1E]/10 rounded-full -translate-y-1/2 translate-x-1/2 opacity-30" />
-          <div className="absolute bottom-0 left-0 w-24 h-24 bg-[#1E1E1E]/5 rounded-full translate-y-1/2 -translate-x-1/2 opacity-30" />
-        </div>
-      )}
-      
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent group-hover:from-black/90 group-hover:via-black/30 transition-all duration-500" />
-      
-      <div className="absolute inset-0 flex flex-col justify-end p-5 sm:p-6">
-        <h3 className="text-white font-bold text-lg sm:text-xl tracking-tight drop-shadow-lg text-left">
-          {category.name}
-        </h3>
-        {category.description && (
-          <p className="text-white/60 text-sm mt-1 line-clamp-2 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-2 group-hover:translate-y-0 text-left">
-            {category.description}
-          </p>
-        )}
-        {subcategoryCount > 0 && (
-          <p className="text-gold-300/80 text-xs mt-2 flex items-center gap-1.5 text-left">
-            <Layers className="w-3.5 h-3.5" />
-            {subcategoryCount} подкатегори{subcategoryCount > 4 ? 'й' : subcategoryCount > 1 ? 'и' : 'я'}
-          </p>
-        )}
-      </div>
-
-      <div className="absolute top-4 right-4 w-9 h-9 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 group-hover:bg-gold-500/90 transition-all duration-500 transform translate-x-2 -translate-y-2 group-hover:translate-x-0 group-hover:translate-y-0">
-        <ChevronRight className="w-4 h-4 text-white" />
-      </div>
-    </button>
-  );
-}
-
-/* ─────────────────────────────────────────────
-   Шоукейс категорий (главный экран каталога)
-   ───────────────────────────────────────────── */
-function CategoriesShowcase({ 
-  parentCategories,
-  getSubcategories,
-  onSelectCategory 
-}: { 
-  parentCategories: Category[];
-  getSubcategories: (parentId: string) => Category[];
-  onSelectCategory: (categoryId: string) => void;
-}) {
-  if (parentCategories.length === 0) return null;
-
-  const firstRow = parentCategories.slice(0, 4);
-  const secondRow = parentCategories.slice(4, 6);
-  const thirdRow = parentCategories.slice(6);
-
-  return (
-    <section>
-      <div className="text-center mb-8">
-        <h2 className="text-3xl sm:text-4xl font-bold text-[#F5F5F5] tracking-tight">
-          Каталог товаров
-        </h2>
-        <p className="text-[#A0A0A0] mt-2 text-lg">
-          Выберите интересующую категорию
-        </p>
-      </div>
-
-      {/* Ряд 1 — 4 карточки */}
-      {firstRow.length > 0 && (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-3 sm:mb-4">
-          {firstRow.map((cat) => (
-            <CategoryCard 
-              key={cat.id}
-              category={cat}
-              subcategoryCount={getSubcategories(cat.id).length}
-              onClick={() => onSelectCategory(cat.id)}
-              className="aspect-[4/3] sm:aspect-square"
-            />
-          ))}
-        </div>
-      )}
-
-      {/* Ряд 2 — 2 широкие карточки с подкатегориями */}
-      {secondRow.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-3 sm:mb-4">
-          {secondRow.map((cat) => {
-            const subs = getSubcategories(cat.id);
-            const gradient = categoryGradients[cat.slug] || 'from-gray-700 via-gray-800 to-gray-900';
-            const emoji = categoryEmojis[cat.slug] || '📦';
-            return (
-              <button
-                key={cat.id}
-                onClick={() => onSelectCategory(cat.id)}
-                className="group relative w-full overflow-hidden rounded-2xl cursor-pointer transition-all duration-500 hover:shadow-2xl hover:shadow-black/30 hover:-translate-y-1.5 aspect-[2.2/1] text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500"
-              >
-                {cat.image_url ? (
-                  <img 
-                    src={cat.image_url} 
-                    alt={cat.name}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    loading="lazy"
-                  />
-                ) : (
-                  <div className={cn("absolute inset-0 bg-gradient-to-br", gradient)}>
-                    <div className="absolute inset-0 flex items-center justify-center opacity-15">
-                      <span className="text-9xl select-none">{emoji}</span>
-                    </div>
-                  </div>
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent group-hover:from-black/90 transition-all duration-500" />
-                <div className="absolute inset-0 flex flex-col justify-end p-5 sm:p-7">
-                  <h3 className="text-white font-bold text-xl sm:text-2xl tracking-tight drop-shadow-lg">
-                    {cat.name}
-                  </h3>
-                  {subs.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mt-3">
-                      {subs.map(sub => (
-                        <span 
-                          key={sub.id}
-                          onClick={(e) => { e.stopPropagation(); onSelectCategory(sub.id); }}
-                          className="px-3 py-1.5 bg-[#1E1E1E]/15 backdrop-blur-sm text-white/90 text-sm rounded-full hover:bg-gold-500/80 transition-all duration-300 cursor-pointer hover:scale-105"
-                        >
-                          {sub.name}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                <div className="absolute top-4 right-4 w-9 h-9 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 group-hover:bg-gold-500/90 transition-all duration-500">
-                  <ChevronRight className="w-4 h-4 text-white" />
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      )}
-
-      {/* Ряд 3 — остальные */}
-      {thirdRow.length > 0 && (
-        <div className={cn(
-          "grid gap-3 sm:gap-4",
-          thirdRow.length === 1 ? "grid-cols-1 max-w-sm" :
-          thirdRow.length === 2 ? "grid-cols-1 sm:grid-cols-2" :
-          "grid-cols-2 sm:grid-cols-3"
-        )}>
-          {thirdRow.map((cat) => (
-            <CategoryCard 
-              key={cat.id}
-              category={cat}
-              subcategoryCount={getSubcategories(cat.id).length}
-              onClick={() => onSelectCategory(cat.id)}
-              className="aspect-[4/3]"
-            />
-          ))}
-        </div>
-      )}
-    </section>
-  );
-}
 
 /* ─────────────────────────────────────────────
    Баннер выбранной категории
@@ -371,6 +169,119 @@ function ActiveCategoryBanner({
 }
 
 /* ─────────────────────────────────────────────
+   Табличный прайс-лист
+   ───────────────────────────────────────────── */
+function PriceListTable({ 
+  products, 
+  canBuy,
+  addToCart 
+}: { 
+  products: Array<{ id: string; name: string; slug: string; brand?: string | null; price: number; old_price?: number | null; in_stock: boolean; stock?: number; order_step?: number; sku?: string | null }>;
+  canBuy: boolean;
+  addToCart: (productId: string, quantity: number) => Promise<{ success: boolean; error?: string }>;
+}) {
+  const [addingId, setAddingId] = useState<string | null>(null);
+
+  const handleAdd = async (productId: string, orderStep: number) => {
+    setAddingId(productId);
+    const result = await addToCart(productId, orderStep);
+    if (result.success) {
+      toast.success('Добавлено в корзину');
+    } else {
+      toast.error(result.error || 'Ошибка');
+    }
+    setAddingId(null);
+  };
+
+  const whatsappNumber = '77008001800';
+
+  return (
+    <div className="bg-[#1E1E1E] rounded-2xl border border-[#2A2A2A] overflow-hidden">
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-[#2A2A2A] bg-[#181818]">
+              <th className="text-left px-4 py-3 font-semibold text-[#A0A0A0] text-xs uppercase tracking-wider">Наименование</th>
+              <th className="text-left px-4 py-3 font-semibold text-[#A0A0A0] text-xs uppercase tracking-wider hidden sm:table-cell">Бренд</th>
+              <th className="text-left px-4 py-3 font-semibold text-[#A0A0A0] text-xs uppercase tracking-wider hidden md:table-cell">Артикул</th>
+              {canBuy && (
+                <th className="text-right px-4 py-3 font-semibold text-[#A0A0A0] text-xs uppercase tracking-wider">Цена</th>
+              )}
+              <th className="text-center px-4 py-3 font-semibold text-[#A0A0A0] text-xs uppercase tracking-wider">Наличие</th>
+              <th className="text-center px-4 py-3 font-semibold text-[#A0A0A0] text-xs uppercase tracking-wider w-[120px]"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {products.map((product, idx) => {
+              const orderStep = product.order_step || 1;
+              const outOfStock = !product.in_stock || (product.stock !== undefined && product.stock <= 0);
+              return (
+                <tr 
+                  key={product.id} 
+                  className={cn(
+                    "border-b border-[#2A2A2A]/50 hover:bg-[#252525] transition-colors",
+                    idx % 2 === 0 ? "bg-[#1E1E1E]" : "bg-[#1B1B1B]"
+                  )}
+                >
+                  <td className="px-4 py-3">
+                    <Link href={`/product/${product.slug}`} className="text-[#F5F5F5] hover:text-gold-500 transition-colors font-medium">
+                      {product.name}
+                    </Link>
+                  </td>
+                  <td className="px-4 py-3 text-[#A0A0A0] hidden sm:table-cell">{product.brand || '—'}</td>
+                  <td className="px-4 py-3 text-[#666] hidden md:table-cell font-mono text-xs">{product.sku || '—'}</td>
+                  {canBuy && (
+                    <td className="px-4 py-3 text-right">
+                      <span className="text-[#F5F5F5] font-semibold">{formatPrice(product.price)}</span>
+                      {product.old_price && product.old_price > product.price && (
+                        <span className="text-[#666] line-through text-xs ml-2">{formatPrice(product.old_price)}</span>
+                      )}
+                    </td>
+                  )}
+                  <td className="px-4 py-3 text-center">
+                    {outOfStock ? (
+                      <span className="text-red-400 text-xs">Нет</span>
+                    ) : (
+                      <span className="text-green-400 text-xs">В наличии</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-center">
+                    {outOfStock ? (
+                      <a
+                        href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Здравствуйте! Интересует наличие: ${product.name}`)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-green-600/20 text-green-400 hover:bg-green-600/30 rounded-lg transition-colors"
+                      >
+                        <MessageCircle className="w-3.5 h-3.5" />
+                        Уточнить
+                      </a>
+                    ) : canBuy ? (
+                      <button
+                        onClick={() => handleAdd(product.id, orderStep)}
+                        disabled={addingId === product.id}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-gold-500/20 text-gold-500 hover:bg-gold-500/30 rounded-lg transition-colors disabled:opacity-50"
+                      >
+                        {addingId === product.id ? (
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        ) : (
+                          <ShoppingCart className="w-3.5 h-3.5" />
+                        )}
+                        {orderStep > 1 ? `× ${orderStep}` : 'В корзину'}
+                      </button>
+                    ) : null}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────
    Главный контент каталога
    ───────────────────────────────────────────── */
 function CatalogContent() {
@@ -379,13 +290,14 @@ function CatalogContent() {
   const { user, profile, isLoading: isAuthLoading } = useAuth();
   const { searchProducts, products, isLoading: isProductsLoading } = useProducts();
   const { categories, parentCategories, getSubcategories, getCategoryById, isLoading: isCategoriesLoading } = useCategories();
+  const { addToCart } = useCart();
 
   // Можно ли показывать цены/корзину: авторизован + 21+
   const isAdult = profile?.birth_date && 
     new Date(profile.birth_date) <= new Date(new Date().setFullYear(new Date().getFullYear() - 21));
   const canBuy = !!user && !!isAdult;
   
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'table'>('grid');
   const [gridSize, setGridSize] = useState<GridSize>('4');
   const [cardSize, setCardSize] = useState<CardSize>('normal');
   const [showFilters, setShowFilters] = useState(false);
@@ -399,18 +311,15 @@ function CatalogContent() {
     max: searchParams.get('maxPrice') || '',
   });
 
-  // Шоукейс — когда нет выбранной категории и нет поиска
-  const isShowcaseMode = !selectedCategory && !searchQuery;
-
   // Настройки из localStorage
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const savedGridSize = localStorage.getItem('catalog_grid_size') as GridSize;
       const savedCardSize = localStorage.getItem('catalog_card_size') as CardSize;
-      const savedViewMode = localStorage.getItem('catalog_view_mode') as 'grid' | 'list';
+      const savedViewMode = localStorage.getItem('catalog_view_mode') as 'grid' | 'list' | 'table';
       if (savedGridSize && ['2', '3', '4', '5', '6'].includes(savedGridSize)) setGridSize(savedGridSize);
       if (savedCardSize && ['compact', 'normal', 'comfortable'].includes(savedCardSize)) setCardSize(savedCardSize);
-      if (savedViewMode && ['grid', 'list'].includes(savedViewMode)) setViewMode(savedViewMode);
+      if (savedViewMode && ['grid', 'list', 'table'].includes(savedViewMode)) setViewMode(savedViewMode);
     }
   }, []);
 
@@ -435,17 +344,17 @@ function CatalogContent() {
     setCardSize(size);
     localStorage?.setItem('catalog_card_size', size);
   };
-  const handleViewModeChange = (mode: 'grid' | 'list') => {
+  const handleViewModeChange = (mode: 'grid' | 'list' | 'table') => {
     setViewMode(mode);
     localStorage?.setItem('catalog_view_mode', mode);
   };
 
-  // Загрузка — только когда не в шоукейс-режиме
+  // Загрузка товаров
   useEffect(() => {
-    if (!isAuthLoading && !isCategoriesLoading && !isShowcaseMode) {
+    if (!isAuthLoading && !isCategoriesLoading) {
       loadProducts();
     }
-  }, [selectedCategory, sortBy, isAuthLoading, isCategoriesLoading, isShowcaseMode]);
+  }, [selectedCategory, sortBy, isAuthLoading, isCategoriesLoading]);
 
   const loadProducts = async () => {
     let categoryIds: string[] | undefined;
@@ -564,79 +473,62 @@ function CatalogContent() {
     );
   }
 
-  /* ═══════════════ SHOWCASE MODE ═══════════════ */
-  if (isShowcaseMode) {
-    return (
-      <div className="min-h-screen bg-[#121212]">
-        <Header />
-        
-        {/* Поиск */}
-        <div className="bg-[#1E1E1E] border-b border-[#2A2A2A]">
-          <div className="container mx-auto px-4 py-8">
-            <div className="max-w-2xl mx-auto">
-              <form onSubmit={(e) => { e.preventDefault(); if (searchQuery.trim()) loadProducts(); }} className="relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#666]" />
-                <input
-                  type="text"
-                  placeholder="Поиск товаров по названию, бренду..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-4 py-4 bg-[#121212] border border-[#2A2A2A] rounded-2xl text-base focus:outline-none focus:ring-2 focus:ring-gold-500/30 focus:border-gold-400 transition-all"
-                />
-              </form>
-            </div>
-          </div>
-        </div>
-
-        {/* Категории */}
-        <div className="container mx-auto px-4 py-8 sm:py-10">
-          <CategoriesShowcase
-            parentCategories={parentCategories}
-            getSubcategories={getSubcategories}
-            onSelectCategory={handleSelectCategory}
-          />
-        </div>
-
-        <Footer />
-      </div>
-    );
-  }
+  // Авто-выбор первой категории при входе в каталог (если нет категории/поиска)
+  useEffect(() => {
+    if (!isCategoriesLoading && parentCategories.length > 0 && !selectedCategory && !searchQuery) {
+      handleSelectCategory(parentCategories[0].id);
+    }
+  }, [isCategoriesLoading, parentCategories.length]);
 
   /* ═══════════════ PRODUCTS MODE ═══════════════ */
   return (
     <div className="min-h-screen bg-[#121212]">
       <Header />
 
-      {/* Шапка с хлебными крошками */}
-      <div className="bg-[#1E1E1E] border-b border-[#2A2A2A]">
-        <div className="container mx-auto px-4 py-5">
-          <div className="flex items-center gap-2 text-sm text-[#666] mb-2">
-            <Link href="/catalog" className="hover:text-gold-500 transition-colors">Каталог</Link>
-            {currentParentCategory && (
-              <>
-                <ChevronRight className="w-3.5 h-3.5" />
-                <button onClick={() => handleSelectCategory(currentParentCategory.id)} className="hover:text-gold-500 transition-colors">
-                  {currentParentCategory.name}
+      {/* ═══ STICKY 8-TAB HORIZONTAL MENU ═══ */}
+      <div className="sticky top-0 z-40 bg-[#1E1E1E] border-b border-[#2A2A2A] shadow-lg shadow-black/20">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide py-1" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+            {parentCategories.map((cat) => {
+              const isActive = selectedCategory === cat.id;
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => handleSelectCategory(cat.id)}
+                  className={cn(
+                    "whitespace-nowrap px-4 py-3 text-sm font-medium transition-all border-b-2 flex-shrink-0",
+                    isActive
+                      ? "border-gold-500 text-gold-500"
+                      : "border-transparent text-[#A0A0A0] hover:text-[#F5F5F5] hover:border-[#666]"
+                  )}
+                >
+                  {cat.name}
                 </button>
-              </>
-            )}
-            {currentCategory && (
-              <>
-                <ChevronRight className="w-3.5 h-3.5" />
-                <span className="text-[#C0C0C0] font-medium">{currentCategory.name}</span>
-              </>
-            )}
-            {searchQuery && !currentCategory && (
-              <>
-                <ChevronRight className="w-3.5 h-3.5" />
-                <span className="text-[#C0C0C0] font-medium">Поиск: &laquo;{searchQuery}&raquo;</span>
-              </>
-            )}
+              );
+            })}
           </div>
+        </div>
+      </div>
+
+      {/* Шапка с хлебными крошками */}
+      <div className="bg-[#1E1E1E]/50 border-b border-[#2A2A2A]">
+        <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-[#F5F5F5]">
-              {currentCategory?.name || 'Результаты поиска'}
-            </h1>
+            <div className="flex items-center gap-2 text-sm text-[#666]">
+              <Link href="/catalog" className="hover:text-gold-500 transition-colors">Каталог</Link>
+              {currentCategory && (
+                <>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                  <span className="text-[#C0C0C0] font-medium">{currentCategory.name}</span>
+                </>
+              )}
+              {searchQuery && !currentCategory && (
+                <>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                  <span className="text-[#C0C0C0] font-medium">Поиск: &laquo;{searchQuery}&raquo;</span>
+                </>
+              )}
+            </div>
             <span className="text-sm text-[#666]">
               {isProductsLoading ? '...' : `${products.length} товаров`}
             </span>
@@ -869,6 +761,7 @@ function CatalogContent() {
                       "p-2 transition-colors",
                       viewMode === 'grid' ? "bg-gold-500/10 text-gold-600" : "text-[#666] hover:text-[#A0A0A0] hover:bg-[#121212]"
                     )}
+                    title="Сетка"
                   >
                     <Grid2X2 className="h-4 w-4" />
                   </button>
@@ -878,8 +771,19 @@ function CatalogContent() {
                       "p-2 transition-colors",
                       viewMode === 'list' ? "bg-gold-500/10 text-gold-600" : "text-[#666] hover:text-[#A0A0A0] hover:bg-[#121212]"
                     )}
+                    title="Список"
                   >
                     <LayoutList className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={() => handleViewModeChange('table')}
+                    className={cn(
+                      "p-2 transition-colors",
+                      viewMode === 'table' ? "bg-gold-500/10 text-gold-600" : "text-[#666] hover:text-[#A0A0A0] hover:bg-[#121212]"
+                    )}
+                    title="Прайс-лист"
+                  >
+                    <Table2 className="h-4 w-4" />
                   </button>
                 </div>
               </div>
@@ -892,6 +796,14 @@ function CatalogContent() {
                   {Array.from({ length: 6 }).map((_, i) => (
                     <ProductCardCompactSkeleton key={i} />
                   ))}
+                </div>
+              ) : viewMode === 'table' ? (
+                <div className="bg-[#1E1E1E] rounded-2xl border border-[#2A2A2A] overflow-hidden">
+                  <div className="p-6 space-y-3">
+                    {Array.from({ length: 8 }).map((_, i) => (
+                      <Skeleton key={i} className="h-10 w-full rounded-md" />
+                    ))}
+                  </div>
                 </div>
               ) : (
                 <div className={cn("grid", getGridClass(gridSize), getGapClass(cardSize))}>
@@ -922,6 +834,8 @@ function CatalogContent() {
                   </Button>
                 </div>
               </div>
+            ) : viewMode === 'table' ? (
+              <PriceListTable products={products} canBuy={canBuy} addToCart={addToCart} />
             ) : viewMode === 'list' ? (
               <div className="space-y-3">
                 {products.map((product) => (

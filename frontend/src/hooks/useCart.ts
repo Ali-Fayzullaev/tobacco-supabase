@@ -153,12 +153,20 @@ export function useCart() {
 
       setState(prev => ({ ...prev, isLoading: true }));
 
-      // Проверяем остаток на складе
+      // Проверяем остаток на складе и кратность
       const { data: product } = await supabase
         .from('products')
-        .select('stock')
+        .select('stock, order_step')
         .eq('id', productId)
         .single();
+
+      const orderStep = product?.order_step || 1;
+
+      // Проверяем кратность заказа
+      if (quantity % orderStep !== 0) {
+        setState(prev => ({ ...prev, isLoading: false }));
+        return { success: false, error: `Товар продаётся упаковками по ${orderStep} шт.` };
+      }
 
       // Проверяем, есть ли уже такой товар в корзине
       const { data: existing } = await supabase

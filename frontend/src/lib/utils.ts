@@ -37,7 +37,7 @@ export function formatDateTime(date: string | Date, locale: 'ru' | 'kk' = 'ru'):
   }).format(d);
 }
 
-// Проверка возраста (18+)
+// Проверка возраста (21+)
 export function isAdult(birthDate: string | Date): boolean {
   const birth = new Date(birthDate);
   const today = new Date();
@@ -45,16 +45,16 @@ export function isAdult(birthDate: string | Date): boolean {
   const monthDiff = today.getMonth() - birth.getMonth();
   
   if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-    return age - 1 >= 18;
+    return age - 1 >= 21;
   }
   
-  return age >= 18;
+  return age >= 21;
 }
 
-// Максимальная дата рождения (для формы регистрации - 18 лет назад)
+// Максимальная дата рождения (для формы регистрации - 21 год назад)
 export function getMaxBirthDate(): string {
   const date = new Date();
-  date.setFullYear(date.getFullYear() - 18);
+  date.setFullYear(date.getFullYear() - 21);
   return date.toISOString().split('T')[0];
 }
 

@@ -188,7 +188,7 @@ export function Footer() {
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-center gap-2 text-red-300 text-sm">
             <AlertTriangle className="h-4 w-4 flex-shrink-0" />
-            <span>Курение вредит вашему здоровью. Продажа лицам до 18 лет запрещена.</span>
+            <span>Курение вредит вашему здоровью. Продажа лицам до 21 года запрещена.</span>
           </div>
         </div>
       </div>
@@ -206,7 +206,7 @@ export function Footer() {
                 <span>Казахстан</span>
               </div>
               <div className="h-4 w-px bg-gray-700" />
-              <span className="text-red-500 font-bold text-lg">18+</span>
+              <span className="text-red-500 font-bold text-lg">21+</span>
             </div>
           </div>
         </div>

@@ -127,9 +127,9 @@ export default function RegisterPage() {
             <div className="bg-red-900/20 border border-red-800/30 rounded-lg p-4 mb-6 flex items-start gap-3">
               <AlertTriangle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-red-400 text-sm font-medium">18+</p>
+                <p className="text-red-400 text-sm font-medium">21+</p>
                 <p className="text-red-400 text-xs">
-                  Регистрация доступна только для лиц, достигших 18-летнего возраста
+                  Регистрация доступна только для лиц, достигших 21 года
                 </p>
               </div>
             </div>
@@ -271,7 +271,7 @@ export default function RegisterPage() {
                     className="w-5 h-5 mt-0.5 rounded border-[#333] bg-[#121212] text-gold-500 focus:ring-gold-500"
                   />
                   <span className="text-sm text-[#A0A0A0]">
-                    Подтверждаю, что мне исполнилось 18 лет
+                    Подтверждаю, что мне исполнилось 21 год
                   </span>
                 </label>
                 {errors.confirmAge && (

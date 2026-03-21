@@ -380,9 +380,9 @@ function CatalogContent() {
   const { searchProducts, products, isLoading: isProductsLoading } = useProducts();
   const { categories, parentCategories, getSubcategories, getCategoryById, isLoading: isCategoriesLoading } = useCategories();
 
-  // Можно ли показывать цены/корзину: авторизован + 18+
+  // Можно ли показывать цены/корзину: авторизован + 21+
   const isAdult = profile?.birth_date && 
-    new Date(profile.birth_date) <= new Date(new Date().setFullYear(new Date().getFullYear() - 18));
+    new Date(profile.birth_date) <= new Date(new Date().setFullYear(new Date().getFullYear() - 21));
   const canBuy = !!user && !!isAdult;
   
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');

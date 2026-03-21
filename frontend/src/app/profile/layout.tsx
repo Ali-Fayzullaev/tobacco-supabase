@@ -34,7 +34,7 @@ export default function ProfileLayout({
   const [showMobileNav, setShowMobileNav] = useState(false);
 
   const isAdult = profile?.birth_date && 
-    new Date(profile.birth_date) <= new Date(new Date().setFullYear(new Date().getFullYear() - 18));
+    new Date(profile.birth_date) <= new Date(new Date().setFullYear(new Date().getFullYear() - 21));
 
   const handleSignOut = async () => {
     await signOut();

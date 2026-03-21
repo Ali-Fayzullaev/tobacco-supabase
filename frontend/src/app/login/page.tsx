@@ -226,7 +226,7 @@ function LoginFormContent() {
         {/* Age Warning */}
         <div className="flex items-center justify-center gap-2 mt-6 text-[#A0A0A0] text-sm">
           <AlertTriangle className="h-4 w-4 text-gold-500" />
-          <span>Доступ к сайту только для лиц старше 18 лет</span>
+          <span>Доступ к сайту только для лиц старше 21 года</span>
         </div>
       </div>
     </div>

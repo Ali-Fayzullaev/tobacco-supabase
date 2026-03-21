@@ -275,7 +275,7 @@ export function ProductCard({ product, size = 'normal', className, showPrice = t
               </>
             ) : (
               <div className="text-xs text-[#A0A0A0] italic">
-                Войдите (18+) для просмотра цен
+                Войдите (21+) для просмотра цен
               </div>
             )}
           </div>
@@ -414,7 +414,7 @@ export function ProductCardCompact({ product, showPrice = true }: { product: Pro
               )}
             </>
           ) : (
-            <span className="text-xs text-[#A0A0A0] italic">Войдите (18+)</span>
+            <span className="text-xs text-[#A0A0A0] italic">Войдите (21+)</span>
           )}
         </div>
       </div>

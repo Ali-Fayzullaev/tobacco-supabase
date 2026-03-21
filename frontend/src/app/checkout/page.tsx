@@ -75,7 +75,7 @@ export default function CheckoutPage() {
   const [addressData, setAddressData] = useState<AddressForm | null>(null);
 
   const isAdult = profile?.birth_date && 
-    new Date(profile.birth_date) <= new Date(new Date().setFullYear(new Date().getFullYear() - 18));
+    new Date(profile.birth_date) <= new Date(new Date().setFullYear(new Date().getFullYear() - 21));
 
   const {
     register,
@@ -156,7 +156,7 @@ export default function CheckoutPage() {
             </div>
             <h1 className="text-2xl font-bold text-[#F5F5F5] mb-3">Доступ ограничен</h1>
             <p className="text-[#A0A0A0] mb-6">
-              Для оформления заказа необходимо войти в аккаунт и подтвердить возраст (18+)
+              Для оформления заказа необходимо войти в аккаунт и подтвердить возраст (21+)
             </p>
             <Link 
               href="/login" 

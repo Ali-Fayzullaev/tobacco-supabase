@@ -72,7 +72,7 @@ export default function ProductPage() {
   } = useReviews(product?.id);
 
   const isAdult = profile?.birth_date && 
-    new Date(profile.birth_date) <= new Date(new Date().setFullYear(new Date().getFullYear() - 18));
+    new Date(profile.birth_date) <= new Date(new Date().setFullYear(new Date().getFullYear() - 21));
   const canBuy = !!user && !!isAdult;
 
   useEffect(() => {
@@ -216,7 +216,7 @@ export default function ProductPage() {
             </div>
             <h1 className="text-2xl font-bold text-[#F5F5F5] mb-4">Доступ запрещён</h1>
             <p className="text-[#A0A0A0] mb-6">
-              Продажа табачной продукции лицам младше 18 лет запрещена законодательством РК.
+              Продажа табачной продукции лицам младше 21 года запрещена законодательством РК.
             </p>
             <Link href="/">
               <Button variant="outline" className="w-full border-[#333] text-[#C0C0C0]">
@@ -482,7 +482,7 @@ export default function ProductPage() {
             ) : (
               <div className="bg-gold-500/10 border border-gold-500/30 rounded-xl p-4">
                 <p className="text-sm text-gold-700 font-medium">
-                  {!user ? 'Войдите в аккаунт, чтобы видеть цены и совершать покупки' : 'Покупка доступна только для лиц старше 18 лет'}
+                  {!user ? 'Войдите в аккаунт, чтобы видеть цены и совершать покупки' : 'Покупка доступна только для лиц старше 21 года'}
                 </p>
                 {!user && (
                   <Link href={`/login?redirect=/product/${slug}`}>

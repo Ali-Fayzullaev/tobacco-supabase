@@ -119,10 +119,10 @@ export default function HomePage() {
               <CardContent className="py-5 px-6">
                 <div className="flex items-center justify-center gap-3 mb-2">
                   <AlertTriangle className="h-6 w-6 text-red-400" />
-                  <span className="text-3xl font-bold text-red-400">18+</span>
+                  <span className="text-3xl font-bold text-red-400">21+</span>
                 </div>
                 <p className="text-red-300/80 text-sm">
-                  Данный сайт предназначен только для лиц, достигших 18-летнего возраста.
+                  Данный сайт предназначен только для лиц, достигших 21 года.
                   Продажа табачных изделий несовершеннолетним запрещена законодательством РК.
                 </p>
               </CardContent>
@@ -322,7 +322,7 @@ export default function HomePage() {
                 </h3>
                 <p className="text-red-300/70">
                   Курение вызывает рак лёгких и другие заболевания. 
-                  Никотин вызывает привыкание. Продажа табачных изделий лицам младше 18 лет запрещена.
+                  Никотин вызывает привыкание. Продажа табачных изделий лицам младше 21 года запрещена.
                 </p>
               </div>
             </div>
@@ -354,7 +354,7 @@ export default function HomePage() {
               </Link>
               <div className="flex items-center gap-2">
                 <span className="text-lg">🇰🇿</span>
-                <span className="text-red-500 font-bold">18+</span>
+                <span className="text-red-500 font-bold">21+</span>
               </div>
             </div>
           </div>

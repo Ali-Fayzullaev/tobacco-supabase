@@ -5,6 +5,7 @@ import { Toaster } from 'sonner';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { AuthProvider } from '@/context/AuthContext';
 import { StoreSettingsProvider } from '@/hooks/useStoreSettings';
+import AgeGate from '@/components/AgeGate';
 
 const montserrat = Montserrat({ 
   subsets: ['latin', 'cyrillic'],
@@ -14,7 +15,7 @@ const montserrat = Montserrat({
 
 export const metadata: Metadata = {
   title: 'Shop Shop KZ - Магазин табачных изделий',
-  description: 'Интернет-магазин табачных изделий в Казахстане. Только для лиц старше 18 лет.',
+  description: 'Интернет-магазин табачных изделий в Казахстане. Только для лиц старше 21 года.',
   robots: {
     index: false,
     follow: false,
@@ -31,9 +32,10 @@ export default function RootLayout({
       <body className={montserrat.className}>
         <AuthProvider>
           <StoreSettingsProvider>
-            {/* Оборачиваем приложение в ErrorBoundary — перехват ошибок на клиенте */}
             <ErrorBoundary>
-              {children}
+              <AgeGate>
+                {children}
+              </AgeGate>
             </ErrorBoundary>
           </StoreSettingsProvider>
         </AuthProvider>

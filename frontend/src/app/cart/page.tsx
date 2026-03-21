@@ -35,7 +35,7 @@ export default function CartPage() {
   } = useCart();
 
   const isAdult = profile?.birth_date && 
-    new Date(profile.birth_date) <= new Date(new Date().setFullYear(new Date().getFullYear() - 18));
+    new Date(profile.birth_date) <= new Date(new Date().setFullYear(new Date().getFullYear() - 21));
 
   if (isAuthLoading) {
     return (
@@ -78,7 +78,7 @@ export default function CartPage() {
             </div>
             <h1 className="text-2xl font-bold text-[#F5F5F5] mb-4">Доступ запрещён</h1>
             <p className="text-[#A0A0A0] mb-6">
-              Продажа табачной продукции лицам младше 18 лет запрещена.
+              Продажа табачной продукции лицам младше 21 года запрещена.
             </p>
             <Link href="/">
               <Button variant="outline" className="border-[#333]">

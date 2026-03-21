@@ -46,9 +46,9 @@ export function Header() {
   const [showUserMenu, setShowUserMenu] = useState(false);
 
   const isAdmin = profile?.role === 'admin';
-  const storeName = settings.store_name || 'Shop Shop';
-  const storePhone = settings.store_phone || '+7 (777) 123-45-67';
-  const freeDeliveryAmount = settings.free_delivery_threshold || '15000';
+  const storeName = settings.store_name || 'Premium Tobacco';
+  const storePhone = settings.store_phone || '+7 (700) 800-18-00';
+  const freeDeliveryAmount = settings.free_delivery_threshold || '200000';
 
   // Загрузка уведомлений
   useEffect(() => {

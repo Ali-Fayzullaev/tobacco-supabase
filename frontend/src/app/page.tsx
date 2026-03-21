@@ -22,39 +22,39 @@ import { useStoreSettings } from '@/hooks/useStoreSettings';
 export default function HomePage() {
   const { settings } = useStoreSettings();
   
-  const storeName = settings.store_name || 'Shop Shop';
-  const storePhone = settings.store_phone || '+7 (777) 123-45-67';
-  const freeDeliveryAmount = settings.free_delivery_threshold || '15000';
-  const deliveryDays = settings.delivery_days || '1-3';
+  const storeName = settings.store_name || 'Premium Tobacco';
+  const storePhone = settings.store_phone || '+7 (700) 800-18-00';
+  const freeDeliveryAmount = settings.free_delivery_threshold || '200000';
+  const deliveryDays = settings.delivery_days || '1-7';
   const features = [
     {
       icon: ShieldCheck,
-      title: 'Оригинальная продукция',
-      description: 'Только сертифицированные товары от официальных дистрибьюторов',
+      title: 'Прямой импорт',
+      description: 'Эксклюзивное представительство глобальных табачных производителей',
       color: 'from-green-500 to-emerald-600',
     },
     {
       icon: Truck,
-      title: 'Быстрая доставка',
-      description: 'Доставка по Алматы за 2 часа, по Казахстану — 1-3 дня',
+      title: 'Доставка по всему КЗ',
+      description: 'Прямая логистика из Астаны во все 17 областей. Отгрузка день в день',
       color: 'from-blue-500 to-cyan-600',
     },
     {
       icon: Package,
-      title: 'Широкий ассортимент',
-      description: 'Более 500 наименований сигарет, вейпов и аксессуаров',
+      title: 'Склад в Астане',
+      description: 'Собственный склад с полным ассортиментом в наличии',
       color: 'from-purple-500 to-violet-600',
     },
     {
       icon: Clock,
-      title: 'Работаем 24/7',
-      description: 'Принимаем заказы круглосуточно, онлайн поддержка',
+      title: 'Бесплатная доставка',
+      description: `При заказе от ${Number(freeDeliveryAmount).toLocaleString('ru-RU')} ₸`,
       color: 'from-gold-500 to-red-900/200',
     },
   ];
 
   const brands = [
-    'Marlboro', 'Parliament', 'Winston', 'Camel', 'Kent', 'Lucky Strike', 'Davidoff', 'Dunhill'
+    'Табак для кальяна', 'Сигареты', 'Папиросы', 'Трубочный табак', 'Табак курительный', 'Сигариллы', 'Сигары', 'Аксессуары'
   ];
 
   return (
@@ -103,15 +103,15 @@ export default function HomePage() {
             </Badge>
             
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6">
-              <span className="text-[#F5F5F5]">Премиальные </span>
+              <span className="text-[#F5F5F5]">ТОО </span>
               <span className="bg-gradient-to-r from-gold-400 to-gold-600 bg-clip-text text-transparent">
-                табачные изделия
+                Premium Tobacco
               </span>
             </h1>
             
             <p className="text-xl text-[#A0A0A0] mb-10 max-w-2xl mx-auto">
-              Широкий ассортимент качественной продукции от ведущих мировых брендов.
-              Быстрая доставка по всему Казахстану.
+              Ведущий импортер и дистрибьютор премиальной табачной продукции в Республике Казахстан.
+              Прямой импорт и эксклюзивное представительство глобальных табачных производителей.
             </p>
 
             {/* Age Warning */}
@@ -167,7 +167,7 @@ export default function HomePage() {
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-[#F5F5F5] mb-4">Почему выбирают нас</h2>
           <p className="text-[#A0A0A0] max-w-2xl mx-auto">
-            Мы заботимся о качестве продукции и удобстве наших клиентов
+            Высший стандарт качества на рынке Казахстана
           </p>
         </div>
 
@@ -196,18 +196,18 @@ export default function HomePage() {
             {/* About */}
             <Card className="bg-[#252525] border-[#2A2A2A] shadow-lg">
               <CardContent className="p-8">
-                <h2 className="text-2xl font-bold text-[#F5F5F5] mb-6">О нашем магазине</h2>
+                <h2 className="text-2xl font-bold text-[#F5F5F5] mb-6">О компании</h2>
                 <div className="space-y-4 text-[#A0A0A0]">
                   <p>
-                    Shop Shop KZ — ведущий интернет-магазин табачных изделий в Казахстане. 
-                    Мы работаем с 2024 года и за это время заслужили доверие тысяч клиентов.
+                    ТОО Premium Tobacco — ведущий импортер и дистрибьютор премиальной табачной продукции 
+                    в Республике Казахстан. Мы работаем с 2020 года, осуществляя прямые поставки от мировых лидеров отрасли.
                   </p>
                   <p>
-                    Наш ассортимент включает сигареты, сигары, табак для кальяна, 
-                    электронные сигареты и вейпы, а также аксессуары от лучших мировых производителей.
+                    Наш ассортимент включает табак для кальяна, сигареты, папиросы, трубочный табак, 
+                    сигариллы, сигары и аксессуары.
                   </p>
                   <p>
-                    Мы гарантируем подлинность всей продукции и соблюдение условий хранения.
+                    Собственный склад в Астане — отгрузка день в день. 100% покрытие территории РК.
                   </p>
                 </div>
                 
@@ -239,9 +239,7 @@ export default function HomePage() {
                   </div>
                   <ul className="space-y-3">
                     {[
-                      'Kaspi перевод',
-                      'Банковские карты (Visa, MasterCard)',
-                      'Наличными при получении',
+                      'Безналичный расчёт (счёт на оплату)',
                     ].map((item, i) => (
                       <li key={i} className="flex items-center gap-3 text-[#A0A0A0]">
                         <ChevronRight className="h-4 w-4 text-gold-500" />
@@ -262,9 +260,9 @@ export default function HomePage() {
                   </div>
                   <ul className="space-y-3">
                     {[
-                      'Курьером по городу — от 2 часов',
-                      'Самовывоз из магазина',
-                      'Доставка по Казахстану — 1-3 дня',
+                      `Бесплатно при заказе от ${Number(freeDeliveryAmount).toLocaleString('ru-RU')} ₸`,
+                      'Прямая логистика из Астаны',
+                      `Доставка по Казахстану — ${deliveryDays} дней`,
                     ].map((item, i) => (
                       <li key={i} className="flex items-center gap-3 text-[#A0A0A0]">
                         <ChevronRight className="h-4 w-4 text-gold-500" />
@@ -289,7 +287,7 @@ export default function HomePage() {
                 Готовы сделать заказ?
               </h2>
               <p className="text-[#121212]/70 text-lg mb-8">
-                Зарегистрируйтесь сейчас и получите скидку 10% на первый заказ!
+                Оформите первый заказ и оцените качество нашего сервиса!
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link href="/register">
@@ -318,11 +316,14 @@ export default function HomePage() {
               <AlertTriangle className="h-8 w-8 text-red-400 flex-shrink-0" />
               <div>
                 <h3 className="text-red-400 font-bold text-lg mb-2">
-                  ПРЕДУПРЕЖДЕНИЕ МИНИСТЕРСТВА ЗДРАВООХРАНЕНИЯ РК
+                  ТЕМЕКІНІ ТҰТЫНУ ТӘУЕЛДІКТІ, СОНДАЙ-АҚ АУЫР АУРУЛАРДЫ ТУДЫРАДЫ
                 </h3>
+                <p className="text-red-300/70 mb-2">
+                  21 ЖАСҚА ТОЛМАҒАН ТҰЛҒАЛАРҒА САТУҒА ТЫЙЫМ САЛЫНАДЫ.
+                </p>
                 <p className="text-red-300/70">
-                  Курение вызывает рак лёгких и другие заболевания. 
-                  Никотин вызывает привыкание. Продажа табачных изделий лицам младше 21 года запрещена.
+                  Курение вызывает зависимость, а также тяжёлые заболевания.
+                  Продажа лицам до 21 года запрещена.
                 </p>
               </div>
             </div>

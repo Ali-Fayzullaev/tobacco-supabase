@@ -20,10 +20,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/hooks';
 import { useCart } from '@/hooks/useCart';
+import { useStoreSettings } from '@/hooks/useStoreSettings';
 import { formatPrice } from '@/lib/utils';
 
 export default function CartPage() {
   const { user, profile, isLoading: isAuthLoading } = useAuth();
+  const { settings } = useStoreSettings();
+  const freeDeliveryThreshold = Number(settings.free_delivery_threshold) || 200000;
   const { 
     cartItems, 
     totalAmount, 
@@ -248,10 +251,30 @@ export default function CartPage() {
 
                     {/* Benefits */}
                     <div className="mt-6 pt-6 border-t border-[#2A2A2A] space-y-3">
-                      <div className="flex items-center gap-3 text-sm text-[#A0A0A0]">
-                        <Truck className="h-5 w-5 text-green-500" />
-                        <span>Бесплатная доставка от 200 000 ₸</span>
-                      </div>
+                      {/* Free delivery progress */}
+                      {totalAmount < freeDeliveryThreshold ? (
+                        <div>
+                          <div className="flex items-center justify-between text-sm mb-2">
+                            <div className="flex items-center gap-2 text-[#A0A0A0]">
+                              <Truck className="h-4 w-4 text-gold-500" />
+                              <span>До бесплатной доставки</span>
+                            </div>
+                            <span className="text-gold-500 font-medium">{formatPrice(freeDeliveryThreshold - totalAmount)}</span>
+                          </div>
+                          <div className="w-full h-2 bg-[#2A2A2A] rounded-full overflow-hidden">
+                            <div 
+                              className="h-full bg-gradient-to-r from-gold-500 to-gold-600 rounded-full transition-all duration-500"
+                              style={{ width: `${Math.min((totalAmount / freeDeliveryThreshold) * 100, 100)}%` }}
+                            />
+                          </div>
+                          <p className="text-xs text-[#666] mt-1">Бесплатно от {formatPrice(freeDeliveryThreshold)}</p>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-3 text-sm text-green-500">
+                          <Truck className="h-5 w-5" />
+                          <span className="font-medium">Бесплатная доставка!</span>
+                        </div>
+                      )}
                       <div className="flex items-center gap-3 text-sm text-[#A0A0A0]">
                         <Shield className="h-5 w-5 text-blue-500" />
                         <span>Гарантия качества товара</span>

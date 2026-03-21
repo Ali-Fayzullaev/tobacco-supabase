@@ -17,18 +17,22 @@ import { useStoreSettings } from '@/hooks/useStoreSettings';
 export function Footer() {
   const { settings } = useStoreSettings();
   
-  const storeName = settings.store_name || 'Shop Shop';
-  const storePhone = settings.store_phone || '+7 (777) 123-45-67';
-  const storeEmail = settings.store_email || 'info@tobacco.kz';
-  const storeAddress = settings.store_address || 'г. Алматы, ул. Абая 150, офис 312';
-  const freeDeliveryAmount = settings.free_delivery_threshold || '15000';
+  const storeName = settings.store_name || 'Premium Tobacco';
+  const storePhone = settings.store_phone || '+7 (700) 800-18-00';
+  const storePhoneSuppliers = settings.store_phone_suppliers || '+7 (705) 888-19-19';
+  const storeEmail = settings.store_email || 'premiumtobacco.info@gmail.com';
+  const storeAddress = settings.store_address || 'г. Астана';
+  const freeDeliveryAmount = settings.free_delivery_threshold || '200000';
+  const storeSchedule = settings.store_schedule || 'Пн-Пт: 09:00 – 19:00';
+  const franchiseUrl = settings.franchise_url || '';
 
   // Формируем список способов оплаты на основе настроек
   const paymentMethods: string[] = [];
+  if (settings.payment_invoice) paymentMethods.push('счёт на оплату');
   if (settings.payment_kaspi) paymentMethods.push('Kaspi');
   if (settings.payment_card) paymentMethods.push('карты');
   if (settings.payment_cash) paymentMethods.push('наличные');
-  const paymentText = paymentMethods.length > 0 ? paymentMethods.join(', ') : 'Kaspi, карты, наличные';
+  const paymentText = paymentMethods.length > 0 ? paymentMethods.join(', ') : 'Безналичный расчёт';
 
   return (
     <footer className="bg-[#0D0D0D] text-[#F5F5F5]">
@@ -106,10 +110,13 @@ export function Footer() {
             <h3 className="text-[#F5F5F5] font-semibold mb-4">Каталог</h3>
             <ul className="space-y-2">
               {[
+                { href: '/catalog?category=hookah-tobacco', label: 'Табак для кальяна' },
                 { href: '/catalog?category=cigarettes', label: 'Сигареты' },
+                { href: '/catalog?category=papirosy', label: 'Папиросы' },
+                { href: '/catalog?category=pipe-tobacco', label: 'Трубочный табак' },
+                { href: '/catalog?category=smoking-tobacco', label: 'Табак курительный' },
+                { href: '/catalog?category=cigarillos', label: 'Сигариллы' },
                 { href: '/catalog?category=cigars', label: 'Сигары' },
-                { href: '/catalog?category=tobacco', label: 'Табак' },
-                { href: '/catalog?category=e-cigarettes', label: 'Электронные сигареты' },
                 { href: '/catalog?category=accessories', label: 'Аксессуары' },
               ].map((link) => (
                 <li key={link.href}>
@@ -134,6 +141,7 @@ export function Footer() {
                 { href: '/warranty', label: 'Гарантии' },
                 { href: '/contacts', label: 'Контакты' },
                 { href: '/privacy', label: 'Политика конфиденциальности' },
+                ...(franchiseUrl ? [{ href: franchiseUrl, label: 'Tobacco Club (франшиза)' }] : []),
               ].map((link) => (
                 <li key={link.href}>
                   <Link 
@@ -157,7 +165,22 @@ export function Footer() {
                   className="flex items-center gap-3 text-[#A0A0A0] hover:text-gold-500 transition-colors"
                 >
                   <Phone className="h-4 w-4 text-gold-500" />
-                  <span className="text-sm">{storePhone}</span>
+                  <div>
+                    <span className="text-sm">{storePhone}</span>
+                    <span className="text-xs text-[#666] block">Клиенты</span>
+                  </div>
+                </a>
+              </li>
+              <li>
+                <a 
+                  href={`tel:${storePhoneSuppliers.replace(/[^+\d]/g, '')}`}
+                  className="flex items-center gap-3 text-[#A0A0A0] hover:text-gold-500 transition-colors"
+                >
+                  <Phone className="h-4 w-4 text-gold-500" />
+                  <div>
+                    <span className="text-sm">{storePhoneSuppliers}</span>
+                    <span className="text-xs text-[#666] block">Поставщики</span>
+                  </div>
                 </a>
               </li>
               <li>
@@ -177,7 +200,8 @@ export function Footer() {
             
             <div className="mt-4 p-3 rounded-lg bg-[#1E1E1E]">
               <p className="text-sm text-[#F5F5F5] font-medium">Режим работы:</p>
-              <p className="text-sm text-[#A0A0A0]">Пн-Вс: 09:00 - 21:00</p>
+              <p className="text-sm text-[#A0A0A0]">{storeSchedule}</p>
+              <p className="text-xs text-[#666]">Сб, Вс и праздники — выходной</p>
             </div>
           </div>
         </div>
@@ -186,8 +210,11 @@ export function Footer() {
       {/* Warning */}
       <div className="bg-red-900/50 border-t border-red-800">
         <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center justify-center gap-2 text-red-300 text-sm">
-            <AlertTriangle className="h-4 w-4 flex-shrink-0" />
+          <div className="flex flex-col items-center gap-1 text-red-300 text-sm text-center">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 flex-shrink-0" />
+              <span className="font-semibold">ТЕМЕКІНІ ТҰТЫНУ ТӘУЕЛДІКТІ, СОНДАЙ-АҚ АУЫР АУРУЛАРДЫ ТУДЫРАДЫ. 21 ЖАСҚА ТОЛМАҒАН ТҰЛҒАЛАРҒА САТУҒА ТЫЙЫМ САЛЫНАДЫ.</span>
+            </div>
             <span>Курение вредит вашему здоровью. Продажа лицам до 21 года запрещена.</span>
           </div>
         </div>

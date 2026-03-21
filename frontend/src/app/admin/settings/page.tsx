@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { 
   Settings,
   Store,
@@ -17,7 +17,12 @@ import {
   Banknote,
   Wallet,
   Building2,
-  FileText
+  FileText,
+  Users,
+  Link as LinkIcon,
+  CalendarDays,
+  Receipt,
+  Quote
 } from 'lucide-react';
 import { createBrowserSupabaseClient } from '@/lib/supabase';
 import { CenteredPageSkeleton } from '@/components/Skeleton';
@@ -46,8 +51,12 @@ export default function AdminSettingsPage() {
   const [storeName, setStoreName] = useState('');
   const [storeEmail, setStoreEmail] = useState('');
   const [storePhone, setStorePhone] = useState('');
+  const [storePhoneSuppliers, setStorePhoneSuppliers] = useState('');
   const [storeAddress, setStoreAddress] = useState('');
   const [storeDescription, setStoreDescription] = useState('');
+  const [storeSlogan, setStoreSlogan] = useState('');
+  const [storeSchedule, setStoreSchedule] = useState('');
+  const [franchiseUrl, setFranchiseUrl] = useState('');
   
   // Delivery settings
   const [freeDeliveryThreshold, setFreeDeliveryThreshold] = useState('');
@@ -55,9 +64,13 @@ export default function AdminSettingsPage() {
   const [deliveryDays, setDeliveryDays] = useState('');
   
   // Payment settings
-  const [cashEnabled, setCashEnabled] = useState(true);
-  const [cardEnabled, setCardEnabled] = useState(true);
-  const [kaspiEnabled, setKaspiEnabled] = useState(true);
+  const [cashEnabled, setCashEnabled] = useState(false);
+  const [cardEnabled, setCardEnabled] = useState(false);
+  const [kaspiEnabled, setKaspiEnabled] = useState(false);
+  const [invoiceEnabled, setInvoiceEnabled] = useState(true);
+
+  // Track initial state to detect changes
+  const initialState = useRef<string>('');
 
   useEffect(() => {
     loadSettings();
@@ -78,17 +91,22 @@ export default function AdminSettingsPage() {
         settings[item.key] = item.value || '';
       });
 
-      setStoreName(settings.store_name || 'Shop Shop');
+      setStoreName(settings.store_name || 'Premium Tobacco');
       setStoreEmail(settings.store_email || '');
       setStorePhone(settings.store_phone || '');
+      setStorePhoneSuppliers(settings.store_phone_suppliers || '');
       setStoreAddress(settings.store_address || '');
       setStoreDescription(settings.store_description || '');
-      setDeliveryCost(settings.delivery_cost || '1500');
-      setFreeDeliveryThreshold(settings.free_delivery_threshold || '10000');
-      setDeliveryDays(settings.delivery_days || '2-5');
-      setCashEnabled(settings.payment_cash !== 'false');
-      setCardEnabled(settings.payment_card !== 'false');
-      setKaspiEnabled(settings.payment_kaspi !== 'false');
+      setStoreSlogan(settings.store_slogan || '');
+      setStoreSchedule(settings.store_schedule || '');
+      setFranchiseUrl(settings.franchise_url || '');
+      setDeliveryCost(settings.delivery_cost || '0');
+      setFreeDeliveryThreshold(settings.free_delivery_threshold || '200000');
+      setDeliveryDays(settings.delivery_days || '1-7');
+      setCashEnabled(settings.payment_cash === 'true');
+      setCardEnabled(settings.payment_card === 'true');
+      setKaspiEnabled(settings.payment_kaspi === 'true');
+      setInvoiceEnabled(settings.payment_invoice !== 'false');
     } catch (err) {
       console.error('Error loading settings:', err);
       setError('Не удалось загрузить настройки');
@@ -96,6 +114,22 @@ export default function AdminSettingsPage() {
       setIsLoading(false);
     }
   };
+
+  const getCurrentState = () => JSON.stringify({
+    storeName, storeEmail, storePhone, storePhoneSuppliers, storeAddress,
+    storeDescription, storeSlogan, storeSchedule, franchiseUrl,
+    deliveryCost, freeDeliveryThreshold, deliveryDays,
+    cashEnabled, cardEnabled, kaspiEnabled, invoiceEnabled,
+  });
+
+  // Save initial snapshot after loading
+  useEffect(() => {
+    if (!isLoading && !initialState.current) {
+      initialState.current = getCurrentState();
+    }
+  });
+
+  const hasChanges = initialState.current ? getCurrentState() !== initialState.current : false;
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -109,14 +143,19 @@ export default function AdminSettingsPage() {
         { key: 'store_name', value: storeName },
         { key: 'store_email', value: storeEmail },
         { key: 'store_phone', value: storePhone },
+        { key: 'store_phone_suppliers', value: storePhoneSuppliers },
         { key: 'store_address', value: storeAddress },
         { key: 'store_description', value: storeDescription },
+        { key: 'store_slogan', value: storeSlogan },
+        { key: 'store_schedule', value: storeSchedule },
+        { key: 'franchise_url', value: franchiseUrl },
         { key: 'delivery_cost', value: deliveryCost },
         { key: 'free_delivery_threshold', value: freeDeliveryThreshold },
         { key: 'delivery_days', value: deliveryDays },
         { key: 'payment_cash', value: cashEnabled.toString() },
         { key: 'payment_card', value: cardEnabled.toString() },
         { key: 'payment_kaspi', value: kaspiEnabled.toString() },
+        { key: 'payment_invoice', value: invoiceEnabled.toString() },
       ];
 
       for (const setting of settingsToSave) {
@@ -128,6 +167,7 @@ export default function AdminSettingsPage() {
       }
       
       setSaveSuccess(true);
+      initialState.current = getCurrentState();
       setTimeout(() => setSaveSuccess(false), 3000);
     } catch (err) {
       console.error('Error saving settings:', err);
@@ -157,6 +197,7 @@ export default function AdminSettingsPage() {
           </h1>
           <p className="text-[#A0A0A0] mt-1">Управление настройками магазина</p>
         </div>
+        {(hasChanges || isSaving || saveSuccess) && (
         <button
           onClick={handleSave}
           disabled={isSaving}
@@ -184,6 +225,7 @@ export default function AdminSettingsPage() {
             </>
           )}
         </button>
+        )}
       </div>
 
       {error && (
@@ -269,7 +311,7 @@ export default function AdminSettingsPage() {
 
                   <div>
                     <label className="block text-sm font-medium text-[#C0C0C0] mb-2">
-                      Телефон
+                      Телефон (клиенты)
                     </label>
                     <div className="relative">
                       <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#666]" />
@@ -277,6 +319,23 @@ export default function AdminSettingsPage() {
                         type="tel"
                         value={storePhone}
                         onChange={(e) => setStorePhone(e.target.value)}
+                        placeholder="+7 (700) 800-18-00"
+                        className="w-full pl-12 pr-4 py-3 bg-[#121212] text-[#F5F5F5] placeholder:text-[#666] border border-[#2A2A2A] rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-[#C0C0C0] mb-2">
+                      Телефон (поставщики)
+                    </label>
+                    <div className="relative">
+                      <Users className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#666]" />
+                      <input
+                        type="tel"
+                        value={storePhoneSuppliers}
+                        onChange={(e) => setStorePhoneSuppliers(e.target.value)}
+                        placeholder="+7 (705) 888-19-19"
                         className="w-full pl-12 pr-4 py-3 bg-[#121212] text-[#F5F5F5] placeholder:text-[#666] border border-[#2A2A2A] rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500"
                       />
                     </div>
@@ -310,6 +369,56 @@ export default function AdminSettingsPage() {
                       rows={4}
                       className="w-full pl-12 pr-4 py-3 bg-[#121212] text-[#F5F5F5] placeholder:text-[#666] border border-[#2A2A2A] rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 resize-none"
                     />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-[#C0C0C0] mb-2">
+                    Слоган
+                  </label>
+                  <div className="relative">
+                    <Quote className="absolute left-4 top-4 w-5 h-5 text-[#666]" />
+                    <textarea
+                      value={storeSlogan}
+                      onChange={(e) => setStoreSlogan(e.target.value)}
+                      rows={3}
+                      placeholder="Ведущий импортер и дистрибьютор..."
+                      className="w-full pl-12 pr-4 py-3 bg-[#121212] text-[#F5F5F5] placeholder:text-[#666] border border-[#2A2A2A] rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 resize-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid sm:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-[#C0C0C0] mb-2">
+                      График работы
+                    </label>
+                    <div className="relative">
+                      <CalendarDays className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#666]" />
+                      <input
+                        type="text"
+                        value={storeSchedule}
+                        onChange={(e) => setStoreSchedule(e.target.value)}
+                        placeholder="Пн-Пт: 09:00 – 19:00"
+                        className="w-full pl-12 pr-4 py-3 bg-[#121212] text-[#F5F5F5] placeholder:text-[#666] border border-[#2A2A2A] rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-[#C0C0C0] mb-2">
+                      Ссылка на франшизу
+                    </label>
+                    <div className="relative">
+                      <LinkIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#666]" />
+                      <input
+                        type="url"
+                        value={franchiseUrl}
+                        onChange={(e) => setFranchiseUrl(e.target.value)}
+                        placeholder="https://tobaccoclub.kz"
+                        className="w-full pl-12 pr-4 py-3 bg-[#121212] text-[#F5F5F5] placeholder:text-[#666] border border-[#2A2A2A] rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -405,6 +514,24 @@ export default function AdminSettingsPage() {
                 </div>
 
                 <div className="space-y-4">
+                  <label className="flex items-center justify-between p-4 bg-[#121212] rounded-xl cursor-pointer hover:bg-[#252525] transition-colors">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-gold-500/20 rounded-lg flex items-center justify-center">
+                        <Receipt className="w-6 h-6 text-gold-500" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-[#F5F5F5]">Счёт на оплату</p>
+                        <p className="text-sm text-[#A0A0A0]">Безналичный расчёт для юр. лиц</p>
+                      </div>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={invoiceEnabled}
+                      onChange={(e) => setInvoiceEnabled(e.target.checked)}
+                      className="w-5 h-5 text-gold-500 rounded focus:ring-gold-500"
+                    />
+                  </label>
+
                   <label className="flex items-center justify-between p-4 bg-[#121212] rounded-xl cursor-pointer hover:bg-[#252525] transition-colors">
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 bg-green-900/30 rounded-lg flex items-center justify-center">

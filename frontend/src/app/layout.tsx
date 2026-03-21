@@ -14,7 +14,7 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: 'Shop Shop KZ - Магазин табачных изделий',
+  title: 'Premium Tobacco - Премиальные табачные изделия',
   description: 'Интернет-магазин табачных изделий в Казахстане. Только для лиц старше 21 года.',
   robots: {
     index: false,

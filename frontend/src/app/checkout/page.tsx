@@ -764,7 +764,7 @@ export default function CheckoutPage() {
                   {/* Promo Badge */}
                   <div className="mt-6 bg-gradient-to-r from-gold-500/10 to-gold-500/5 border border-gold-500/30 rounded-xl p-4 text-center">
                     <p className="text-sm font-medium text-gold-400">
-                      🎉 Бесплатная доставка от 15 000 ₸
+                      🎉 Бесплатная доставка от 200 000 ₸
                     </p>
                   </div>
                 </div>

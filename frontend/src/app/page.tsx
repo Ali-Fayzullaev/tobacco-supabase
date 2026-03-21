@@ -75,7 +75,7 @@ export default function HomePage() {
             
             <div className="flex items-center gap-3">
               <Link href="/login">
-                <Button variant="ghost" className="text-[#A0A0A0] hover:text-gold-500">
+                <Button variant="ghost" className="text-[#A0A0A0] hover:text-gold-500 hover:bg-gold-500/10">
                   Войти
                 </Button>
               </Link>
@@ -299,7 +299,7 @@ export default function HomePage() {
                   </Button>
                 </Link>
                 <a href={`tel:${storePhone.replace(/[^+\d]/g, '')}`}>
-                  <Button size="lg" variant="outline" className="border-[#121212]/30 text-[#121212] hover:bg-[#121212]/10 gap-2 px-8">
+                  <Button size="lg" variant="outline" className="border-[#121212]/30  hover:bg-[#121212]/10 gap-2 px-8">
                     <Phone className="h-5 w-5" />
                     {storePhone}
                   </Button>

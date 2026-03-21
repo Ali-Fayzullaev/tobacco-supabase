@@ -296,7 +296,7 @@ export default function ProductEditPage() {
               <input
                 {...register('name')}
                 type="text"
-                className="w-full px-4 py-2 border border-[#333] rounded-lg focus:ring-2 focus:ring-gold-500"
+                className="w-full px-4 py-2.5 bg-[#121212] border border-[#2A2A2A] rounded-xl text-[#F5F5F5] placeholder:text-[#666] focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 outline-none"
               />
               {errors.name && (
                 <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
@@ -310,7 +310,7 @@ export default function ProductEditPage() {
               <input
                 {...register('name_kk')}
                 type="text"
-                className="w-full px-4 py-2 border border-[#333] rounded-lg focus:ring-2 focus:ring-gold-500"
+                className="w-full px-4 py-2.5 bg-[#121212] border border-[#2A2A2A] rounded-xl text-[#F5F5F5] placeholder:text-[#666] focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 outline-none"
               />
             </div>
 
@@ -321,7 +321,7 @@ export default function ProductEditPage() {
               <input
                 {...register('slug')}
                 type="text"
-                className="w-full px-4 py-2 border border-[#333] rounded-lg focus:ring-2 focus:ring-gold-500"
+                className="w-full px-4 py-2.5 bg-[#121212] border border-[#2A2A2A] rounded-xl text-[#F5F5F5] placeholder:text-[#666] focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 outline-none font-mono text-sm"
               />
               {errors.slug && (
                 <p className="text-red-500 text-xs mt-1">{errors.slug.message}</p>
@@ -334,7 +334,7 @@ export default function ProductEditPage() {
               </label>
               <select
                 {...register('category_id')}
-                className="w-full px-4 py-2 border border-[#333] rounded-lg focus:ring-2 focus:ring-gold-500"
+                className="w-full px-4 py-2.5 bg-[#121212] border border-[#2A2A2A] rounded-xl text-[#F5F5F5] focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 outline-none"
               >
                 <option value="">Выберите категорию</option>
                 {categories.filter(c => !c.parent_id).map((parent) => {
@@ -363,7 +363,7 @@ export default function ProductEditPage() {
               <input
                 {...register('sku')}
                 type="text"
-                className="w-full px-4 py-2 border border-[#333] rounded-lg focus:ring-2 focus:ring-gold-500"
+                className="w-full px-4 py-2.5 bg-[#121212] border border-[#2A2A2A] rounded-xl text-[#F5F5F5] placeholder:text-[#666] focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 outline-none"
               />
             </div>
 
@@ -374,7 +374,7 @@ export default function ProductEditPage() {
               <input
                 {...register('brand')}
                 type="text"
-                className="w-full px-4 py-2 border border-[#333] rounded-lg focus:ring-2 focus:ring-gold-500"
+                className="w-full px-4 py-2.5 bg-[#121212] border border-[#2A2A2A] rounded-xl text-[#F5F5F5] placeholder:text-[#666] focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 outline-none"
               />
             </div>
           </div>
@@ -386,7 +386,7 @@ export default function ProductEditPage() {
             <textarea
               {...register('description')}
               rows={4}
-              className="w-full px-4 py-2 border border-[#333] rounded-lg focus:ring-2 focus:ring-gold-500"
+              className="w-full px-4 py-2.5 bg-[#121212] border border-[#2A2A2A] rounded-xl text-[#F5F5F5] placeholder:text-[#666] focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 outline-none resize-none"
             />
           </div>
 
@@ -397,7 +397,7 @@ export default function ProductEditPage() {
             <textarea
               {...register('description_kk')}
               rows={4}
-              className="w-full px-4 py-2 border border-[#333] rounded-lg focus:ring-2 focus:ring-gold-500"
+              className="w-full px-4 py-2.5 bg-[#121212] border border-[#2A2A2A] rounded-xl text-[#F5F5F5] placeholder:text-[#666] focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 outline-none resize-none"
             />
           </div>
         </div>
@@ -415,7 +415,7 @@ export default function ProductEditPage() {
                 {...register('price', { valueAsNumber: true })}
                 type="number"
                 min="0"
-                className="w-full px-4 py-2 border border-[#333] rounded-lg focus:ring-2 focus:ring-gold-500"
+                className="w-full px-4 py-2.5 bg-[#121212] border border-[#2A2A2A] rounded-xl text-[#F5F5F5] placeholder:text-[#666] focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 outline-none"
               />
               {errors.price && (
                 <p className="text-red-500 text-xs mt-1">{errors.price.message}</p>
@@ -430,7 +430,7 @@ export default function ProductEditPage() {
                 {...register('old_price', { valueAsNumber: true })}
                 type="number"
                 min="0"
-                className="w-full px-4 py-2 border border-[#333] rounded-lg focus:ring-2 focus:ring-gold-500"
+                className="w-full px-4 py-2.5 bg-[#121212] border border-[#2A2A2A] rounded-xl text-[#F5F5F5] placeholder:text-[#666] focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 outline-none"
               />
             </div>
           </div>
@@ -444,7 +444,7 @@ export default function ProductEditPage() {
                 {...register('stock', { valueAsNumber: true })}
                 type="number"
                 min="0"
-                className="w-full px-4 py-2 border border-[#333] rounded-lg focus:ring-2 focus:ring-gold-500"
+                className="w-full px-4 py-2.5 bg-[#121212] border border-[#2A2A2A] rounded-xl text-[#F5F5F5] placeholder:text-[#666] focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 outline-none"
               />
               {errors.stock && (
                 <p className="text-red-500 text-xs mt-1">{errors.stock.message}</p>
@@ -458,7 +458,7 @@ export default function ProductEditPage() {
               <input
                 {...register('is_active')}
                 type="checkbox"
-                className="w-4 h-4 text-gold-500 rounded"
+                className="w-4 h-4 text-gold-500 bg-[#121212] border-[#2A2A2A] rounded focus:ring-gold-500/20"
               />
               <span className="text-[#C0C0C0]">Активен</span>
             </label>
@@ -467,7 +467,7 @@ export default function ProductEditPage() {
               <input
                 {...register('is_featured')}
                 type="checkbox"
-                className="w-4 h-4 text-gold-500 rounded"
+                className="w-4 h-4 text-gold-500 bg-[#121212] border-[#2A2A2A] rounded focus:ring-gold-500/20"
               />
               <span className="text-[#C0C0C0]">Рекомендуемый</span>
             </label>
@@ -506,14 +506,14 @@ export default function ProductEditPage() {
                   value={attr.name}
                   onChange={(e) => updateAttribute(index, 'name', e.target.value)}
                   placeholder="Название"
-                  className="flex-1 px-3 py-2 border border-[#333] rounded-lg text-sm"
+                  className="flex-1 px-3 py-2 bg-[#121212] border border-[#2A2A2A] rounded-xl text-[#F5F5F5] placeholder:text-[#666] text-sm focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 outline-none"
                 />
                 <input
                   type="text"
                   value={attr.value}
                   onChange={(e) => updateAttribute(index, 'value', e.target.value)}
                   placeholder="Значение"
-                  className="flex-1 px-3 py-2 border border-[#333] rounded-lg text-sm"
+                  className="flex-1 px-3 py-2 bg-[#121212] border border-[#2A2A2A] rounded-xl text-[#F5F5F5] placeholder:text-[#666] text-sm focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 outline-none"
                 />
                 <button
                   type="button"
@@ -542,7 +542,7 @@ export default function ProductEditPage() {
           </button>
           <Link
             href="/admin/products"
-            className="px-6 py-2 border border-[#333] text-[#C0C0C0] rounded-lg"
+            className="px-6 py-2 border border-[#2A2A2A] text-[#C0C0C0] rounded-xl hover:bg-[#252525] transition-colors"
           >
             Отмена
           </Link>

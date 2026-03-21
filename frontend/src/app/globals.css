@@ -47,6 +47,17 @@
       "rlig" 1,
       "calt" 1;
   }
+  /* Тёмная тема для нативных элементов управления */
+  input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]),
+  textarea,
+  select {
+    color-scheme: dark;
+  }
+  select option,
+  select optgroup {
+    background-color: #1E1E1E;
+    color: #F5F5F5;
+  }
 }
 
 /* Кастомные стили для предупреждения о вреде курения */

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useState } from 'react';
 import { 
@@ -221,7 +221,7 @@ export default function AdminUsersPage() {
               placeholder="Поиск по имени, email, телефону..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 border border-[#2A2A2A] rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all"
+              className="w-full pl-12 pr-4 py-3 bg-[#121212] text-[#F5F5F5] placeholder:text-[#666] border border-[#2A2A2A] rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all"
             />
           </div>
 

@@ -247,7 +247,7 @@ export default function AdminSettingsPage() {
                         type="text"
                         value={storeName}
                         onChange={(e) => setStoreName(e.target.value)}
-                        className="w-full pl-12 pr-4 py-3 border border-[#2A2A2A] rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500"
+                        className="w-full pl-12 pr-4 py-3 bg-[#121212] text-[#F5F5F5] placeholder:text-[#666] border border-[#2A2A2A] rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500"
                       />
                     </div>
                   </div>
@@ -262,7 +262,7 @@ export default function AdminSettingsPage() {
                         type="email"
                         value={storeEmail}
                         onChange={(e) => setStoreEmail(e.target.value)}
-                        className="w-full pl-12 pr-4 py-3 border border-[#2A2A2A] rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500"
+                        className="w-full pl-12 pr-4 py-3 bg-[#121212] text-[#F5F5F5] placeholder:text-[#666] border border-[#2A2A2A] rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500"
                       />
                     </div>
                   </div>
@@ -277,7 +277,7 @@ export default function AdminSettingsPage() {
                         type="tel"
                         value={storePhone}
                         onChange={(e) => setStorePhone(e.target.value)}
-                        className="w-full pl-12 pr-4 py-3 border border-[#2A2A2A] rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500"
+                        className="w-full pl-12 pr-4 py-3 bg-[#121212] text-[#F5F5F5] placeholder:text-[#666] border border-[#2A2A2A] rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500"
                       />
                     </div>
                   </div>
@@ -292,7 +292,7 @@ export default function AdminSettingsPage() {
                         type="text"
                         value={storeAddress}
                         onChange={(e) => setStoreAddress(e.target.value)}
-                        className="w-full pl-12 pr-4 py-3 border border-[#2A2A2A] rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500"
+                        className="w-full pl-12 pr-4 py-3 bg-[#121212] text-[#F5F5F5] placeholder:text-[#666] border border-[#2A2A2A] rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500"
                       />
                     </div>
                   </div>
@@ -308,7 +308,7 @@ export default function AdminSettingsPage() {
                       value={storeDescription}
                       onChange={(e) => setStoreDescription(e.target.value)}
                       rows={4}
-                      className="w-full pl-12 pr-4 py-3 border border-[#2A2A2A] rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 resize-none"
+                      className="w-full pl-12 pr-4 py-3 bg-[#121212] text-[#F5F5F5] placeholder:text-[#666] border border-[#2A2A2A] rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 resize-none"
                     />
                   </div>
                 </div>
@@ -339,7 +339,7 @@ export default function AdminSettingsPage() {
                         type="number"
                         value={deliveryCost}
                         onChange={(e) => setDeliveryCost(e.target.value)}
-                        className="w-full pl-12 pr-4 py-3 border border-[#2A2A2A] rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500"
+                        className="w-full pl-12 pr-4 py-3 bg-[#121212] text-[#F5F5F5] placeholder:text-[#666] border border-[#2A2A2A] rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500"
                       />
                     </div>
                   </div>
@@ -354,7 +354,7 @@ export default function AdminSettingsPage() {
                         type="number"
                         value={freeDeliveryThreshold}
                         onChange={(e) => setFreeDeliveryThreshold(e.target.value)}
-                        className="w-full pl-12 pr-4 py-3 border border-[#2A2A2A] rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500"
+                        className="w-full pl-12 pr-4 py-3 bg-[#121212] text-[#F5F5F5] placeholder:text-[#666] border border-[#2A2A2A] rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500"
                       />
                     </div>
                   </div>
@@ -370,7 +370,7 @@ export default function AdminSettingsPage() {
                         value={deliveryDays}
                         onChange={(e) => setDeliveryDays(e.target.value)}
                         placeholder="2-5"
-                        className="w-full pl-12 pr-4 py-3 border border-[#2A2A2A] rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500"
+                        className="w-full pl-12 pr-4 py-3 bg-[#121212] text-[#F5F5F5] placeholder:text-[#666] border border-[#2A2A2A] rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500"
                       />
                     </div>
                   </div>

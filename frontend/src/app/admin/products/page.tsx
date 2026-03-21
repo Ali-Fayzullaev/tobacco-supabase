@@ -562,7 +562,7 @@ export default function AdminProductsPage() {
               placeholder="Поиск по названию, SKU, бренду..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 border border-[#2A2A2A] rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all"
+              className="w-full pl-12 pr-4 py-3 bg-[#121212] text-[#F5F5F5] placeholder:text-[#666] border border-[#2A2A2A] rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all"
             />
           </div>
 
@@ -843,7 +843,7 @@ export default function AdminProductsPage() {
                         value={customMessage}
                         onChange={(e) => setCustomMessage(e.target.value)}
                         placeholder="Уважаемый клиент! К сожалению, товары из вашего заказа были удалены из нашего ассортимента. Приносим извинения за неудобства..."
-                        className="w-full p-3 border border-blue-800/30 rounded-xl text-sm resize-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                        className="w-full p-3 bg-[#121212] text-[#F5F5F5] placeholder:text-[#666] border border-blue-800/30 rounded-xl text-sm resize-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
                         rows={3}
                       />
                     </div>

@@ -426,7 +426,7 @@ export default function ProductPage() {
             {/* Brand */}
             {product.brand && (
               <Link href={`/catalog?brand=${product.brand}`}>
-                <Badge variant="outline" className="border-teal-300 text-teal-600 hover:bg-teal-50">
+                <Badge variant="outline" className="border-gold-500/40 text-gold-500 hover:bg-gold-500/10">
                   {product.brand}
                 </Badge>
               </Link>

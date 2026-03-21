@@ -250,7 +250,7 @@ export default function CartPage() {
                     <div className="mt-6 pt-6 border-t border-[#2A2A2A] space-y-3">
                       <div className="flex items-center gap-3 text-sm text-[#A0A0A0]">
                         <Truck className="h-5 w-5 text-green-500" />
-                        <span>Бесплатная доставка от 15 000 ₸</span>
+                        <span>Бесплатная доставка от 200 000 ₸</span>
                       </div>
                       <div className="flex items-center gap-3 text-sm text-[#A0A0A0]">
                         <Shield className="h-5 w-5 text-blue-500" />

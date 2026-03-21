@@ -200,7 +200,7 @@ export default function AdminOrderDetailPage() {
             value={order.status}
             onChange={(e) => updateStatus(e.target.value as OrderStatus)}
             disabled={isUpdating}
-            className="px-4 py-2 border border-[#2A2A2A] rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 bg-[#1E1E1E]"
+            className="px-4 py-2 border border-[#2A2A2A] rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 bg-[#1E1E1E] text-[#F5F5F5]"
           >
             {Object.entries(statusConfig).map(([key, cfg]) => (
               <option key={key} value={key}>{cfg.label}</option>

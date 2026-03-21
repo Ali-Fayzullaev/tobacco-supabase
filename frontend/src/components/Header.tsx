@@ -416,7 +416,7 @@ export function Header() {
               ) : (
                 <div className="flex items-center gap-2">
                   <Link href="/login">
-                    <Button variant="ghost" className="text-[#A0A0A0] hover:text-gold-500">
+                    <Button variant="ghost" className="text-[#A0A0A0] hover:text-gold-500 hover:bg-gold-500/10">
                       Войти
                     </Button>
                   </Link>

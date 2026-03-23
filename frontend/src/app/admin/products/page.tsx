@@ -634,7 +634,7 @@ export default function AdminProductsPage() {
       <div className="bg-[#1E1E1E] rounded-2xl shadow-sm border border-[#2A2A2A] overflow-hidden">
         {/* Bulk Actions Bar */}
         {selectedIds.size > 0 && (
-          <div className="bg-gold-500/10 border-b border-gold-500/20 px-6 py-3 flex items-center justify-between">
+          <div className="bg-gold-500/10 border-b border-gold-500/20 px-4 sm:px-6 py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <span className="font-medium text-gold-700">
                 Выбрано: {selectedIds.size}
@@ -933,7 +933,7 @@ export default function AdminProductsPage() {
                     </div>
                   </div>
                   <div className="p-6">
-                    <div className="grid grid-cols-3 gap-4 mb-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
                       {deleteResult.deleted > 0 && (
                         <div className="bg-red-900/20 border border-red-800/30 rounded-xl p-4 text-center">
                           <Trash2 className="w-8 h-8 text-red-500 mx-auto mb-2" />

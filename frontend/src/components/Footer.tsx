@@ -39,33 +39,33 @@ export function Footer() {
       {/* Features bar */}
       <div className="bg-gradient-to-r from-gold-600 to-gold-500">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 py-4">
-            <div className="flex items-center gap-3 text-[#121212]">
-              <Truck className="h-6 w-6 flex-shrink-0" />
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4 py-3 sm:py-4">
+            <div className="flex items-center gap-2 sm:gap-3 text-[#121212]">
+              <Truck className="h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0" />
               <div>
-                <p className="font-medium text-sm">Бесплатная доставка</p>
-                <p className="text-xs text-[#121212]/70">от {Number(freeDeliveryAmount).toLocaleString('ru-RU')} ₸</p>
+                <p className="font-medium text-xs sm:text-sm">Бесплатная доставка</p>
+                <p className="text-[10px] sm:text-xs text-[#121212]/70">от {Number(freeDeliveryAmount).toLocaleString('ru-RU')} ₸</p>
               </div>
             </div>
-            <div className="flex items-center gap-3 text-[#121212]">
-              <CreditCard className="h-6 w-6 flex-shrink-0" />
+            <div className="flex items-center gap-2 sm:gap-3 text-[#121212]">
+              <CreditCard className="h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0" />
               <div>
-                <p className="font-medium text-sm">Удобная оплата</p>
-                <p className="text-xs text-[#121212]/70">{paymentText}</p>
+                <p className="font-medium text-xs sm:text-sm">Удобная оплата</p>
+                <p className="text-[10px] sm:text-xs text-[#121212]/70">{paymentText}</p>
               </div>
             </div>
-            <div className="flex items-center gap-3 text-[#121212]">
-              <Shield className="h-6 w-6 flex-shrink-0" />
+            <div className="flex items-center gap-2 sm:gap-3 text-[#121212]">
+              <Shield className="h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0" />
               <div>
-                <p className="font-medium text-sm">Гарантия качества</p>
-                <p className="text-xs text-[#121212]/70">Только оригинал</p>
+                <p className="font-medium text-xs sm:text-sm">Гарантия качества</p>
+                <p className="text-[10px] sm:text-xs text-[#121212]/70">Только оригинал</p>
               </div>
             </div>
-            <div className="flex items-center gap-3 text-[#121212]">
-              <Phone className="h-6 w-6 flex-shrink-0" />
+            <div className="flex items-center gap-2 sm:gap-3 text-[#121212]">
+              <Phone className="h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0" />
               <div>
-                <p className="font-medium text-sm">Поддержка 24/7</p>
-                <p className="text-xs text-[#121212]/70">{storePhone}</p>
+                <p className="font-medium text-xs sm:text-sm">Поддержка 24/7</p>
+                <p className="text-[10px] sm:text-xs text-[#121212]/70">{storePhone}</p>
               </div>
             </div>
           </div>
@@ -73,8 +73,8 @@ export function Footer() {
       </div>
 
       {/* Main footer */}
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="container mx-auto px-4 py-8 sm:py-12">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
           {/* Brand */}
           <div>
             <Link href="/" className="flex items-center gap-2 mb-4">
@@ -210,9 +210,9 @@ export function Footer() {
       {/* Warning */}
       <div className="bg-red-900/50 border-t border-red-800">
         <div className="container mx-auto px-4 py-3">
-          <div className="flex flex-col items-center gap-1 text-red-300 text-sm text-center">
-            <div className="flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 flex-shrink-0" />
+          <div className="flex flex-col items-center gap-1 text-red-300 text-xs sm:text-sm text-center">
+            <div className="flex items-start sm:items-center gap-2">
+              <AlertTriangle className="h-4 w-4 flex-shrink-0 mt-0.5 sm:mt-0" />
               <span className="font-semibold">ТЕМЕКІНІ ТҰТЫНУ ТӘУЕЛДІКТІ, СОНДАЙ-АҚ АУЫР АУРУЛАРДЫ ТУДЫРАДЫ. 21 ЖАСҚА ТОЛМАҒАН ТҰЛҒАЛАРҒА САТУҒА ТЫЙЫМ САЛЫНАДЫ.</span>
             </div>
             <span>Курение вредит вашему здоровью. Продажа лицам до 21 года запрещена.</span>

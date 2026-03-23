@@ -215,13 +215,13 @@ export default function CheckoutPage() {
           </Link>
 
           {/* Title */}
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-[#F5F5F5]">Оформление заказа</h1>
+          <div className="mb-6 sm:mb-8">
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#F5F5F5]">Оформление заказа</h1>
             <p className="text-[#A0A0A0] mt-1">Заполните данные для доставки</p>
           </div>
 
           {/* Progress Steps */}
-          <div className="bg-[#1E1E1E] rounded-2xl shadow-sm border border-[#2A2A2A] p-6 mb-8">
+          <div className="bg-[#1E1E1E] rounded-2xl shadow-sm border border-[#2A2A2A] p-3 sm:p-6 mb-6 sm:mb-8">
             <div className="flex items-center justify-between max-w-3xl mx-auto">
               {steps.map((s, idx) => (
                 <div key={s.num} className="flex items-center flex-1">
@@ -229,13 +229,13 @@ export default function CheckoutPage() {
                     onClick={() => step > s.num && setStep(s.num)}
                     disabled={step < s.num}
                     className={cn(
-                      "flex items-center gap-3 transition-all",
+                      "flex items-center gap-1.5 sm:gap-3 transition-all",
                       step >= s.num ? "cursor-pointer" : "cursor-not-allowed opacity-50"
                     )}
                   >
                     <div
                       className={cn(
-                        "w-12 h-12 rounded-full flex items-center justify-center transition-all",
+                        "w-8 h-8 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all",
                         step > s.num 
                           ? "bg-green-500 text-white" 
                           : step === s.num 
@@ -244,9 +244,9 @@ export default function CheckoutPage() {
                       )}
                     >
                       {step > s.num ? (
-                        <Check className="w-6 h-6" />
+                        <Check className="w-4 h-4 sm:w-6 sm:h-6" />
                       ) : (
-                        <s.icon className="w-5 h-5" />
+                        <s.icon className="w-4 h-4 sm:w-5 sm:h-5" />
                       )}
                     </div>
                     <div className="hidden sm:block text-left">
@@ -265,9 +265,9 @@ export default function CheckoutPage() {
                     </div>
                   </button>
                   {idx < steps.length - 1 && (
-                    <div className="flex-1 mx-4">
+                    <div className="flex-1 mx-1 sm:mx-4">
                       <div className={cn(
-                        "h-1 rounded-full transition-all",
+                        "h-0.5 sm:h-1 rounded-full transition-all",
                         step > s.num ? "bg-green-500" : "bg-[#2A2A2A]"
                       )} />
                     </div>
@@ -277,7 +277,7 @@ export default function CheckoutPage() {
             </div>
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-8">
+          <div className="grid lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-6">
               {/* Step 1: Address */}
@@ -289,8 +289,8 @@ export default function CheckoutPage() {
                       Адрес доставки
                     </h2>
                   </div>
-                  <form onSubmit={handleSubmit(handleAddressSubmit)} className="p-6 space-y-5">
-                    <div className="grid sm:grid-cols-2 gap-5">
+                  <form onSubmit={handleSubmit(handleAddressSubmit)} className="p-4 sm:p-6 space-y-4 sm:space-y-5">
+                    <div className="grid sm:grid-cols-2 gap-3 sm:gap-5">
                       <div>
                         <label className="block text-sm font-medium text-[#C0C0C0] mb-2">
                           Город <span className="text-red-500">*</span>
@@ -402,37 +402,37 @@ export default function CheckoutPage() {
                       Способ доставки
                     </h2>
                   </div>
-                  <div className="p-6">
-                    <div className="space-y-4 mb-6">
+                    <div className="p-4 sm:p-6">
+                    <div className="space-y-3 sm:space-y-4 mb-6">
                       {deliveryMethods.map((method) => (
                         <label
                           key={method.id}
                           className={cn(
-                            "flex items-center justify-between p-5 border-2 rounded-xl cursor-pointer transition-all",
+                            "flex items-center justify-between p-3 sm:p-5 border-2 rounded-xl cursor-pointer transition-all gap-3",
                             deliveryMethod === method.id
                               ? "border-gold-500 bg-gold-500/10 shadow-lg shadow-gold-500/10"
                               : "border-[#2A2A2A] hover:border-gold-500/40 hover:bg-[#121212]"
                           )}
                         >
-                          <div className="flex items-center gap-4">
+                          <div className="flex items-center gap-3 sm:gap-4 min-w-0">
                             <div className={cn(
-                              "w-12 h-12 rounded-xl flex items-center justify-center text-2xl",
+                              "w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center text-xl sm:text-2xl flex-shrink-0",
                               deliveryMethod === method.id ? "bg-gold-500/15" : "bg-[#252525]"
                             )}>
                               {method.icon}
                             </div>
-                            <div>
-                              <p className="font-semibold text-[#F5F5F5]">{method.name}</p>
-                              <p className="text-sm text-[#A0A0A0]">{method.description}</p>
+                            <div className="min-w-0">
+                              <p className="font-semibold text-[#F5F5F5] text-sm sm:text-base">{method.name}</p>
+                              <p className="text-xs sm:text-sm text-[#A0A0A0]">{method.description}</p>
                               <div className="flex items-center gap-2 mt-1">
                                 <Clock className="w-3.5 h-3.5 text-[#666]" />
                                 <span className="text-xs text-[#A0A0A0]">{method.time}</span>
                               </div>
                             </div>
                           </div>
-                          <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
                             <span className={cn(
-                              "font-bold text-lg",
+                              "font-bold text-sm sm:text-lg",
                               method.price === 0 ? "text-green-400" : "text-[#F5F5F5]"
                             )}>
                               {method.price === 0 ? 'Бесплатно' : formatPrice(method.price)}
@@ -487,21 +487,21 @@ export default function CheckoutPage() {
                       Способ оплаты
                     </h2>
                   </div>
-                  <div className="p-6">
-                    <div className="space-y-4 mb-6">
+                  <div className="p-4 sm:p-6">
+                    <div className="space-y-3 sm:space-y-4 mb-6">
                       {paymentMethods.map((method) => (
                         <label
                           key={method.id}
                           className={cn(
-                            "flex items-center justify-between p-5 border-2 rounded-xl cursor-pointer transition-all",
+                            "flex items-center justify-between p-3 sm:p-5 border-2 rounded-xl cursor-pointer transition-all gap-3",
                             paymentMethod === method.id
                               ? "border-gold-500 bg-gold-500/10 shadow-lg shadow-gold-500/10"
                               : "border-[#2A2A2A] hover:border-gold-500/40 hover:bg-[#121212]"
                           )}
                         >
-                          <div className="flex items-center gap-4">
+                          <div className="flex items-center gap-3 sm:gap-4">
                             <div className={cn(
-                              "w-12 h-12 rounded-xl flex items-center justify-center text-2xl",
+                              "w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center text-xl sm:text-2xl flex-shrink-0",
                               paymentMethod === method.id ? "bg-gold-500/15" : "bg-[#252525]"
                             )}>
                               {method.icon}

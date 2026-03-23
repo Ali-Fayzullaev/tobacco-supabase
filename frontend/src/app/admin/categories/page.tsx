@@ -375,7 +375,7 @@ export default function AdminCategoriesPage() {
               <label className="block text-sm font-medium text-[#C0C0C0] mb-1.5">
                 Изображение
               </label>
-              <div className="flex gap-4 items-start">
+              <div className="flex flex-col sm:flex-row gap-4 items-start">
                 {form.image_url ? (
                   <div className="relative w-32 h-20 rounded-xl overflow-hidden border border-[#2A2A2A]">
                     <img src={form.image_url} alt="" className="w-full h-full object-cover" />
@@ -473,7 +473,7 @@ export default function AdminCategoriesPage() {
           return (
             <div key={category.id} className="bg-[#1E1E1E] rounded-2xl border border-[#2A2A2A] shadow-sm overflow-hidden">
               {/* Parent Category */}
-              <div className="flex items-center gap-4 p-4 hover:bg-[#121212] transition-colors">
+              <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 hover:bg-[#121212] transition-colors flex-wrap sm:flex-nowrap">
                 {/* Image */}
                 <div className="w-16 h-12 rounded-xl overflow-hidden bg-[#252525] shrink-0">
                   {category.image_url ? (
@@ -506,7 +506,7 @@ export default function AdminCategoriesPage() {
                 </div>
 
                 {/* Actions */}
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1 w-full sm:w-auto justify-end">
                   <button
                     onClick={() => moveCategory(category.id, 'up')}
                     disabled={idx === 0}
@@ -561,7 +561,7 @@ export default function AdminCategoriesPage() {
                   {subs.map((sub, subIdx) => (
                     <div 
                       key={sub.id}
-                      className="flex items-center gap-4 px-4 py-3 pl-10 hover:bg-[#252525]/50 transition-colors border-b border-[#2A2A2A] last:border-0"
+                      className="flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-3 pl-4 sm:pl-10 hover:bg-[#252525]/50 transition-colors border-b border-[#2A2A2A] last:border-0 flex-wrap sm:flex-nowrap"
                     >
                       <ChevronRight className="w-4 h-4 text-gray-300 shrink-0" />
                       

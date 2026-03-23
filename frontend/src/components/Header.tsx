@@ -156,11 +156,12 @@ export function Header() {
             {/* Search */}
             <button
               onClick={() => setSearchOpen(true)}
-              className="flex-1 max-w-xl"
+              className="flex-1 min-w-0 max-w-xl"
             >
               <div className="relative flex items-center h-11 bg-[#121212] border border-[#2A2A2A] rounded-md px-3 gap-2 hover:border-gold-500/40 transition-colors cursor-pointer">
                 <Search className="h-5 w-5 text-[#A0A0A0] flex-shrink-0" />
-                <span className="text-[#A0A0A0] text-sm">Поиск товаров...</span>
+                <span className="text-[#A0A0A0] text-sm hidden sm:inline">Поиск товаров...</span>
+                <span className="text-[#A0A0A0] text-sm sm:hidden">Поиск...</span>
               </div>
             </button>
 
@@ -199,7 +200,7 @@ export function Header() {
                           onClick={() => setShowNotifications(false)} 
                         />
                         
-                        <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-[#1E1E1E] rounded-2xl shadow-2xl border border-[#2A2A2A] z-50 overflow-hidden">
+                        <div className="absolute right-0 mt-2 w-[calc(100vw-2rem)] sm:w-80 md:w-96 max-w-[24rem] bg-[#1E1E1E] rounded-2xl shadow-2xl border border-[#2A2A2A] z-50 overflow-hidden">
                           <div className="p-4 border-b border-[#2A2A2A] flex items-center justify-between bg-[#252525]">
                             <h3 className="font-semibold text-[#F5F5F5] flex items-center gap-2">
                               <Bell className="w-4 h-4 text-gold-500" />

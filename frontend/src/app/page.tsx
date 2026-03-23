@@ -96,21 +96,21 @@ export default function HomePage() {
         <div className="absolute top-0 right-0 w-96 h-96 bg-gold-500/5 rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-gold-500/5 rounded-full blur-3xl" />
         
-        <div className="container mx-auto px-4 py-20 relative">
+        <div className="container mx-auto px-4 py-10 sm:py-16 md:py-20 relative">
           <div className="max-w-4xl mx-auto text-center">
             <Badge className="mb-6 px-4 py-1.5 bg-gold-500/10 text-gold-500 border-gold-500/20">
               <Sparkles className="h-3.5 w-3.5 mr-1.5" />
               Премиум качество
             </Badge>
             
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6">
+            <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
               <span className="text-[#F5F5F5]">ТОО </span>
               <span className="bg-gradient-to-r from-gold-400 to-gold-600 bg-clip-text text-transparent">
                 Premium Tobacco
               </span>
             </h1>
             
-            <p className="text-xl text-[#A0A0A0] mb-10 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl text-[#A0A0A0] mb-8 sm:mb-10 max-w-2xl mx-auto">
               Ведущий импортер и дистрибьютор премиальной табачной продукции в Республике Казахстан.
               Прямой импорт и эксклюзивное представительство глобальных табачных производителей.
             </p>
@@ -153,9 +153,9 @@ export default function HomePage() {
       {/* Brands */}
       <section className="border-y border-[#2A2A2A] bg-[#1E1E1E] py-8 overflow-hidden">
         <div className="container mx-auto px-4">
-          <div className="flex gap-12 items-center justify-center flex-wrap">
+          <div className="flex gap-4 sm:gap-8 md:gap-12 items-center justify-center flex-wrap">
             {brands.map((brand, i) => (
-              <span key={i} className="text-[#A0A0A0]/50 text-xl font-semibold whitespace-nowrap hover:text-gold-500 transition-colors cursor-default">
+              <span key={i} className="text-[#A0A0A0]/50 text-sm sm:text-base md:text-xl font-semibold whitespace-nowrap hover:text-gold-500 transition-colors cursor-default">
                 {brand}
               </span>
             ))}
@@ -164,26 +164,26 @@ export default function HomePage() {
       </section>
 
       {/* Features */}
-      <section className="container mx-auto px-4 py-20">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-[#F5F5F5] mb-4">Почему выбирают нас</h2>
+      <section className="container mx-auto px-4 py-10 sm:py-16 md:py-20">
+        <div className="text-center mb-8 sm:mb-12">
+          <h2 className="text-2xl sm:text-3xl font-bold text-[#F5F5F5] mb-4">Почему выбирают нас</h2>
           <p className="text-[#A0A0A0] max-w-2xl mx-auto">
             Высший стандарт качества на рынке Казахстана
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
           {features.map((feature, index) => (
             <Card 
               key={index} 
               className="bg-[#1E1E1E] border-[#2A2A2A] hover:border-gold-500/30 hover:shadow-lg hover:shadow-gold-500/5 transition-all duration-300 group"
             >
-              <CardContent className="p-6 text-center">
-                <div className={`w-14 h-14 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform`}>
-                  <feature.icon className="h-7 w-7 text-white" />
+              <CardContent className="p-3 sm:p-4 md:p-6 text-center">
+                <div className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 mx-auto mb-3 sm:mb-4 rounded-xl sm:rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform`}>
+                  <feature.icon className="h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7 text-white" />
                 </div>
-                <h3 className="text-[#F5F5F5] font-semibold mb-2">{feature.title}</h3>
-                <p className="text-[#A0A0A0] text-sm">{feature.description}</p>
+                <h3 className="text-[#F5F5F5] font-semibold mb-1 sm:mb-2 text-sm sm:text-base">{feature.title}</h3>
+                <p className="text-[#A0A0A0] text-xs sm:text-sm">{feature.description}</p>
               </CardContent>
             </Card>
           ))}
@@ -194,12 +194,12 @@ export default function HomePage() {
       <KazakhstanMap />
 
       {/* About & Payment */}
-      <section className="bg-[#1E1E1E] py-20">
+      <section className="bg-[#1E1E1E] py-10 sm:py-16 md:py-20">
         <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-2 gap-8">
+          <div className="grid lg:grid-cols-2 gap-6 sm:gap-8">
             {/* About */}
             <Card className="bg-[#252525] border-[#2A2A2A] shadow-lg">
-              <CardContent className="p-8">
+              <CardContent className="p-5 sm:p-6 md:p-8">
                 <h2 className="text-2xl font-bold text-[#F5F5F5] mb-6">О компании</h2>
                 <div className="space-y-4 text-[#A0A0A0]">
                   <p>
@@ -282,12 +282,12 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="container mx-auto px-4 py-20">
+      <section className="container mx-auto px-4 py-10 sm:py-16 md:py-20">
         <Card className="bg-gradient-to-r from-gold-600 to-gold-500 border-0 shadow-2xl shadow-gold-500/30 overflow-hidden">
-          <CardContent className="p-8 md:p-12 relative">
+          <CardContent className="p-5 sm:p-8 md:p-12 relative">
             <div className="absolute top-0 right-0 w-64 h-64 bg-[#1E1E1E]/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
             <div className="relative z-10 max-w-2xl">
-              <h2 className="text-3xl md:text-4xl font-bold text-[#121212] mb-4">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#121212] mb-4">
                 Готовы сделать заказ?
               </h2>
               <p className="text-[#121212]/70 text-lg mb-8">
@@ -315,11 +315,11 @@ export default function HomePage() {
       {/* Health Warning */}
       <section className="container mx-auto px-4 py-8">
         <Card className="bg-red-900/20 border-red-800/30">
-          <CardContent className="py-6 px-8">
-            <div className="flex items-start gap-4">
-              <AlertTriangle className="h-8 w-8 text-red-400 flex-shrink-0" />
+          <CardContent className="py-4 px-4 sm:py-6 sm:px-8">
+            <div className="flex items-start gap-3 sm:gap-4">
+              <AlertTriangle className="h-6 w-6 sm:h-8 sm:w-8 text-red-400 flex-shrink-0" />
               <div>
-                <h3 className="text-red-400 font-bold text-lg mb-2">
+                <h3 className="text-red-400 font-bold text-sm sm:text-base md:text-lg mb-2">
                   ТЕМЕКІНІ ТҰТЫНУ ТӘУЕЛДІКТІ, СОНДАЙ-АҚ АУЫР АУРУЛАРДЫ ТУДЫРАДЫ
                 </h3>
                 <p className="text-red-300/70 mb-2">
@@ -350,7 +350,7 @@ export default function HomePage() {
               </Link>
             </div>
             
-            <div className="flex items-center gap-6 text-sm">
+            <div className="flex items-center gap-3 sm:gap-6 text-sm flex-wrap justify-center md:justify-end">
               <Link href="/privacy" className="text-[#A0A0A0] hover:text-gold-500 transition-colors">
                 Политика конфиденциальности
               </Link>

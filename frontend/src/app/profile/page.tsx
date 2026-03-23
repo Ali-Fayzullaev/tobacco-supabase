@@ -92,9 +92,9 @@ export default function ProfilePage() {
         <p className="text-[#A0A0A0] mt-1">Управление личными данными</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
         {/* Основная информация */}
-        <div className="bg-[#1E1E1E] rounded-xl border border-[#2A2A2A] p-6">
+        <div className="bg-[#1E1E1E] rounded-xl border border-[#2A2A2A] p-4 sm:p-6">
           <h2 className="text-lg font-semibold text-[#F5F5F5] mb-4 flex items-center gap-2">
             <User className="w-5 h-5 text-[#D4AF37]" />
             Основная информация
@@ -165,7 +165,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Адрес доставки */}
-        <div className="bg-[#1E1E1E] rounded-xl border border-[#2A2A2A] p-6">
+        <div className="bg-[#1E1E1E] rounded-xl border border-[#2A2A2A] p-4 sm:p-6">
           <h2 className="text-lg font-semibold text-[#F5F5F5] mb-4 flex items-center gap-2">
             <MapPin className="w-5 h-5 text-[#D4AF37]" />
             Адрес доставки
@@ -196,7 +196,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Организация (опционально) */}
-        <div className="bg-[#1E1E1E] rounded-xl border border-[#2A2A2A] p-6">
+        <div className="bg-[#1E1E1E] rounded-xl border border-[#2A2A2A] p-4 sm:p-6">
           <h2 className="text-lg font-semibold text-[#F5F5F5] mb-4 flex items-center gap-2">
             <Building2 className="w-5 h-5 text-[#D4AF37]" />
             Организация

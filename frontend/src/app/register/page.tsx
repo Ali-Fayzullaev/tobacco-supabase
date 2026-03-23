@@ -179,7 +179,7 @@ function RegisterFormContent() {
   // Шаг 3: Успешная верификация
   if (step === 'success') {
     return (
-      <div className="min-h-screen bg-[#121212] flex items-center justify-center p-4">
+      <div className="min-h-screen bg-[#121212] flex items-center justify-center p-4 relative overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-gold-500/5 rounded-full blur-3xl pointer-events-none" />
         <div className="w-full max-w-md relative z-10">
           <Card className="bg-[#1E1E1E] border-[#2A2A2A] shadow-xl">
@@ -201,7 +201,7 @@ function RegisterFormContent() {
   // Шаг 2: Ввод кода подтверждения
   if (step === 'verify') {
     return (
-      <div className="min-h-screen bg-[#121212] flex items-center justify-center p-4">
+      <div className="min-h-screen bg-[#121212] flex items-center justify-center p-4 relative overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-gold-500/5 rounded-full blur-3xl pointer-events-none" />
         <div className="w-full max-w-md relative z-10">
           <Card className="bg-[#1E1E1E] border-[#2A2A2A] shadow-xl">
@@ -279,7 +279,7 @@ function RegisterFormContent() {
 
   // Шаг 1: Форма регистрации
   return (
-    <div className="min-h-screen bg-[#121212] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#121212] flex items-center justify-center p-4 relative overflow-hidden">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-gold-500/5 rounded-full blur-3xl pointer-events-none" />
       <div className="w-full max-w-md relative z-10">
         <Link href="/" className="inline-flex items-center gap-2 text-[#A0A0A0] hover:text-gold-500 mb-8 transition-colors">

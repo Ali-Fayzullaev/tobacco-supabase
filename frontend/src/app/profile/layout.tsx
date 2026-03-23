@@ -99,11 +99,11 @@ export default function ProfileLayout({
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-col md:flex-row gap-8">
+      <div className="container mx-auto px-4 py-4 sm:py-8">
+        <div className="flex flex-col md:flex-row gap-4 sm:gap-6 md:gap-8">
           {/* Sidebar */}
           <aside className={`md:w-64 flex-shrink-0 ${showMobileNav ? 'block' : 'hidden md:block'}`}>
-            <div className="bg-[#1E1E1E] rounded-xl shadow-sm border border-[#2A2A2A] p-4">
+            <div className="bg-[#1E1E1E] rounded-xl shadow-sm border border-[#2A2A2A] p-3 sm:p-4">
               {/* User Info */}
               <div className="flex items-center gap-3 pb-4 border-b border-[#2A2A2A] mb-4">
                 <div className="w-12 h-12 bg-gold-500/15 rounded-full flex items-center justify-center">
@@ -126,9 +126,9 @@ export default function ProfileLayout({
                       key={item.href}
                       href={item.href}
                       onClick={() => setShowMobileNav(false)}
-                      className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                      className={`flex items-center gap-3 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-colors ${
                         isActive
-                          ? 'bg-gold-50 text-gold-700'
+                          ? 'bg-gold-500/10 text-gold-500'
                           : 'text-[#A0A0A0] hover:bg-[#121212]'
                       }`}
                     >

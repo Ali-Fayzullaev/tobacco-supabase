@@ -190,48 +190,48 @@ export default function OrdersPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="bg-[#1E1E1E] rounded-2xl border border-[#2A2A2A] p-4 shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="w-11 h-11 bg-gradient-to-br from-purple-100 to-violet-100 rounded-xl flex items-center justify-center">
-              <Receipt className="w-5 h-5 text-purple-400" />
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
+        <div className="bg-[#1E1E1E] rounded-2xl border border-[#2A2A2A] p-3 sm:p-4 shadow-sm">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-9 h-9 sm:w-11 sm:h-11 bg-gradient-to-br from-purple-100 to-violet-100 rounded-xl flex items-center justify-center">
+              <Receipt className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-[#F5F5F5]">{stats.total}</p>
-              <p className="text-xs text-[#A0A0A0]">Всего заказов</p>
+              <p className="text-xl sm:text-2xl font-bold text-[#F5F5F5]">{stats.total}</p>
+              <p className="text-[10px] sm:text-xs text-[#A0A0A0]">Всего заказов</p>
             </div>
           </div>
         </div>
-        <div className="bg-[#1E1E1E] rounded-2xl border border-[#2A2A2A] p-4 shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="w-11 h-11 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-xl flex items-center justify-center">
-              <Truck className="w-5 h-5 text-blue-400" />
+        <div className="bg-[#1E1E1E] rounded-2xl border border-[#2A2A2A] p-3 sm:p-4 shadow-sm">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-9 h-9 sm:w-11 sm:h-11 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-xl flex items-center justify-center">
+              <Truck className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-[#F5F5F5]">{stats.active}</p>
-              <p className="text-xs text-[#A0A0A0]">В процессе</p>
+              <p className="text-xl sm:text-2xl font-bold text-[#F5F5F5]">{stats.active}</p>
+              <p className="text-[10px] sm:text-xs text-[#A0A0A0]">В процессе</p>
             </div>
           </div>
         </div>
-        <div className="bg-[#1E1E1E] rounded-2xl border border-[#2A2A2A] p-4 shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="w-11 h-11 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl flex items-center justify-center">
-              <CheckCircle className="w-5 h-5 text-green-400" />
+        <div className="bg-[#1E1E1E] rounded-2xl border border-[#2A2A2A] p-3 sm:p-4 shadow-sm">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-9 h-9 sm:w-11 sm:h-11 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl flex items-center justify-center">
+              <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-green-400" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-[#F5F5F5]">{stats.completed}</p>
-              <p className="text-xs text-[#A0A0A0]">Выполнено</p>
+              <p className="text-xl sm:text-2xl font-bold text-[#F5F5F5]">{stats.completed}</p>
+              <p className="text-[10px] sm:text-xs text-[#A0A0A0]">Выполнено</p>
             </div>
           </div>
         </div>
-        <div className="bg-[#1E1E1E] rounded-2xl border border-[#2A2A2A] p-4 shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="w-11 h-11 bg-gradient-to-br from-gold-500/15 to-gold-500/10 rounded-xl flex items-center justify-center">
-              <CreditCard className="w-5 h-5 text-gold-600" />
+        <div className="bg-[#1E1E1E] rounded-2xl border border-[#2A2A2A] p-3 sm:p-4 shadow-sm">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-9 h-9 sm:w-11 sm:h-11 bg-gradient-to-br from-gold-500/15 to-gold-500/10 rounded-xl flex items-center justify-center">
+              <CreditCard className="w-4 h-4 sm:w-5 sm:h-5 text-gold-600" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-[#F5F5F5]">{formatPrice(stats.totalSpent).replace('₸', '')}<span className="text-base font-medium">₸</span></p>
-              <p className="text-xs text-[#A0A0A0]">Всего потрачено</p>
+              <p className="text-xl sm:text-2xl font-bold text-[#F5F5F5]">{formatPrice(stats.totalSpent).replace('₸', '')}<span className="text-sm sm:text-base font-medium">₸</span></p>
+              <p className="text-[10px] sm:text-xs text-[#A0A0A0]">Всего потрачено</p>
             </div>
           </div>
         </div>

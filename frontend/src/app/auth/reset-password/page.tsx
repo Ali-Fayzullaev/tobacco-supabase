@@ -118,7 +118,7 @@ function ResetPasswordContent() {
   // Успех — пароль обновлён
   if (resetSuccess) {
     return (
-      <div className="min-h-screen bg-[#121212] flex items-center justify-center p-4">
+      <div className="min-h-screen bg-[#121212] flex items-center justify-center p-4 relative overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-gold-500/5 rounded-full blur-3xl pointer-events-none" />
         <div className="w-full max-w-md relative z-10">
           <Card className="bg-[#1E1E1E] border-[#2A2A2A] shadow-xl">
@@ -143,7 +143,7 @@ function ResetPasswordContent() {
   // Email отправлен
   if (emailSent) {
     return (
-      <div className="min-h-screen bg-[#121212] flex items-center justify-center p-4">
+      <div className="min-h-screen bg-[#121212] flex items-center justify-center p-4 relative overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-gold-500/5 rounded-full blur-3xl pointer-events-none" />
         <div className="w-full max-w-md relative z-10">
           <Card className="bg-[#1E1E1E] border-[#2A2A2A] shadow-xl">
@@ -159,7 +159,7 @@ function ResetPasswordContent() {
                 Если не нашли — проверьте «Спам».
               </p>
               <Link href="/login">
-                <Button variant="outline" className="border-[#2A2A2A] text-[#F5F5F5] hover:bg-[#252525]">
+                <Button variant="outline" className="border-[#2A2A2A] text-[#F5F5F5]">
                   Вернуться ко входу
                 </Button>
               </Link>
@@ -171,7 +171,7 @@ function ResetPasswordContent() {
   }
 
   return (
-    <div className="min-h-screen bg-[#121212] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#121212] flex items-center justify-center p-4 relative overflow-hidden">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-gold-500/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="w-full max-w-md relative z-10">

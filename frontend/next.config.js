@@ -1,5 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Отключаем ESLint при build чтобы избежать spawn ошибок с worker
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   // Отключаем webpack cache для избежания OOM при сжатии
   webpack: (config) => {
     config.cache = false;

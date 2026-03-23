@@ -168,8 +168,8 @@ export default function AdminOrderDetailPage() {
             <ArrowLeft className="w-5 h-5 text-[#A0A0A0]" />
           </Link>
           <div>
-            <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-bold text-[#F5F5F5]">
+            <div className="flex items-center gap-3 flex-wrap">
+              <h1 className="text-xl sm:text-2xl font-bold text-[#F5F5F5]">
                 Заказ #{order.order_number}
               </h1>
               <div className={cn(
@@ -500,7 +500,7 @@ export default function AdminOrderDetailPage() {
             <div className="space-y-3 text-sm">
               <div className="flex justify-between">
                 <span className="text-[#A0A0A0]">ID заказа</span>
-                <span className="text-[#F5F5F5] font-mono text-xs">{order.id}</span>
+                <span className="text-[#F5F5F5] font-mono text-xs truncate max-w-[180px] sm:max-w-none">{order.id}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-[#A0A0A0]">Номер заказа</span>

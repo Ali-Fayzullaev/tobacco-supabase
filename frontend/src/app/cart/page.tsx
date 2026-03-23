@@ -100,7 +100,7 @@ export default function CartPage() {
 
       <main className="flex-1">
         <div className="container mx-auto px-4 py-8">
-          <h1 className="text-3xl font-bold text-[#F5F5F5] mb-8">Корзина</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#F5F5F5] mb-6 sm:mb-8">Корзина</h1>
 
           {cartItems.length === 0 ? (
             <Card className="bg-[#1E1E1E] border-[#2A2A2A] shadow-sm">
@@ -119,7 +119,7 @@ export default function CartPage() {
               </CardContent>
             </Card>
           ) : (
-            <div className="grid lg:grid-cols-3 gap-8">
+            <div className="grid lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
               {/* Cart Items */}
               <div className="lg:col-span-2 space-y-4">
                 {/* Header */}
@@ -140,13 +140,13 @@ export default function CartPage() {
                 {/* Items */}
                 {cartItems.map((item) => (
                   <Card key={item.id} className="bg-[#1E1E1E] border-[#2A2A2A] shadow-sm overflow-hidden">
-                    <CardContent className="p-4 flex gap-4">
+                    <CardContent className="p-3 sm:p-4 flex gap-3 sm:gap-4">
                       {/* Image */}
                       <Link 
                         href={`/product/${item.product?.slug}`}
                         className="flex-shrink-0"
                       >
-                        <div className="relative w-24 h-24 bg-[#252525] rounded-lg overflow-hidden">
+                        <div className="relative w-16 h-16 sm:w-24 sm:h-24 bg-[#252525] rounded-lg overflow-hidden">
                           {item.product?.image_url ? (
                             <Image
                               src={item.product.image_url}
@@ -173,7 +173,7 @@ export default function CartPage() {
                         {item.product?.brand && (
                           <p className="text-sm text-[#A0A0A0] mt-1">{item.product.brand}</p>
                         )}
-                        <p className="text-xl font-bold text-gold-500 mt-2">
+                        <p className="text-lg sm:text-xl font-bold text-gold-500 mt-2">
                           {formatPrice(item.product?.price || 0)}
                         </p>
                       </div>
@@ -212,7 +212,7 @@ export default function CartPage() {
 
               {/* Order Summary */}
               <div className="lg:col-span-1">
-                <Card className="bg-[#1E1E1E] border-[#2A2A2A] shadow-sm sticky top-24">
+                <Card className="bg-[#1E1E1E] border-[#2A2A2A] shadow-sm sticky top-16 sm:top-20 lg:top-24">
                   <CardHeader>
                     <CardTitle className="text-[#F5F5F5]">Итого</CardTitle>
                   </CardHeader>

@@ -32,7 +32,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ru">
-      <body className={montserrat.className}>
+      <body className={`${montserrat.className} overflow-x-hidden`}>
         <AuthProvider>
           <CartProvider>
             <FavoritesProvider>

@@ -290,8 +290,8 @@ export default function ProductPage() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-6 lg:py-8">
-        <div className="grid lg:grid-cols-2 gap-6 lg:gap-10">
+      <div className="container mx-auto px-4 py-4 sm:py-6 lg:py-8">
+        <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-10">
           {/* Image Gallery */}
           <div className="space-y-4">
             {/* Main Image */}
@@ -408,7 +408,7 @@ export default function ProductPage() {
             )}
 
             {/* Name */}
-            <h1 className="text-2xl lg:text-3xl font-bold text-[#F5F5F5]">{product.name}</h1>
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-[#F5F5F5]">{product.name}</h1>
 
             {/* Rating */}
             <div className="flex items-center gap-4">
@@ -440,11 +440,11 @@ export default function ProductPage() {
             {/* Price */}
             {canBuy ? (
               <div className="flex items-baseline gap-4 flex-wrap">
-                <span className="text-3xl lg:text-4xl font-bold text-gold-600">
+                <span className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gold-600">
                   {formatPrice(product.price)}
                 </span>
                 {product.old_price && (
-                  <span className="text-xl text-[#666] line-through">
+                  <span className="text-base sm:text-xl text-[#666] line-through">
                     {formatPrice(product.old_price)}
                   </span>
                 )}

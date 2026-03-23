@@ -421,12 +421,12 @@ function CatalogContent() {
 
       {/* ═══ STICKY 8-TAB HORIZONTAL MENU ═══ */}
       <div className="sticky top-0 z-40 bg-[#1E1E1E] border-b border-[#2A2A2A] shadow-lg shadow-black/20">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center gap-1 overflow-x-auto py-1" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+        <div className="container mx-auto px-2 sm:px-4">
+          <div className="flex items-center gap-0.5 sm:gap-1 overflow-x-auto py-1 -mx-2 px-2 sm:mx-0 sm:px-0" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <button
               onClick={() => { setSelectedCategory(null); router.push('/catalog', { scroll: false }); }}
               className={cn(
-                "whitespace-nowrap px-4 py-3 text-sm font-medium transition-all border-b-2 flex-shrink-0",
+                "whitespace-nowrap px-3 sm:px-4 py-3 text-xs sm:text-sm font-medium transition-all border-b-2 flex-shrink-0",
                 !selectedCategory
                   ? "border-gold-500 text-gold-500"
                   : "border-transparent text-[#A0A0A0] hover:text-[#F5F5F5] hover:border-[#666]"
@@ -447,7 +447,7 @@ function CatalogContent() {
                   key={cat.id}
                   onClick={() => handleSelectCategory(cat.id)}
                   className={cn(
-                    "whitespace-nowrap px-4 py-3 text-sm font-medium transition-all border-b-2 flex-shrink-0",
+                    "whitespace-nowrap px-3 sm:px-4 py-3 text-xs sm:text-sm font-medium transition-all border-b-2 flex-shrink-0",
                     isActive
                       ? "border-gold-500 text-gold-500"
                       : "border-transparent text-[#A0A0A0] hover:text-[#F5F5F5] hover:border-[#666]"
@@ -487,7 +487,7 @@ function CatalogContent() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-6">
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6">
         {/* Баннер категории */}
         {currentCategory && (
           <ActiveCategoryBanner
@@ -812,7 +812,7 @@ function CatalogContent() {
       {showFilters && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowFilters(false)} />
-          <div className="absolute right-0 top-0 bottom-0 w-80 bg-[#1E1E1E] shadow-xl overflow-y-auto">
+          <div className="absolute right-0 top-0 bottom-0 w-[85vw] max-w-80 bg-[#1E1E1E] shadow-xl overflow-y-auto">
             {/* Шапка */}
             <div className="sticky top-0 bg-[#1E1E1E] border-b border-[#2A2A2A] px-5 py-4 flex items-center justify-between z-10">
               <h2 className="font-semibold text-[#F5F5F5] flex items-center gap-2">

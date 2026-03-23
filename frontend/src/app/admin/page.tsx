@@ -387,7 +387,7 @@ export default function AdminDashboard() {
             <PieChart className="w-5 h-5" />
             Сегодня
           </h3>
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             <div className="bg-[#1E1E1E]/20 backdrop-blur-sm rounded-xl p-4">
               <div className="flex items-center gap-2 mb-2">
                 <ShoppingBag className="w-5 h-5" />

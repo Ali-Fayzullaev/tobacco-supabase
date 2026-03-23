@@ -18,6 +18,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useStoreSettings } from '@/hooks/useStoreSettings';
+import KazakhstanMap from '@/components/KazakhstanMap';
 
 export default function HomePage() {
   const { settings } = useStoreSettings();
@@ -188,6 +189,9 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+
+      {/* Kazakhstan delivery map */}
+      <KazakhstanMap />
 
       {/* About & Payment */}
       <section className="bg-[#1E1E1E] py-20">

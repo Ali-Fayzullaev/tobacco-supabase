@@ -89,6 +89,18 @@
   animation: cart-bounce 0.3s ease-in-out;
 }
 
+/* Анимация для бейджа корзины при добавлении товара */
+@keyframes cart-pop {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.35); }
+  60% { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+
+.animate-cart-pop {
+  animation: cart-pop 0.5s cubic-bezier(0.36, 1.2, 0.5, 1);
+}
+
 /* Скрытие scrollbar но с сохранением прокрутки */
 .hide-scrollbar {
   -ms-overflow-style: none;
@@ -109,4 +121,16 @@
   background: linear-gradient(90deg, #1E1E1E 25%, #2A2A2A 50%, #1E1E1E 75%);
   background-size: 200% 100%;
   animation: skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+/* Мобильный tab-bar: safe-area для iPhone и отступ контента */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@media (max-width: 1023px) {
+  /* Отступ снизу для контента, чтобы tab-bar не перекрывал */
+  body {
+    padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+  }
 }

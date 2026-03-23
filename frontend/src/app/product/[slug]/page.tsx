@@ -47,7 +47,7 @@ export default function ProductPage() {
   
   const { user, profile, isLoading: isAuthLoading } = useAuth();
   const { getFullProduct, isLoading: isProductLoading } = useProducts();
-  const { addToCart, isLoading: isCartLoading } = useCart();
+  const { addToCart, getItemInCart, updateQuantity, removeItem, isLoading: isCartLoading } = useCart();
   const { toggleFavorite, isFavorite, isLoading: isFavLoading } = useFavorites();
 
   const [product, setProduct] = useState<ProductFull | null>(null);
@@ -520,59 +520,84 @@ export default function ProductPage() {
             {/* Quantity & Add to Cart */}
             {canBuy && (
             <div className="space-y-4">
-              <div className="flex items-center gap-4">
-                {/* Quantity Selector */}
-                <div className="flex items-center border border-[#2A2A2A] rounded-xl bg-[#1E1E1E]">
-                  <button
-                    onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                    className="p-3 hover:bg-[#121212] transition-colors rounded-l-xl"
-                    disabled={quantity <= 1}
-                  >
-                    <Minus className="w-4 h-4 text-[#A0A0A0]" />
-                  </button>
-                  <span className="w-14 text-center font-semibold text-[#F5F5F5]">{quantity}</span>
-                  <button
-                    onClick={() => setQuantity(q => q + 1)}
-                    className="p-3 hover:bg-[#121212] transition-colors rounded-r-xl"
-                    disabled={product.stock !== undefined && quantity >= product.stock}
-                  >
-                    <Plus className="w-4 h-4 text-[#A0A0A0]" />
-                  </button>
-                </div>
+              {(() => {
+                const existingItem = product ? getItemInCart(product.id) : undefined;
+                const inCartQty = existingItem?.quantity || 0;
 
-                {/* Total Price */}
-                <div className="text-right">
-                  <p className="text-sm text-[#A0A0A0]">Итого:</p>
-                  <p className="text-xl font-bold text-[#F5F5F5]">
-                    {formatPrice(product.price * quantity)}
-                  </p>
-                </div>
-              </div>
+                return (
+                  <>
+                    {/* Already in cart indicator */}
+                    {inCartQty > 0 && (
+                      <div className="flex items-center gap-2 bg-gold-500/10 border border-gold-500/30 rounded-xl px-4 py-2.5">
+                        <Check className="w-4 h-4 text-gold-500" />
+                        <span className="text-sm text-gold-500 font-medium">
+                          В корзине: {inCartQty} шт.
+                        </span>
+                        <button
+                          onClick={() => existingItem && removeItem(existingItem.id)}
+                          className="ml-auto text-xs text-red-400 hover:text-red-300 transition-colors"
+                        >
+                          Убрать
+                        </button>
+                      </div>
+                    )}
 
-              {/* Action Buttons */}
-              <div className="flex gap-3">
-                <Button
-                  onClick={handleAddToCart}
-                  disabled={isCartLoading || !product.in_stock}
-                  className="flex-1 h-12 bg-gold-500 hover:bg-gold-600 text-white font-semibold text-base"
-                >
-                  {isCartLoading ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                  ) : (
-                    <ShoppingCart className="w-5 h-5 mr-2" />
-                  )}
-                  В корзину
-                </Button>
-                <Button
-                  onClick={handleQuickBuy}
-                  disabled={!product.in_stock}
-                  variant="outline"
-                  className="flex-1 h-12 border-gold-500/40 text-gold-600 hover:bg-gold-500/10 font-semibold text-base"
-                >
-                  <Zap className="w-5 h-5 mr-2" />
-                  Купить сейчас
-                </Button>
-              </div>
+                    <div className="flex items-center gap-4">
+                      {/* Quantity Selector */}
+                      <div className="flex items-center border border-[#2A2A2A] rounded-xl bg-[#1E1E1E]">
+                        <button
+                          onClick={() => setQuantity(q => Math.max(1, q - 1))}
+                          className="p-3 hover:bg-[#121212] transition-colors rounded-l-xl"
+                          disabled={quantity <= 1}
+                        >
+                          <Minus className="w-4 h-4 text-[#A0A0A0]" />
+                        </button>
+                        <span className="w-14 text-center font-semibold text-[#F5F5F5]">{quantity}</span>
+                        <button
+                          onClick={() => setQuantity(q => q + 1)}
+                          className="p-3 hover:bg-[#121212] transition-colors rounded-r-xl"
+                          disabled={product.stock !== undefined && quantity >= product.stock}
+                        >
+                          <Plus className="w-4 h-4 text-[#A0A0A0]" />
+                        </button>
+                      </div>
+
+                      {/* Total Price */}
+                      <div className="text-right">
+                        <p className="text-sm text-[#A0A0A0]">Итого:</p>
+                        <p className="text-xl font-bold text-[#F5F5F5]">
+                          {formatPrice(product.price * quantity)}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex gap-3">
+                      <Button
+                        onClick={handleAddToCart}
+                        disabled={isCartLoading || !product.in_stock}
+                        className="flex-1 h-12 bg-gold-500 hover:bg-gold-600 text-white font-semibold text-base"
+                      >
+                        {isCartLoading ? (
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                        ) : (
+                          <ShoppingCart className="w-5 h-5 mr-2" />
+                        )}
+                        {inCartQty > 0 ? `Добавить ещё ${quantity} шт.` : 'В корзину'}
+                      </Button>
+                      <Button
+                        onClick={handleQuickBuy}
+                        disabled={!product.in_stock}
+                        variant="outline"
+                        className="flex-1 h-12 border-gold-500/40 text-gold-600 hover:bg-gold-500/10 font-semibold text-base"
+                      >
+                        <Zap className="w-5 h-5 mr-2" />
+                        Купить сейчас
+                      </Button>
+                    </div>
+                  </>
+                );
+              })()}
             </div>
             )}
 

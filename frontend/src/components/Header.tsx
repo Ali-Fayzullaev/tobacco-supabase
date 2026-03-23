@@ -18,15 +18,15 @@ import {
   Bell,
   AlertCircle
 } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/hooks';
 import { useCart } from '@/hooks/useCart';
 import { useFavorites } from '@/hooks/useFavorites';
 import { useStoreSettings } from '@/hooks/useStoreSettings';
 import { useCategories } from '@/hooks/useCategories';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { SearchOverlay } from '@/components/SearchOverlay';
 import { cn, formatDate } from '@/lib/utils';
 import { createBrowserSupabaseClient } from '@/lib/supabase';
 
@@ -35,10 +35,22 @@ export function Header() {
   const { user, isAuthenticated, signOut, profile } = useAuth();
   const { totalItems } = useCart();
   const { favorites } = useFavorites();
+
+  // Bounce-анимация корзины при добавлении товара
+  const [cartBounce, setCartBounce] = useState(false);
+  const prevTotalItems = useRef(totalItems);
+  useEffect(() => {
+    if (totalItems > prevTotalItems.current) {
+      setCartBounce(true);
+      const t = setTimeout(() => setCartBounce(false), 600);
+      return () => clearTimeout(t);
+    }
+    prevTotalItems.current = totalItems;
+  }, [totalItems]);
   const { settings } = useStoreSettings();
   const { parentCategories } = useCategories();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchOpen, setSearchOpen] = useState(false);
   
   // Уведомления
   const [notifications, setNotifications] = useState<any[]>([]);
@@ -111,15 +123,9 @@ export function Header() {
     .filter(c => c.is_active)
     .map(c => ({ href: `/catalog?category=${c.slug}`, label: c.name }));
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      window.location.href = `/catalog?q=${encodeURIComponent(searchQuery)}`;
-    }
-  };
-
   return (
     <header className="sticky top-0 z-50 bg-[#1E1E1E] shadow-lg shadow-black/20 border-b border-[#2A2A2A]">
+      <SearchOverlay isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
 
       {/* Main header */}
       <div className="border-b border-[#2A2A2A]">
@@ -148,18 +154,15 @@ export function Header() {
             </div>
 
             {/* Search */}
-            <form onSubmit={handleSearch} className="flex-1 max-w-xl">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[#A0A0A0]" />
-                <Input
-                  type="search"
-                  placeholder="Поиск товаров..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 h-11 bg-[#121212] border-[#2A2A2A] text-[#F5F5F5] placeholder:text-[#A0A0A0] focus:bg-[#121212] focus:border-gold-500"
-                />
+            <button
+              onClick={() => setSearchOpen(true)}
+              className="flex-1 max-w-xl"
+            >
+              <div className="relative flex items-center h-11 bg-[#121212] border border-[#2A2A2A] rounded-md px-3 gap-2 hover:border-gold-500/40 transition-colors cursor-pointer">
+                <Search className="h-5 w-5 text-[#A0A0A0] flex-shrink-0" />
+                <span className="text-[#A0A0A0] text-sm">Поиск товаров...</span>
               </div>
-            </form>
+            </button>
 
             {/* Actions */}
             <div className="flex items-center gap-1 sm:gap-2">
@@ -281,24 +284,24 @@ export function Header() {
                     )}
                   </div>
 
-                  {/* Favorites */}
-                  <Link href="/profile/favorites">
+                  {/* Favorites — скрыто на мобилке (есть в MobileTabBar) */}
+                  <Link href="/profile/favorites" className="hidden lg:block">
                     <Button variant="ghost" size="icon" className="relative text-[#A0A0A0] hover:text-gold-500 hover:bg-gold-500/10">
                       <Heart className="h-5 w-5" />
                       {favorites.length > 0 && (
-                        <span className="absolute -top-1 -right-1 h-5 w-5 bg-gold-500 text-[#121212] text-[10px] font-bold rounded-full flex items-center justify-center">
+                        <span className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
                           {favorites.length}
                         </span>
                       )}
                     </Button>
                   </Link>
 
-                  {/* Cart */}
-                  <Link href="/cart">
-                    <Button variant="ghost" size="icon" className="relative text-[#A0A0A0] hover:text-gold-500 hover:bg-gold-500/10">
+                  {/* Cart — скрыто на мобилке (есть в MobileTabBar) */}
+                  <Link href="/cart" className="hidden lg:block">
+                    <Button variant="ghost" size="icon" className={cn("relative text-[#A0A0A0] hover:text-gold-500 hover:bg-gold-500/10", cartBounce && "animate-cart-pop")}>
                       <ShoppingCart className="h-5 w-5" />
                       {totalItems > 0 && (
-                        <span className="absolute -top-1 -right-1 h-5 w-5 bg-gold-500 text-[#121212] text-[10px] font-bold rounded-full flex items-center justify-center">
+                        <span className={cn("absolute -top-1 -right-1 h-5 w-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center", cartBounce && "animate-cart-pop")}>
                           {totalItems > 99 ? '99+' : totalItems}
                         </span>
                       )}

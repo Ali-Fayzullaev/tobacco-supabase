@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Heart, ShoppingCart, Star, Eye, Lock, Loader2, Check, MessageCircle } from 'lucide-react';
+import { Heart, ShoppingCart, Star, Eye, Lock, Loader2, Check, MessageCircle, Plus, Minus, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -36,11 +36,12 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, size = 'normal', className, showPrice = true }: ProductCardProps) {
-  const { addToCart } = useCart();
+  const { addToCart, getItemInCart, updateQuantity, removeItem } = useCart();
   const { toggleFavorite, isFavorite, isLoading: isFavLoading } = useFavorites();
   const isFav = isFavorite(product.id);
   const [addingToCart, setAddingToCart] = useState(false);
-  const [addedToCart, setAddedToCart] = useState(false);
+  const cartItem = getItemInCart(product.id);
+  const inCart = !!cartItem;
 
   const discount = product.old_price 
     ? Math.round((1 - product.price / product.old_price) * 100) 
@@ -54,18 +55,33 @@ export function ProductCard({ product, size = 'normal', className, showPrice = t
     e.stopPropagation();
     if (addingToCart) return;
     setAddingToCart(true);
-    setAddedToCart(false);
     try {
       const result = await addToCart(product.id, 1);
       if (result.success) {
-        setAddedToCart(true);
         toast.success(`${product.name} добавлен в корзину`);
-        setTimeout(() => setAddedToCart(false), 1500);
       } else {
         toast.error(result.error || 'Не удалось добавить товар');
       }
     } finally {
       setAddingToCart(false);
+    }
+  };
+
+  const handleIncrement = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!cartItem) return;
+    await updateQuantity(cartItem.id, cartItem.quantity + 1);
+  };
+
+  const handleDecrement = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!cartItem) return;
+    if (cartItem.quantity <= 1) {
+      await removeItem(cartItem.id);
+    } else {
+      await updateQuantity(cartItem.id, cartItem.quantity - 1);
     }
   };
 
@@ -296,26 +312,54 @@ export function ProductCard({ product, size = 'normal', className, showPrice = t
                 <MessageCircle className={cn(s.iconSize, "mr-1.5")} />
                 Уточнить наличие
               </a>
+            ) : inCart ? (
+              <div className="w-full mt-2 flex items-center gap-1">
+                <button
+                  onClick={handleDecrement}
+                  className={cn(
+                    "flex items-center justify-center rounded-l-md bg-[#2A2A2A] hover:bg-[#333] text-[#F5F5F5] transition-colors flex-shrink-0",
+                    s.buttonSize,
+                    "w-9 sm:w-10"
+                  )}
+                >
+                  {cartItem!.quantity <= 1 ? (
+                    <Trash2 className="h-3.5 w-3.5 text-red-400" />
+                  ) : (
+                    <Minus className="h-3.5 w-3.5" />
+                  )}
+                </button>
+                <div className={cn(
+                  "flex-1 flex items-center justify-center bg-[#2A2A2A] text-[#F5F5F5] font-semibold text-sm select-none",
+                  s.buttonSize
+                )}>
+                  {cartItem!.quantity}
+                </div>
+                <button
+                  onClick={handleIncrement}
+                  className={cn(
+                    "flex items-center justify-center rounded-r-md bg-gold-500 hover:bg-gold-600 text-[#121212] transition-colors flex-shrink-0",
+                    s.buttonSize,
+                    "w-9 sm:w-10"
+                  )}
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                </button>
+              </div>
             ) : (
               <Button
                 onClick={handleAddToCart}
                 disabled={addingToCart}
                 className={cn(
-                  "w-full mt-2 font-medium transition-all",
-                  addedToCart
-                    ? "bg-green-600 hover:bg-green-700 text-white"
-                    : "bg-gold-500 hover:bg-gold-600 text-[#121212]",
+                  "w-full mt-2 font-medium transition-all bg-gold-500 hover:bg-gold-600 text-[#121212]",
                   s.buttonSize
                 )}
               >
                 {addingToCart ? (
                   <Loader2 className={cn(s.iconSize, "mr-1.5 animate-spin")} />
-                ) : addedToCart ? (
-                  <Check className={cn(s.iconSize, "mr-1.5")} />
                 ) : (
                   <ShoppingCart className={cn(s.iconSize, "mr-1.5")} />
                 )}
-                {addingToCart ? 'Добавляем...' : addedToCart ? 'Добавлено!' : 'В корзину'}
+                {addingToCart ? 'Добавляем...' : 'В корзину'}
               </Button>
             )
           ) : (
@@ -339,11 +383,12 @@ export function ProductCard({ product, size = 'normal', className, showPrice = t
 
 // Компактная карточка для списка
 export function ProductCardCompact({ product, showPrice = true }: { product: Product; showPrice?: boolean }) {
-  const { addToCart } = useCart();
+  const { addToCart, getItemInCart, updateQuantity, removeItem } = useCart();
   const { toggleFavorite, isFavorite } = useFavorites();
   const isFav = isFavorite(product.id);
   const [addingToCart, setAddingToCart] = useState(false);
-  const [addedToCart, setAddedToCart] = useState(false);
+  const cartItem = getItemInCart(product.id);
+  const inCart = !!cartItem;
 
   const discount = product.old_price 
     ? Math.round((1 - product.price / product.old_price) * 100) 
@@ -353,18 +398,31 @@ export function ProductCardCompact({ product, showPrice = true }: { product: Pro
     e.preventDefault();
     if (addingToCart) return;
     setAddingToCart(true);
-    setAddedToCart(false);
     try {
       const result = await addToCart(product.id, 1);
       if (result.success) {
-        setAddedToCart(true);
         toast.success(`${product.name} добавлен в корзину`);
-        setTimeout(() => setAddedToCart(false), 1500);
       } else {
         toast.error(result.error || 'Не удалось добавить товар');
       }
     } finally {
       setAddingToCart(false);
+    }
+  };
+
+  const handleIncrement = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!cartItem) return;
+    await updateQuantity(cartItem.id, cartItem.quantity + 1);
+  };
+
+  const handleDecrement = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!cartItem) return;
+    if (cartItem.quantity <= 1) {
+      await removeItem(cartItem.id);
+    } else {
+      await updateQuantity(cartItem.id, cartItem.quantity - 1);
     }
   };
   
@@ -461,22 +519,37 @@ export function ProductCardCompact({ product, showPrice = true }: { product: Pro
             >
               <MessageCircle className="h-4 w-4" />
             </a>
+          ) : inCart ? (
+            <div className="flex items-center gap-0.5">
+              <button
+                onClick={handleDecrement}
+                className="h-9 w-9 flex items-center justify-center rounded-l-lg bg-[#2A2A2A] hover:bg-[#333] text-[#F5F5F5] transition-colors"
+              >
+                {cartItem!.quantity <= 1 ? (
+                  <Trash2 className="h-3.5 w-3.5 text-red-400" />
+                ) : (
+                  <Minus className="h-3.5 w-3.5" />
+                )}
+              </button>
+              <div className="h-9 w-8 flex items-center justify-center bg-[#2A2A2A] text-[#F5F5F5] font-semibold text-sm select-none">
+                {cartItem!.quantity}
+              </div>
+              <button
+                onClick={handleIncrement}
+                className="h-9 w-9 flex items-center justify-center rounded-r-lg bg-gold-500 hover:bg-gold-600 text-[#121212] transition-colors"
+              >
+                <Plus className="h-3.5 w-3.5" />
+              </button>
+            </div>
           ) : (
             <Button
               size="sm"
               onClick={handleAddToCart}
               disabled={addingToCart}
-              className={cn(
-                "h-9 px-3 transition-all",
-                addedToCart
-                  ? "bg-green-600 hover:bg-green-700"
-                  : "bg-gold-500 hover:bg-gold-600 text-[#121212]"
-              )}
+              className="h-9 px-3 transition-all bg-gold-500 hover:bg-gold-600 text-[#121212]"
             >
               {addingToCart ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
-              ) : addedToCart ? (
-                <Check className="h-4 w-4" />
               ) : (
                 <ShoppingCart className="h-4 w-4" />
               )}

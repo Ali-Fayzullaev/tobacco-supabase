@@ -330,6 +330,7 @@ function CatalogContent() {
       if (catParam) {
         const found = categories.find(c => c.slug === catParam) || categories.find(c => c.id === catParam);
         if (found) setSelectedCategory(found.id);
+        else setSelectedCategory(null);
       } else {
         setSelectedCategory(null);
       }
@@ -473,13 +474,6 @@ function CatalogContent() {
     );
   }
 
-  // Авто-выбор первой категории при входе в каталог (если нет категории/поиска)
-  useEffect(() => {
-    if (!isCategoriesLoading && parentCategories.length > 0 && !selectedCategory && !searchQuery) {
-      handleSelectCategory(parentCategories[0].id);
-    }
-  }, [isCategoriesLoading, parentCategories.length]);
-
   /* ═══════════════ PRODUCTS MODE ═══════════════ */
   return (
     <div className="min-h-screen bg-[#121212]">
@@ -488,7 +482,18 @@ function CatalogContent() {
       {/* ═══ STICKY 8-TAB HORIZONTAL MENU ═══ */}
       <div className="sticky top-0 z-40 bg-[#1E1E1E] border-b border-[#2A2A2A] shadow-lg shadow-black/20">
         <div className="container mx-auto px-4">
-          <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide py-1" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+          <div className="flex items-center gap-1 overflow-x-auto py-1" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+            <button
+              onClick={() => { setSelectedCategory(null); router.push('/catalog', { scroll: false }); }}
+              className={cn(
+                "whitespace-nowrap px-4 py-3 text-sm font-medium transition-all border-b-2 flex-shrink-0",
+                !selectedCategory
+                  ? "border-gold-500 text-gold-500"
+                  : "border-transparent text-[#A0A0A0] hover:text-[#F5F5F5] hover:border-[#666]"
+              )}
+            >
+              Все
+            </button>
             {parentCategories.map((cat) => {
               const isActive = selectedCategory === cat.id;
               return (

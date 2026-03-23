@@ -4,8 +4,11 @@ import './globals.css';
 import { Toaster } from 'sonner';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { AuthProvider } from '@/context/AuthContext';
+import { CartProvider } from '@/context/CartContext';
+import { FavoritesProvider } from '@/context/FavoritesContext';
 import { StoreSettingsProvider } from '@/hooks/useStoreSettings';
 import AgeGate from '@/components/AgeGate';
+import { MobileTabBar } from '@/components/MobileTabBar';
 
 const montserrat = Montserrat({ 
   subsets: ['latin', 'cyrillic'],
@@ -31,13 +34,18 @@ export default function RootLayout({
     <html lang="ru">
       <body className={montserrat.className}>
         <AuthProvider>
-          <StoreSettingsProvider>
-            <ErrorBoundary>
-              <AgeGate>
-                {children}
-              </AgeGate>
-            </ErrorBoundary>
-          </StoreSettingsProvider>
+          <CartProvider>
+            <FavoritesProvider>
+            <StoreSettingsProvider>
+              <ErrorBoundary>
+                <AgeGate>
+                  {children}
+                  <MobileTabBar />
+                </AgeGate>
+              </ErrorBoundary>
+            </StoreSettingsProvider>
+            </FavoritesProvider>
+          </CartProvider>
         </AuthProvider>
         <Toaster position="top-right" richColors />
       </body>

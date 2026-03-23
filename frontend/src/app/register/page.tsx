@@ -70,7 +70,7 @@ function RegisterFormContent() {
     setIsSubmitting(true);
     const supabase = getSupabaseBrowserClient();
 
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email: email.trim().toLowerCase(),
       password,
       options: {
@@ -86,6 +86,13 @@ function RegisterFormContent() {
       } else {
         toast.error(error.message || 'Ошибка регистрации');
       }
+      return;
+    }
+
+    // Supabase возвращает фейковый успех для существующих email (защита от перебора).
+    // Если identities пустой — значит email уже занят.
+    if (data?.user?.identities?.length === 0) {
+      toast.error('Этот email уже зарегистрирован. Попробуйте войти.');
       return;
     }
 

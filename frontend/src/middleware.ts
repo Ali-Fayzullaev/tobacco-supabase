@@ -34,7 +34,7 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Публичные роуты - не требуют авторизации
-  const publicRoutes = ['/login', '/register', '/catalog', '/product', '/'];
+  const publicRoutes = ['/login', '/register', '/verify-email', '/auth', '/catalog', '/product', '/'];
   const isPublicRoute = publicRoutes.some(route => pathname === route || pathname.startsWith(route + '/')) || pathname === '/';
 
   // Получаем пользователя один раз (getUser валидирует токен на сервере, надёжнее getSession)

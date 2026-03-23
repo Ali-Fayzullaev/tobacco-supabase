@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { 
   Package, 
   Loader2,
@@ -25,9 +26,11 @@ import {
   AlertTriangle,
   Trash2,
   Info,
-  Bell
+  Bell,
+  RotateCcw
 } from 'lucide-react';
 import { useOrders } from '@/hooks/useOrders';
+import { useCart } from '@/hooks/useCart';
 import { CenteredPageSkeleton } from '@/components/Skeleton';
 import { formatPrice, formatDate, getStatusLabel, getStatusColor, cn } from '@/lib/utils';
 
@@ -314,6 +317,9 @@ export default function OrdersPage() {
 
 function OrderCard({ order }: { order: any }) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isReordering, setIsReordering] = useState(false);
+  const router = useRouter();
+  const { addToCart } = useCart();
   const status = statusConfig[order.status] || statusConfig.pending;
   const StatusIcon = status.icon;
   const deliveryMethod = deliveryMethods[order.delivery_method || 'courier'];
@@ -662,6 +668,46 @@ function OrderCard({ order }: { order: any }) {
               </div>
             </div>
           )}
+
+          {/* Repeat Order */}
+          <div className="px-5 pb-5">
+            <button
+              onClick={async (e) => {
+                e.stopPropagation();
+                setIsReordering(true);
+                try {
+                  const activeItems = (order.items || []).filter(
+                    (item: any) => !item.product_deleted && item.products
+                  );
+                  if (activeItems.length === 0) {
+                    const { toast } = await import('sonner');
+                    toast.error('Нет доступных товаров для повтора');
+                    return;
+                  }
+                  for (const item of activeItems) {
+                    await addToCart(item.product_id, item.quantity);
+                  }
+                  const { toast } = await import('sonner');
+                  toast.success(`${activeItems.length} товар(ов) добавлено в корзину`);
+                  router.push('/cart');
+                } catch {
+                  const { toast } = await import('sonner');
+                  toast.error('Ошибка при повторе заказа');
+                } finally {
+                  setIsReordering(false);
+                }
+              }}
+              disabled={isReordering}
+              className="w-full flex items-center justify-center gap-2 py-3 bg-gold-500/10 hover:bg-gold-500/20 border border-gold-500/30 text-gold-500 rounded-xl font-semibold transition-all disabled:opacity-50"
+            >
+              {isReordering ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <RotateCcw className="w-5 h-5" />
+              )}
+              Повторить заказ
+            </button>
+          </div>
         </div>
       )}
     </div>

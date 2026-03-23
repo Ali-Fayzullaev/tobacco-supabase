@@ -71,9 +71,7 @@ export default function ProductPage() {
     markAsHelpful
   } = useReviews(product?.id);
 
-  const isAdult = profile?.birth_date && 
-    new Date(profile.birth_date) <= new Date(new Date().setFullYear(new Date().getFullYear() - 21));
-  const canBuy = !!user && !!isAdult;
+  const canBuy = !!user;
 
   useEffect(() => {
     if (!isAuthLoading && slug) {
@@ -198,29 +196,6 @@ export default function ProductPage() {
             <Link href={`/login?redirect=/product/${slug}`}>
               <Button className="w-full bg-gold-500 hover:bg-gold-600 text-white">
                 Войти в аккаунт
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  if (!isAdult) {
-    return (
-      <div className="min-h-screen bg-[#121212] flex items-center justify-center p-4">
-        <Card className="max-w-md w-full bg-[#1E1E1E] border-[#2A2A2A] shadow-lg">
-          <CardContent className="p-8 text-center">
-            <div className="w-20 h-20 bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
-              <AlertTriangle className="w-10 h-10 text-red-500" />
-            </div>
-            <h1 className="text-2xl font-bold text-[#F5F5F5] mb-4">Доступ запрещён</h1>
-            <p className="text-[#A0A0A0] mb-6">
-              Продажа табачной продукции лицам младше 21 года запрещена законодательством РК.
-            </p>
-            <Link href="/">
-              <Button variant="outline" className="w-full border-[#333] text-[#C0C0C0]">
-                На главную
               </Button>
             </Link>
           </CardContent>

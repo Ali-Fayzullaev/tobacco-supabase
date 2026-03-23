@@ -82,7 +82,7 @@ export default function AdminOrderDetailPage() {
       if (orderData.user_id) {
         const { data: profileData } = await supabase
           .from('profiles')
-          .select('id, first_name, last_name, email, phone, avatar_url')
+          .select('id, first_name, last_name, email, phone, avatar_url, organization_name, bin_iin')
           .eq('id', orderData.user_id)
           .single();
         profile = profileData;
@@ -373,18 +373,38 @@ export default function AdminOrderDetailPage() {
             </div>
             
             <div className="space-y-3">
-              <div className="flex items-center gap-3 text-sm">
-                <Mail className="w-4 h-4 text-[#666]" />
-                <span className="text-[#A0A0A0]">
-                  {order.customer_email || order.profile?.email || 'Не указан'}
-                </span>
-              </div>
+              {(order.profile?.organization_name) && (
+                <div className="flex items-start gap-3 text-sm">
+                  <Hash className="w-4 h-4 text-[#666] mt-0.5" />
+                  <div>
+                    <p className="text-[#F5F5F5] font-medium">{order.profile.organization_name}</p>
+                    {order.profile?.bin_iin && (
+                      <p className="text-[#A0A0A0] text-xs mt-0.5">БИН/ИИН: {order.profile.bin_iin}</p>
+                    )}
+                  </div>
+                </div>
+              )}
               <div className="flex items-center gap-3 text-sm">
                 <Phone className="w-4 h-4 text-[#666]" />
-                <span className="text-[#A0A0A0]">
-                  {order.customer_phone || order.profile?.phone || 'Не указан'}
-                </span>
+                {(order.customer_phone || order.profile?.phone) ? (
+                  <a
+                    href={`tel:${order.customer_phone || order.profile?.phone}`}
+                    className="text-gold-500 hover:text-gold-400 hover:underline transition-colors"
+                  >
+                    {order.customer_phone || order.profile?.phone}
+                  </a>
+                ) : (
+                  <span className="text-[#A0A0A0]">Не указан</span>
+                )}
               </div>
+              {(order.customer_email || order.profile?.email) && (
+                <div className="flex items-center gap-3 text-sm">
+                  <Mail className="w-4 h-4 text-[#666]" />
+                  <span className="text-[#A0A0A0]">
+                    {order.customer_email || order.profile?.email}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
 

@@ -1,5 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Отключаем webpack cache для избежания OOM при сжатии
+  webpack: (config) => {
+    config.cache = false;
+    return config;
+  },
   images: {
     remotePatterns: [
       {

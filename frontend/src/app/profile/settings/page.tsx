@@ -1,236 +1,269 @@
 ﻿'use client';
 
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { toast } from 'sonner';
-import { Eye, EyeOff, Loader2, Shield, Bell, Trash2 } from 'lucide-react';
 import { useAuth } from '@/hooks';
-
-const passwordSchema = z.object({
-  currentPassword: z.string().min(1, 'Введите текущий пароль'),
-  newPassword: z.string().min(8, 'Минимум 8 символов'),
-  confirmPassword: z.string(),
-}).refine(data => data.newPassword === data.confirmPassword, {
-  message: 'Пароли не совпадают',
-  path: ['confirmPassword'],
-});
-
-type PasswordForm = z.infer<typeof passwordSchema>;
+import { getSupabaseBrowserClient } from '@/lib/supabase';
+import {
+  Lock,
+  Shield,
+  Bell,
+  Eye,
+  EyeOff,
+  CheckCircle,
+  AlertTriangle,
+  Loader2,
+  KeyRound
+} from 'lucide-react';
 
 export default function SettingsPage() {
   const { user, signOut } = useAuth();
-  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [isChangingPassword, setIsChangingPassword] = useState(false);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const supabase = getSupabaseBrowserClient();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm<PasswordForm>({
-    resolver: zodResolver(passwordSchema),
-  });
+  // Password change state
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [passwordSaving, setPasswordSaving] = useState(false);
+  const [passwordSuccess, setPasswordSuccess] = useState(false);
+  const [passwordError, setPasswordError] = useState('');
 
-  const onPasswordSubmit = async (data: PasswordForm) => {
-    setIsChangingPassword(true);
-    try {
-      const res = await fetch('/api/change-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          currentPassword: data.currentPassword,
-          newPassword: data.newPassword,
-        }),
-      });
+  // Password strength checks
+  const hasMinLength = newPassword.length >= 8;
+  const hasUppercase = /[A-Z]/.test(newPassword);
+  const hasNumber = /\d/.test(newPassword);
+  const passwordsMatch = newPassword === confirmPassword && confirmPassword.length > 0;
+  const isPasswordValid = hasMinLength && hasUppercase && hasNumber && passwordsMatch;
 
-      const result = await res.json();
+  const handlePasswordChange = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isPasswordValid) return;
 
-      if (!res.ok) {
-        throw new Error(result.error || 'Ошибка при смене пароля');
-      }
+    setPasswordSaving(true);
+    setPasswordError('');
+    setPasswordSuccess(false);
 
-      toast.success('Пароль успешно изменён');
-      reset();
-    } catch (error: any) {
-      toast.error(error.message || 'Ошибка при смене пароля');
-    } finally {
-      setIsChangingPassword(false);
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+
+    if (error) {
+      setPasswordError(error.message);
+    } else {
+      setPasswordSuccess(true);
+      setNewPassword('');
+      setConfirmPassword('');
+      setTimeout(() => setPasswordSuccess(false), 5000);
     }
+    setPasswordSaving(false);
   };
 
   const handleDeleteAccount = async () => {
-    // Note: Account deletion typically requires backend support
-    toast.error('Для удаления аккаунта свяжитесь с поддержкой');
-    setShowDeleteConfirm(false);
+    const confirmed = window.confirm(
+      'Вы уверены, что хотите удалить аккаунт? Это действие необратимо.'
+    );
+    if (!confirmed) return;
+
+    const doubleConfirm = window.confirm(
+      'Последнее предупреждение: все ваши данные будут удалены безвозвратно. Продолжить?'
+    );
+    if (!doubleConfirm) return;
+
+    // Sign out and redirect
+    await signOut();
   };
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-[#F5F5F5]">Настройки</h1>
+      <div>
+        <h1 className="text-2xl font-bold text-[#F5F5F5]">Настройки</h1>
+        <p className="text-[#A0A0A0] mt-1">Безопасность и параметры аккаунта</p>
+      </div>
 
-      {/* Security Section */}
-      <div className="bg-[#1E1E1E] rounded-xl shadow-sm border border-[#2A2A2A] p-6">
-        <div className="flex items-center gap-3 mb-6">
-          <Shield className="w-5 h-5 text-gold-500" />
-          <h2 className="text-lg font-semibold text-[#F5F5F5]">Безопасность</h2>
-        </div>
-
-        <form onSubmit={handleSubmit(onPasswordSubmit)} className="space-y-4 max-w-md">
-          <div>
-            <label className="block text-sm font-medium text-[#C0C0C0] mb-1">
-              Текущий пароль
-            </label>
-            <div className="relative">
-              <input
-                {...register('currentPassword')}
-                type={showCurrentPassword ? 'text' : 'password'}
-                className="w-full px-4 py-2.5 pr-10 bg-[#121212] border border-[#2A2A2A] rounded-xl text-[#F5F5F5] placeholder:text-[#666] focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 outline-none"
-              />
-              <button
-                type="button"
-                onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#666]"
-              >
-                {showCurrentPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-              </button>
-            </div>
-            {errors.currentPassword && (
-              <p className="text-red-500 text-xs mt-1">{errors.currentPassword.message}</p>
-            )}
+      {/* Аккаунт */}
+      <div className="bg-[#1E1E1E] rounded-xl border border-[#2A2A2A] p-6">
+        <h2 className="text-lg font-semibold text-[#F5F5F5] mb-4 flex items-center gap-2">
+          <Shield className="w-5 h-5 text-[#D4AF37]" />
+          Аккаунт
+        </h2>
+        <div className="space-y-3">
+          <div className="flex items-center justify-between py-2">
+            <span className="text-[#A0A0A0]">Email</span>
+            <span className="text-[#F5F5F5] font-medium">{user?.email || '—'}</span>
           </div>
+          <div className="flex items-center justify-between py-2 border-t border-[#2A2A2A]">
+            <span className="text-[#A0A0A0]">Дата регистрации</span>
+            <span className="text-[#F5F5F5]">
+              {user?.created_at
+                ? new Date(user.created_at).toLocaleDateString('ru-RU', {
+                    day: 'numeric', month: 'long', year: 'numeric'
+                  })
+                : '—'}
+            </span>
+          </div>
+        </div>
+      </div>
 
+      {/* Смена пароля */}
+      <form onSubmit={handlePasswordChange} className="bg-[#1E1E1E] rounded-xl border border-[#2A2A2A] p-6">
+        <h2 className="text-lg font-semibold text-[#F5F5F5] mb-4 flex items-center gap-2">
+          <KeyRound className="w-5 h-5 text-[#D4AF37]" />
+          Смена пароля
+        </h2>
+
+        <div className="space-y-4 max-w-md">
+          {/* Новый пароль */}
           <div>
-            <label className="block text-sm font-medium text-[#C0C0C0] mb-1">
+            <label className="block text-sm font-medium text-[#A0A0A0] mb-1.5">
               Новый пароль
             </label>
             <div className="relative">
               <input
-                {...register('newPassword')}
-                type={showNewPassword ? 'text' : 'password'}
-                className="w-full px-4 py-2.5 pr-10 bg-[#121212] border border-[#2A2A2A] rounded-xl text-[#F5F5F5] placeholder:text-[#666] focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 outline-none"
+                type={showPassword ? 'text' : 'password'}
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                className="w-full px-4 py-3 pr-12 bg-[#121212] border border-[#2A2A2A] rounded-lg text-[#F5F5F5] placeholder-[#666] focus:ring-2 focus:ring-[#D4AF37]/50 focus:border-[#D4AF37] transition-colors"
+                placeholder="Минимум 8 символов"
               />
               <button
                 type="button"
-                onClick={() => setShowNewPassword(!showNewPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#666]"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#666] hover:text-[#A0A0A0]"
               >
-                {showNewPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
             </div>
-            {errors.newPassword && (
-              <p className="text-red-500 text-xs mt-1">{errors.newPassword.message}</p>
+
+            {newPassword && (
+              <div className="mt-2 space-y-1">
+                <PasswordCheck passed={hasMinLength} label="Минимум 8 символов" />
+                <PasswordCheck passed={hasUppercase} label="Заглавная буква" />
+                <PasswordCheck passed={hasNumber} label="Цифра" />
+              </div>
             )}
           </div>
 
+          {/* Подтверждение */}
           <div>
-            <label className="block text-sm font-medium text-[#C0C0C0] mb-1">
-              Подтвердите новый пароль
+            <label className="block text-sm font-medium text-[#A0A0A0] mb-1.5">
+              Подтвердите пароль
             </label>
             <input
-              {...register('confirmPassword')}
-              type="password"
-              className="w-full px-4 py-2.5 bg-[#121212] border border-[#2A2A2A] rounded-xl text-[#F5F5F5] placeholder:text-[#666] focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 outline-none"
+              type={showPassword ? 'text' : 'password'}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="w-full px-4 py-3 bg-[#121212] border border-[#2A2A2A] rounded-lg text-[#F5F5F5] placeholder-[#666] focus:ring-2 focus:ring-[#D4AF37]/50 focus:border-[#D4AF37] transition-colors"
+              placeholder="Повторите пароль"
             />
-            {errors.confirmPassword && (
-              <p className="text-red-500 text-xs mt-1">{errors.confirmPassword.message}</p>
+            {confirmPassword && !passwordsMatch && (
+              <p className="mt-1 text-xs text-red-400">Пароли не совпадают</p>
             )}
           </div>
+
+          {passwordError && (
+            <div className="bg-red-900/20 border border-red-500/30 rounded-lg p-3 text-red-400 text-sm">
+              {passwordError}
+            </div>
+          )}
+
+          {passwordSuccess && (
+            <div className="bg-emerald-900/20 border border-emerald-500/30 rounded-lg p-3 text-emerald-400 text-sm flex items-center gap-2">
+              <CheckCircle className="w-4 h-4" />
+              Пароль успешно изменён
+            </div>
+          )}
 
           <button
             type="submit"
-            disabled={isChangingPassword}
-            className="bg-gold-500 hover:bg-gold-600 text-white py-2 px-6 rounded-lg disabled:opacity-50 flex items-center gap-2"
+            disabled={!isPasswordValid || passwordSaving}
+            className="flex items-center gap-2 bg-[#D4AF37] hover:bg-[#C4A030] disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium py-3 px-6 rounded-lg transition-colors"
           >
-            {isChangingPassword && <Loader2 className="w-4 h-4 animate-spin" />}
-            Изменить пароль
+            {passwordSaving ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <Lock className="w-5 h-5" />
+            )}
+            Обновить пароль
           </button>
-        </form>
-      </div>
-
-      {/* Notifications Section */}
-      <div className="bg-[#1E1E1E] rounded-xl shadow-sm border border-[#2A2A2A] p-6">
-        <div className="flex items-center gap-3 mb-6">
-          <Bell className="w-5 h-5 text-gold-500" />
-          <h2 className="text-lg font-semibold text-[#F5F5F5]">Уведомления</h2>
         </div>
+      </form>
 
-        <div className="space-y-4">
-          <label className="flex items-center justify-between py-2">
-            <div>
-              <p className="text-[#F5F5F5]">Email уведомления о заказах</p>
-              <p className="text-sm text-[#A0A0A0]">Статус и обновления по вашим заказам</p>
-            </div>
-            <input
-              type="checkbox"
-              defaultChecked
-              className="w-5 h-5 text-gold-500 rounded focus:ring-gold-500"
-            />
-          </label>
-
-          <label className="flex items-center justify-between py-2">
-            <div>
-              <p className="text-[#F5F5F5]">Акции и скидки</p>
-              <p className="text-sm text-[#A0A0A0]">Информация о специальных предложениях</p>
-            </div>
-            <input
-              type="checkbox"
-              className="w-5 h-5 text-gold-500 rounded focus:ring-gold-500"
-            />
-          </label>
-
-          <label className="flex items-center justify-between py-2">
-            <div>
-              <p className="text-[#F5F5F5]">SMS уведомления</p>
-              <p className="text-sm text-[#A0A0A0]">Сообщения о статусе доставки</p>
-            </div>
-            <input
-              type="checkbox"
-              defaultChecked
-              className="w-5 h-5 text-gold-500 rounded focus:ring-gold-500"
-            />
-          </label>
+      {/* Уведомления */}
+      <div className="bg-[#1E1E1E] rounded-xl border border-[#2A2A2A] p-6">
+        <h2 className="text-lg font-semibold text-[#F5F5F5] mb-4 flex items-center gap-2">
+          <Bell className="w-5 h-5 text-[#D4AF37]" />
+          Уведомления
+        </h2>
+        <div className="space-y-3">
+          <NotificationToggle
+            label="Статус заказов"
+            description="Уведомления об изменении статуса ваших заказов"
+            defaultChecked={true}
+          />
+          <NotificationToggle
+            label="Акции и скидки"
+            description="Информация о новых акциях и специальных предложениях"
+            defaultChecked={false}
+          />
         </div>
       </div>
 
-      {/* Danger Zone */}
-      <div className="bg-[#1E1E1E] rounded-xl shadow-sm border border-red-800/30 p-6">
-        <div className="flex items-center gap-3 mb-6">
-          <Trash2 className="w-5 h-5 text-red-500" />
-          <h2 className="text-lg font-semibold text-red-400">Опасная зона</h2>
-        </div>
-
-        <p className="text-[#A0A0A0] mb-4">
-          Удаление аккаунта необратимо. Все ваши данные, история заказов и избранное будут удалены.
+      {/* Опасная зона */}
+      <div className="bg-[#1E1E1E] rounded-xl border border-red-900/30 p-6">
+        <h2 className="text-lg font-semibold text-red-400 mb-2 flex items-center gap-2">
+          <AlertTriangle className="w-5 h-5" />
+          Опасная зона
+        </h2>
+        <p className="text-[#A0A0A0] text-sm mb-4">
+          Удалив аккаунт, вы потеряете все данные. Это действие необратимо.
         </p>
-
-        {!showDeleteConfirm ? (
-          <button
-            onClick={() => setShowDeleteConfirm(true)}
-            className="border border-red-300 text-red-400 hover:bg-red-900/20 py-2 px-6 rounded-lg"
-          >
-            Удалить аккаунт
-          </button>
-        ) : (
-          <div className="flex items-center gap-3">
-            <button
-              onClick={handleDeleteAccount}
-              className="bg-red-900/200 hover:bg-red-600 text-white py-2 px-6 rounded-lg"
-            >
-              Подтвердить удаление
-            </button>
-            <button
-              onClick={() => setShowDeleteConfirm(false)}
-              className="border border-[#333] text-[#C0C0C0] py-2 px-6 rounded-lg"
-            >
-              Отмена
-            </button>
-          </div>
-        )}
+        <button
+          onClick={handleDeleteAccount}
+          className="bg-red-600/20 hover:bg-red-600/30 border border-red-600/40 text-red-400 font-medium py-2.5 px-5 rounded-lg transition-colors"
+        >
+          Удалить аккаунт
+        </button>
       </div>
+    </div>
+  );
+}
+
+function PasswordCheck({ passed, label }: { passed: boolean; label: string }) {
+  return (
+    <div className={`flex items-center gap-2 text-xs ${passed ? 'text-emerald-400' : 'text-[#666]'}`}>
+      <CheckCircle className={`w-3.5 h-3.5 ${passed ? 'text-emerald-400' : 'text-[#444]'}`} />
+      {label}
+    </div>
+  );
+}
+
+function NotificationToggle({
+  label,
+  description,
+  defaultChecked,
+}: {
+  label: string;
+  description: string;
+  defaultChecked: boolean;
+}) {
+  const [checked, setChecked] = useState(defaultChecked);
+
+  return (
+    <div className="flex items-center justify-between py-2">
+      <div>
+        <p className="text-[#F5F5F5] font-medium">{label}</p>
+        <p className="text-xs text-[#666]">{description}</p>
+      </div>
+      <button
+        type="button"
+        onClick={() => setChecked(!checked)}
+        className={`relative w-11 h-6 rounded-full transition-colors ${
+          checked ? 'bg-[#D4AF37]' : 'bg-[#333]'
+        }`}
+      >
+        <span
+          className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${
+            checked ? 'translate-x-5' : ''
+          }`}
+        />
+      </button>
     </div>
   );
 }

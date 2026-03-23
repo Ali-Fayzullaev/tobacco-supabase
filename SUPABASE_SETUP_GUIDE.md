@@ -60,40 +60,75 @@
 
 ---
 
-## 📋 ШАГ 3: Настройка Authentication
+## 📋 ШАГ 3: Настройка Authentication (Email + Password)
 
-### 3.1 Настройка Auth
+### 3.1 Включение Email-провайдера
 
 1. **Перейди в Authentication → Providers**
-2. **Email** уже включен по умолчанию
+2. **Email** должен быть включен (по умолчанию включен)
+3. Убедись, что настройки:
+   - ✅ **Enable Email provider** — включено
+   - ✅ **Confirm email** — включено (отправка письма подтверждения)
+   - ❌ **Secure email change** — по желанию
+   - ❌ **Enable phone provider** — отключено (мы используем email)
 
-### 3.2 Настройка Email Templates (важно!)
+### 3.2 Настройка Email Templates (ОБЯЗАТЕЛЬНО!)
 
 1. **Перейди в Authentication → Email Templates**
-2. **Confirm signup** - шаблон подтверждения регистрации:
+
+2. **Confirm signup** — шаблон подтверждения регистрации:
    ```html
-   <h2>Подтверждение регистрации</h2>
+   <h2>Добро пожаловать в Premium Tobacco!</h2>
    <p>Здравствуйте!</p>
-   <p>Для подтверждения регистрации в магазине табачных изделий перейдите по ссылке:</p>
-   <p><a href="{{ .ConfirmationURL }}">Подтвердить email</a></p>
-   <p>⚠️ Магазин предназначен только для лиц старше 18 лет.</p>
+   <p>Благодарим за регистрацию. Для подтверждения email-адреса перейдите по ссылке:</p>
+   <p><a href="{{ .ConfirmationURL }}" style="display:inline-block;background:#D4AF37;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold;">Подтвердить email</a></p>
+   <p style="color:#888;font-size:12px;margin-top:20px;">Если вы не регистрировались — просто проигнорируйте это письмо.</p>
+   <p style="color:#888;font-size:12px;">⚠️ Магазин предназначен только для лиц старше 21 года.</p>
    ```
 
-3. **Reset password** - шаблон сброса пароля:
+3. **Reset password** — шаблон сброса пароля:
    ```html
-   <h2>Сброс пароля</h2>
-   <p>Для сброса пароля перейдите по ссылке:</p>
-   <p><a href="{{ .ConfirmationURL }}">Сбросить пароль</a></p>
-   <p>Ссылка действительна 1 час.</p>
+   <h2>Сброс пароля — Premium Tobacco</h2>
+   <p>Вы запросили сброс пароля. Перейдите по ссылке, чтобы установить новый пароль:</p>
+   <p><a href="{{ .ConfirmationURL }}" style="display:inline-block;background:#D4AF37;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold;">Сбросить пароль</a></p>
+   <p style="color:#888;font-size:12px;margin-top:20px;">Ссылка действительна 1 час. Если вы не запрашивали сброс — проигнорируйте это письмо.</p>
    ```
 
-### 3.3 Настройка URL редиректов
+4. **Magic Link** (если включено):
+   ```html
+   <h2>Вход в Premium Tobacco</h2>
+   <p><a href="{{ .ConfirmationURL }}">Войти в аккаунт</a></p>
+   ```
+
+### 3.3 Настройка URL редиректов (ВАЖНО!)
 
 1. **Перейди в Authentication → URL Configuration**
-2. **Site URL:** `http://localhost:3000` (для разработки)
-3. **Redirect URLs:** добавь:
+2. **Site URL:** `http://localhost:3000` (для разработки) или ваш домен
+3. **Redirect URLs** — добавь ВСЕ:
    - `http://localhost:3000/auth/callback`
-   - `http://localhost:3000/profile`
+   - `http://localhost:3000/auth/reset-password`
+   - `http://localhost:3000/login`
+   
+   Для продакшена добавь также:
+   - `https://yourdomain.com/auth/callback`
+   - `https://yourdomain.com/auth/reset-password`
+   - `https://yourdomain.com/login`
+
+### 3.4 Настройка SMTP (для production)
+
+По умолчанию Supabase отправляет до **4 email/час** через встроенный SMTP.
+Для production настройте свой SMTP:
+
+1. **Перейди в Project Settings → Authentication → SMTP Settings**
+2. **Enable Custom SMTP** → включить
+3. Заполни данные SMTP (например, для Brevo / SendGrid / Mailgun):
+   - **Sender email:** `noreply@yourdomain.com`
+   - **Sender name:** `Premium Tobacco`
+   - **Host:** (от вашего SMTP-провайдера)
+   - **Port:** `587`
+   - **Username / Password:** (от SMTP-провайдера)
+
+⚠️ **Без custom SMTP** можно отправить максимум 4 письма в час! Для тестов хватит, для production — настройте SMTP.
 
 ---
 

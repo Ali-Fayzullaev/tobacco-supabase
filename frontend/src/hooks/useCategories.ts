@@ -22,43 +22,38 @@ export function useCategories() {
 
   // Загрузка категорий
   const loadCategories = useCallback(async () => {
-    setState(prev => ({ ...prev, isLoading: true, error: null }));
+    try {
+      setState(prev => ({ ...prev, isLoading: true, error: null }));
 
-    const { data, error } = await supabase
-      .from('categories')
-      .select('*')
-      .eq('is_active', true)
-      .order('sort_order');
+      const { data, error } = await supabase
+        .from('categories')
+        .select('*')
+        .eq('is_active', true)
+        .order('sort_order');
 
-    if (error) {
-      // Если доступ запрещён (пользователь не авторизован или не взрослый)
-      if (error.code === 'PGRST301') {
-        setState({
-          categories: [],
-          parentCategories: [],
+      if (error) {
+        console.error('[useCategories] error:', error);
+        setState(prev => ({
+          ...prev,
           isLoading: false,
-          error: 'ACCESS_DENIED',
-        });
+          error: error.code === 'PGRST301' ? 'ACCESS_DENIED' : error.message,
+        }));
         return;
       }
 
-      setState(prev => ({
-        ...prev,
+      const categories = (data || []) as Category[];
+      const parentCategories = categories.filter(c => !c.parent_id);
+
+      setState({
+        categories,
+        parentCategories,
         isLoading: false,
-        error: error.message,
-      }));
-      return;
+        error: null,
+      });
+    } catch (e) {
+      console.error('[useCategories] unexpected error:', e);
+      setState({ categories: [], parentCategories: [], isLoading: false, error: 'Unexpected error' });
     }
-
-    const categories = (data || []) as Category[];
-    const parentCategories = categories.filter(c => !c.parent_id);
-
-    setState({
-      categories,
-      parentCategories,
-      isLoading: false,
-      error: null,
-    });
   }, [supabase]);
 
   // Загрузка при монтировании

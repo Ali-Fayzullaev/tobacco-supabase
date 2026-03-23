@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Heart, ShoppingCart, Star, Eye, Lock, Loader2, Check, MessageCircle, Plus, Minus, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -36,6 +37,7 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, size = 'normal', className, showPrice = true }: ProductCardProps) {
+  const router = useRouter();
   const { addToCart, getItemInCart, updateQuantity, removeItem } = useCart();
   const { toggleFavorite, isFavorite, isLoading: isFavLoading } = useFavorites();
   const isFav = isFavorite(product.id);
@@ -149,9 +151,10 @@ export function ProductCard({ product, size = 'normal', className, showPrice = t
   const s = sizeStyles[size];
 
   return (
-    <Link href={`/product/${product.slug}`}>
-      <div className={cn(
-        "group bg-[#1E1E1E] rounded-xl border border-[#2A2A2A] hover:border-gold-500/30 shadow-sm hover:shadow-lg hover:shadow-gold-500/5 transition-all duration-300 overflow-hidden flex flex-col h-full",
+    <div
+      onClick={() => router.push(`/product/${product.slug}`)}
+      className={cn(
+        "group bg-[#1E1E1E] rounded-xl border border-[#2A2A2A] hover:border-gold-500/30 shadow-sm hover:shadow-lg hover:shadow-gold-500/5 transition-all duration-300 overflow-hidden flex flex-col h-full cursor-pointer",
         !product.in_stock && "opacity-70",
         className
       )}>
@@ -363,21 +366,19 @@ export function ProductCard({ product, size = 'normal', className, showPrice = t
               </Button>
             )
           ) : (
-            <Link href="/login" className="w-full">
-              <Button
-                variant="outline"
-                className={cn(
-                  "w-full mt-2 border-gold-500/30 text-gold-500 hover:bg-gold-500/10 font-medium",
-                  s.buttonSize
-                )}
-              >
-                Войти
-              </Button>
-            </Link>
+            <Button
+              variant="outline"
+              onClick={(e) => { e.stopPropagation(); router.push('/login'); }}
+              className={cn(
+                "w-full mt-2 border-gold-500/30 text-gold-500 hover:bg-gold-500/10 font-medium",
+                s.buttonSize
+              )}
+            >
+              Войти
+            </Button>
           )}
         </div>
       </div>
-    </Link>
   );
 }
 
@@ -556,11 +557,9 @@ export function ProductCardCompact({ product, showPrice = true }: { product: Pro
             </Button>
           )
         ) : (
-          <Link href="/login">
-            <Button size="sm" variant="outline" className="border-gold-500/30 text-gold-500 h-9 px-3">
-              <Lock className="h-4 w-4" />
-            </Button>
-          </Link>
+          <Button size="sm" variant="outline" onClick={(e) => { e.preventDefault(); window.location.href = '/login'; }} className="border-gold-500/30 text-gold-500 h-9 px-3">
+            <Lock className="h-4 w-4" />
+          </Button>
         )}
       </div>
     </div>

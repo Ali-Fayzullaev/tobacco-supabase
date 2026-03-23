@@ -23,6 +23,8 @@ export interface Profile {
   birth_date: string | null;
   city: string | null;
   address: string | null;
+  organization_name: string | null;
+  bin_iin: string | null;
   role: 'user' | 'admin';
   created_at: string;
   updated_at: string;

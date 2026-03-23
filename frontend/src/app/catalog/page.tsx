@@ -292,10 +292,8 @@ function CatalogContent() {
   const { categories, parentCategories, getSubcategories, getCategoryById, isLoading: isCategoriesLoading } = useCategories();
   const { addToCart } = useCart();
 
-  // Можно ли показывать цены/корзину: авторизован + 21+
-  const isAdult = profile?.birth_date && 
-    new Date(profile.birth_date) <= new Date(new Date().setFullYear(new Date().getFullYear() - 21));
-  const canBuy = !!user && !!isAdult;
+  // Можно ли показывать цены/корзину: авторизован
+  const canBuy = !!user;
   
   const [viewMode, setViewMode] = useState<'grid' | 'list' | 'table'>('grid');
   const [gridSize, setGridSize] = useState<GridSize>('4');
@@ -350,12 +348,10 @@ function CatalogContent() {
     localStorage?.setItem('catalog_view_mode', mode);
   };
 
-  // Загрузка товаров
+  // Загрузка товаров — запускаем сразу, без ожидания категорий
   useEffect(() => {
-    if (!isAuthLoading && !isCategoriesLoading) {
-      loadProducts();
-    }
-  }, [selectedCategory, sortBy, isAuthLoading, isCategoriesLoading]);
+    loadProducts();
+  }, [selectedCategory, sortBy]);
 
   const loadProducts = async () => {
     let categoryIds: string[] | undefined;
@@ -418,62 +414,6 @@ function CatalogContent() {
   const activeFiltersCount = [selectedCategory, priceRange.min, priceRange.max, searchQuery].filter(Boolean).length;
 
   /* ═══════════════ LOADING ═══════════════ */
-  if (isCategoriesLoading) {
-    return (
-      <div className="min-h-screen bg-[#121212]">
-        <Header />
-
-        <div className="container mx-auto px-4 py-8 lg:py-12">
-          {/* Search skeleton */}
-          <div className="max-w-2xl mx-auto mb-8">
-            <div className="relative">
-              <Skeleton className="h-12 w-full rounded-2xl" />
-            </div>
-          </div>
-
-          {/* Categories showcase skeleton */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="rounded-2xl overflow-hidden aspect-[4/3] bg-[#252525]">
-                <div className="p-4 h-full flex flex-col justify-end">
-                  <Skeleton className="h-6 w-3/4 rounded-md mb-2" />
-                  <Skeleton className="h-3 w-1/2 rounded-md" />
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="lg:flex lg:gap-8">
-            {/* Sidebar skeleton */}
-            <aside className="hidden lg:block w-64 flex-shrink-0">
-              <div className="bg-[#1E1E1E] rounded-2xl border border-[#2A2A2A] shadow-sm p-5 space-y-4">
-                <Skeleton className="h-8 w-28 rounded-md" />
-                <Skeleton className="h-10 w-full rounded-xl" />
-                <Skeleton className="h-10 w-full rounded-xl" />
-                <Skeleton className="h-10 w-full rounded-xl" />
-              </div>
-            </aside>
-
-            {/* Main content skeleton */}
-            <main className="flex-1">
-              <div className="bg-[#1E1E1E] rounded-2xl border border-[#2A2A2A] shadow-sm p-4 sm:p-6 mb-6">
-                <Skeleton className="h-6 w-40 rounded-md" />
-              </div>
-
-              <div className={cn("grid", getGridClass(gridSize), getGapClass(cardSize))}>
-                {Array.from({ length: 8 }).map((_, i) => (
-                  <ProductCardSkeleton key={i} size={cardSize === 'compact' ? 'compact' : cardSize === 'comfortable' ? 'comfortable' : 'normal'} />
-                ))}
-              </div>
-            </main>
-          </div>
-        </div>
-
-        <Footer />
-      </div>
-    );
-  }
-
   /* ═══════════════ PRODUCTS MODE ═══════════════ */
   return (
     <div className="min-h-screen bg-[#121212]">
@@ -494,7 +434,13 @@ function CatalogContent() {
             >
               Все
             </button>
-            {parentCategories.map((cat) => {
+            {isCategoriesLoading ? (
+              Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="flex-shrink-0 px-2">
+                  <Skeleton className="h-4 w-16 rounded-md my-3" />
+                </div>
+              ))
+            ) : parentCategories.map((cat) => {
               const isActive = selectedCategory === cat.id;
               return (
                 <button
@@ -588,7 +534,11 @@ function CatalogContent() {
                   >
                     Все категории
                   </button>
-                  {parentCategories.map((cat) => {
+                  {isCategoriesLoading ? (
+                    Array.from({ length: 4 }).map((_, i) => (
+                      <Skeleton key={i} className="h-9 w-full rounded-xl" />
+                    ))
+                  ) : parentCategories.map((cat) => {
                     const subs = getSubcategories(cat.id);
                     const isParentSelected = selectedCategory === cat.id;
                     const isChildSelected = subs.some(s => s.id === selectedCategory);

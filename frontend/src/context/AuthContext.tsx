@@ -73,33 +73,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     window.location.href = '/login';
   };
 
-  // Только один раз при загрузке - без подписок!
+  // Единая подписка на авторизацию (без getSession — устраняет Lock broken error)
   useEffect(() => {
     let cancelled = false;
 
-    const init = async () => {
-      try {
-        const { data: { session: s } } = await supabase.auth.getSession();
-        
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, newSession) => {
         if (cancelled) return;
-        
-        if (s?.user) {
-          setSession(s);
-          setUser(s.user);
-          const p = await loadProfile(s.user.id);
-          if (!cancelled) setProfile(p);
-        }
-      } catch (e) {
-        console.log('Auth init error:', e);
-      } finally {
-        if (!cancelled) setIsLoading(false);
-      }
-    };
 
-    init();
+        if ((event === 'INITIAL_SESSION' || event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && newSession?.user) {
+          setSession(newSession);
+          setUser(newSession.user);
+          const p = await loadProfile(newSession.user.id);
+          if (!cancelled) setProfile(p);
+        } else if (event === 'INITIAL_SESSION' && !newSession) {
+          // Нет сессии при загрузке
+        } else if (event === 'SIGNED_OUT') {
+          setSession(null);
+          setUser(null);
+          setProfile(null);
+        }
+
+        if (event === 'INITIAL_SESSION') {
+          if (!cancelled) setIsLoading(false);
+        }
+      }
+    );
 
     return () => {
       cancelled = true;
+      subscription.unsubscribe();
     };
   }, []);
 
@@ -110,7 +113,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         profile,
         session,
         isLoading,
-        isAdmin: profile?.role === 'admin',
+        isAdmin: profile?.role === 'admin', 
         isAuthenticated: !!session,
         signOut,
         refreshProfile,

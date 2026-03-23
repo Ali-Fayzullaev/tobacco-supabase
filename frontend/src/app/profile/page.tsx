@@ -1,244 +1,260 @@
 ﻿'use client';
 
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { toast } from 'sonner';
-import { Loader2, User, Mail, Phone, Calendar, MapPin } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks';
-import { formatDate } from '@/lib/utils';
-
-const profileSchema = z.object({
-  firstName: z.string().min(2, 'Введите имя'),
-  lastName: z.string().min(2, 'Введите фамилию'),
-  phone: z.string().optional(),
-  city: z.string().optional(),
-  address: z.string().optional(),
-});
-
-type ProfileForm = z.infer<typeof profileSchema>;
+import { 
+  User, 
+  Mail, 
+  Phone, 
+  MapPin, 
+  Building2,
+  Save,
+  CheckCircle,
+  Loader2,
+  Calendar
+} from 'lucide-react';
 
 export default function ProfilePage() {
-  const { user, profile, updateProfile, isLoading } = useAuth();
-  const [isEditing, setIsEditing] = useState(false);
+  const { user, profile, updateProfile, refreshProfile, isLoading } = useAuth();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm<ProfileForm>({
-    resolver: zodResolver(profileSchema),
-    defaultValues: {
-      firstName: profile?.first_name || '',
-      lastName: profile?.last_name || '',
-      phone: profile?.phone || '',
-      city: profile?.city || '',
-      address: profile?.address || '',
-    },
+  const [formData, setFormData] = useState({
+    first_name: '',
+    last_name: '',
+    phone: '',
+    birth_date: '',
+    city: '',
+    address: '',
+    organization_name: '',
+    bin_iin: '',
   });
 
-  const onSubmit = async (data: ProfileForm) => {
+  const [saving, setSaving] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (profile) {
+      setFormData({
+        first_name: profile.first_name || '',
+        last_name: profile.last_name || '',
+        phone: profile.phone || '',
+        birth_date: profile.birth_date || '',
+        city: profile.city || '',
+        address: profile.address || '',
+        organization_name: profile.organization_name || '',
+        bin_iin: profile.bin_iin || '',
+      });
+    }
+  }, [profile]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    setError('');
+    setSuccess(false);
+
     const result = await updateProfile({
-      first_name: data.firstName,
-      last_name: data.lastName,
-      phone: data.phone,
-      city: data.city,
-      address: data.address,
+      first_name: formData.first_name || null,
+      last_name: formData.last_name || null,
+      phone: formData.phone || null,
+      birth_date: formData.birth_date || null,
+      city: formData.city || null,
+      address: formData.address || null,
+      organization_name: formData.organization_name || null,
+      bin_iin: formData.bin_iin || null,
     });
 
     if (result.success) {
-      toast.success('Профиль обновлён');
-      setIsEditing(false);
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 3000);
     } else {
-      toast.error(result.error || 'Ошибка при обновлении');
+      setError(result.error || 'Ошибка сохранения');
     }
+    setSaving(false);
   };
 
-  const handleCancel = () => {
-    reset({
-      firstName: profile?.first_name || '',
-      lastName: profile?.last_name || '',
-      phone: profile?.phone || '',
-      city: profile?.city || '',
-      address: profile?.address || '',
-    });
-    setIsEditing(false);
+  const handleChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="w-8 h-8 text-[#D4AF37] animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-[#F5F5F5]">Мой профиль</h1>
+      <div>
+        <h1 className="text-2xl font-bold text-[#F5F5F5]">Мой профиль</h1>
+        <p className="text-[#A0A0A0] mt-1">Управление личными данными</p>
+      </div>
 
-      {/* Profile Info Card */}
-      <div className="bg-[#1E1E1E] rounded-xl shadow-sm border border-[#2A2A2A] p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-semibold text-[#F5F5F5]">Личные данные</h2>
-          {!isEditing && (
-            <button
-              onClick={() => setIsEditing(true)}
-              className="text-gold-600 hover:underline text-sm font-medium"
-            >
-              Редактировать
-            </button>
-          )}
-        </div>
-
-        {isEditing ? (
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div className="grid sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-[#C0C0C0] mb-1">
-                  Имя
-                </label>
-                <input
-                  {...register('firstName')}
-                  type="text"
-                  className="w-full px-4 py-2 border border-[#333] rounded-lg focus:ring-2 focus:ring-gold-500"
-                />
-                {errors.firstName && (
-                  <p className="text-red-500 text-xs mt-1">{errors.firstName.message}</p>
-                )}
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-[#C0C0C0] mb-1">
-                  Фамилия
-                </label>
-                <input
-                  {...register('lastName')}
-                  type="text"
-                  className="w-full px-4 py-2 border border-[#333] rounded-lg focus:ring-2 focus:ring-gold-500"
-                />
-                {errors.lastName && (
-                  <p className="text-red-500 text-xs mt-1">{errors.lastName.message}</p>
-                )}
-              </div>
-            </div>
-
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Основная информация */}
+        <div className="bg-[#1E1E1E] rounded-xl border border-[#2A2A2A] p-6">
+          <h2 className="text-lg font-semibold text-[#F5F5F5] mb-4 flex items-center gap-2">
+            <User className="w-5 h-5 text-[#D4AF37]" />
+            Основная информация
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-[#C0C0C0] mb-1">
+              <label className="block text-sm font-medium text-[#A0A0A0] mb-1.5">Имя</label>
+              <input
+                type="text"
+                value={formData.first_name}
+                onChange={(e) => handleChange('first_name', e.target.value)}
+                className="w-full px-4 py-3 bg-[#121212] border border-[#2A2A2A] rounded-lg text-[#F5F5F5] placeholder-[#666] focus:ring-2 focus:ring-[#D4AF37]/50 focus:border-[#D4AF37] transition-colors"
+                placeholder="Ваше имя"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-[#A0A0A0] mb-1.5">Фамилия</label>
+              <input
+                type="text"
+                value={formData.last_name}
+                onChange={(e) => handleChange('last_name', e.target.value)}
+                className="w-full px-4 py-3 bg-[#121212] border border-[#2A2A2A] rounded-lg text-[#F5F5F5] placeholder-[#666] focus:ring-2 focus:ring-[#D4AF37]/50 focus:border-[#D4AF37] transition-colors"
+                placeholder="Ваша фамилия"
+              />
+            </div>
+          </div>
+
+          {/* Email (только чтение) */}
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-[#A0A0A0] mb-1.5">
+              <Mail className="w-4 h-4 inline mr-1" />
+              Email
+            </label>
+            <div className="w-full px-4 py-3 bg-[#0A0A0A] border border-[#2A2A2A] rounded-lg text-[#666] cursor-not-allowed">
+              {user?.email || '—'}
+            </div>
+            <p className="text-xs text-[#666] mt-1">Email нельзя изменить</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <div>
+              <label className="block text-sm font-medium text-[#A0A0A0] mb-1.5">
+                <Phone className="w-4 h-4 inline mr-1" />
                 Телефон
               </label>
               <input
-                {...register('phone')}
                 type="tel"
-                className="w-full px-4 py-2 border border-[#333] rounded-lg focus:ring-2 focus:ring-gold-500"
-                placeholder="+7 777 123 45 67"
+                value={formData.phone}
+                onChange={(e) => handleChange('phone', e.target.value)}
+                className="w-full px-4 py-3 bg-[#121212] border border-[#2A2A2A] rounded-lg text-[#F5F5F5] placeholder-[#666] focus:ring-2 focus:ring-[#D4AF37]/50 focus:border-[#D4AF37] transition-colors"
+                placeholder="+7 (7XX) XXX-XX-XX"
               />
             </div>
-
-            <div className="grid sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-[#C0C0C0] mb-1">
-                  Город
-                </label>
-                <input
-                  {...register('city')}
-                  type="text"
-                  className="w-full px-4 py-2 border border-[#333] rounded-lg focus:ring-2 focus:ring-gold-500"
-                  placeholder="Алматы"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-[#C0C0C0] mb-1">
-                  Адрес
-                </label>
-                <input
-                  {...register('address')}
-                  type="text"
-                  className="w-full px-4 py-2 border border-[#333] rounded-lg focus:ring-2 focus:ring-gold-500"
-                  placeholder="ул. Абая, д. 10"
-                />
-              </div>
+            <div>
+              <label className="block text-sm font-medium text-[#A0A0A0] mb-1.5">
+                <Calendar className="w-4 h-4 inline mr-1" />
+                Дата рождения
+              </label>
+              <input
+                type="date"
+                value={formData.birth_date}
+                onChange={(e) => handleChange('birth_date', e.target.value)}
+                className="w-full px-4 py-3 bg-[#121212] border border-[#2A2A2A] rounded-lg text-[#F5F5F5] placeholder-[#666] focus:ring-2 focus:ring-[#D4AF37]/50 focus:border-[#D4AF37] transition-colors"
+              />
             </div>
-
-            <div className="flex gap-3 pt-4">
-              <button
-                type="button"
-                onClick={handleCancel}
-                className="flex-1 border border-[#333] text-[#C0C0C0] py-2 rounded-lg hover:bg-[#121212]"
-              >
-                Отмена
-              </button>
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="flex-1 bg-gold-500 hover:bg-gold-600 text-white py-2 rounded-lg disabled:opacity-50 flex items-center justify-center gap-2"
-              >
-                {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
-                Сохранить
-              </button>
-            </div>
-          </form>
-        ) : (
-          <div className="space-y-4">
-            <div className="flex items-center gap-3 py-3 border-b border-[#2A2A2A]">
-              <User className="w-5 h-5 text-[#666]" />
-              <div>
-                <p className="text-sm text-[#A0A0A0]">Имя</p>
-                <p className="text-[#F5F5F5]">{profile?.first_name} {profile?.last_name}</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3 py-3 border-b border-[#2A2A2A]">
-              <Mail className="w-5 h-5 text-[#666]" />
-              <div>
-                <p className="text-sm text-[#A0A0A0]">Email</p>
-                <p className="text-[#F5F5F5]">{user?.email}</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3 py-3 border-b border-[#2A2A2A]">
-              <Phone className="w-5 h-5 text-[#666]" />
-              <div>
-                <p className="text-sm text-[#A0A0A0]">Телефон</p>
-                <p className="text-[#F5F5F5]">{profile?.phone || 'Не указан'}</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3 py-3 border-b border-[#2A2A2A]">
-              <Calendar className="w-5 h-5 text-[#666]" />
-              <div>
-                <p className="text-sm text-[#A0A0A0]">Дата рождения</p>
-                <p className="text-[#F5F5F5]">
-                  {profile?.birth_date ? formatDate(profile.birth_date) : 'Не указана'}
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3 py-3">
-              <MapPin className="w-5 h-5 text-[#666]" />
-              <div>
-                <p className="text-sm text-[#A0A0A0]">Адрес</p>
-                <p className="text-[#F5F5F5]">
-                  {profile?.city || profile?.address 
-                    ? `${profile?.city || ''}${profile?.city && profile?.address ? ', ' : ''}${profile?.address || ''}`
-                    : 'Не указан'
-                  }
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Account Info */}
-      <div className="bg-[#1E1E1E] rounded-xl shadow-sm border border-[#2A2A2A] p-6">
-        <h2 className="text-lg font-semibold text-[#F5F5F5] mb-4">Информация об аккаунте</h2>
-        <div className="space-y-3">
-          <div className="flex justify-between py-2 border-b border-[#2A2A2A]">
-            <span className="text-[#A0A0A0]">Дата регистрации</span>
-            <span className="text-[#F5F5F5]">
-              {profile?.created_at ? formatDate(profile.created_at) : '-'}
-            </span>
-          </div>
-          <div className="flex justify-between py-2">
-            <span className="text-[#A0A0A0]">Статус</span>
-            <span className="text-green-400 font-medium">Подтверждён</span>
           </div>
         </div>
-      </div>
+
+        {/* Адрес доставки */}
+        <div className="bg-[#1E1E1E] rounded-xl border border-[#2A2A2A] p-6">
+          <h2 className="text-lg font-semibold text-[#F5F5F5] mb-4 flex items-center gap-2">
+            <MapPin className="w-5 h-5 text-[#D4AF37]" />
+            Адрес доставки
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-[#A0A0A0] mb-1.5">Город</label>
+              <input
+                type="text"
+                value={formData.city}
+                onChange={(e) => handleChange('city', e.target.value)}
+                className="w-full px-4 py-3 bg-[#121212] border border-[#2A2A2A] rounded-lg text-[#F5F5F5] placeholder-[#666] focus:ring-2 focus:ring-[#D4AF37]/50 focus:border-[#D4AF37] transition-colors"
+                placeholder="Например: Алматы"
+              />
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-[#A0A0A0] mb-1.5">Адрес</label>
+              <input
+                type="text"
+                value={formData.address}
+                onChange={(e) => handleChange('address', e.target.value)}
+                className="w-full px-4 py-3 bg-[#121212] border border-[#2A2A2A] rounded-lg text-[#F5F5F5] placeholder-[#666] focus:ring-2 focus:ring-[#D4AF37]/50 focus:border-[#D4AF37] transition-colors"
+                placeholder="Улица, дом, квартира"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Организация (опционально) */}
+        <div className="bg-[#1E1E1E] rounded-xl border border-[#2A2A2A] p-6">
+          <h2 className="text-lg font-semibold text-[#F5F5F5] mb-4 flex items-center gap-2">
+            <Building2 className="w-5 h-5 text-[#D4AF37]" />
+            Организация
+            <span className="text-xs text-[#666] font-normal">(необязательно)</span>
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-[#A0A0A0] mb-1.5">Название организации</label>
+              <input
+                type="text"
+                value={formData.organization_name}
+                onChange={(e) => handleChange('organization_name', e.target.value)}
+                className="w-full px-4 py-3 bg-[#121212] border border-[#2A2A2A] rounded-lg text-[#F5F5F5] placeholder-[#666] focus:ring-2 focus:ring-[#D4AF37]/50 focus:border-[#D4AF37] transition-colors"
+                placeholder="ТОО, ИП..."
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-[#A0A0A0] mb-1.5">БИН / ИИН</label>
+              <input
+                type="text"
+                value={formData.bin_iin}
+                onChange={(e) => handleChange('bin_iin', e.target.value)}
+                className="w-full px-4 py-3 bg-[#121212] border border-[#2A2A2A] rounded-lg text-[#F5F5F5] placeholder-[#666] focus:ring-2 focus:ring-[#D4AF37]/50 focus:border-[#D4AF37] transition-colors"
+                placeholder="12 цифр"
+                maxLength={12}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Кнопка сохранения */}
+        {error && (
+          <div className="bg-red-900/20 border border-red-500/30 rounded-lg p-4 text-red-400 text-sm">
+            {error}
+          </div>
+        )}
+
+        {success && (
+          <div className="bg-emerald-900/20 border border-emerald-500/30 rounded-lg p-4 text-emerald-400 text-sm flex items-center gap-2">
+            <CheckCircle className="w-4 h-4" />
+            Профиль успешно обновлён
+          </div>
+        )}
+
+        <button
+          type="submit"
+          disabled={saving}
+          className="w-full md:w-auto flex items-center justify-center gap-2 bg-[#D4AF37] hover:bg-[#C4A030] disabled:opacity-50 text-white font-medium py-3 px-8 rounded-lg transition-colors"
+        >
+          {saving ? (
+            <Loader2 className="w-5 h-5 animate-spin" />
+          ) : (
+            <Save className="w-5 h-5" />
+          )}
+          Сохранить изменения
+        </button>
+      </form>
     </div>
   );
 }

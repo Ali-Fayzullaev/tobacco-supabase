@@ -105,6 +105,7 @@ export function useProducts() {
 
   // Поиск товаров (простой запрос без RPC)
   const searchProducts = useCallback(async (params: SearchParams = {}) => {
+    console.log('[useProducts] searchProducts called with:', params);
     setState(prev => ({ ...prev, isLoading: true, error: null }));
 
     try {
@@ -170,6 +171,8 @@ export function useProducts() {
 
       const { data, error, count } = await query;
 
+      console.log('[useProducts] Supabase response:', { data: data?.length, error, count });
+
       if (error) {
         throw error;
       }
@@ -208,6 +211,7 @@ export function useProducts() {
 
       return { success: true, data: products };
     } catch (error: any) {
+      console.error('[useProducts] searchProducts error:', error);
       setState(prev => ({
         ...prev,
         isLoading: false,

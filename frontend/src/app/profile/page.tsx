@@ -53,6 +53,17 @@ export default function ProfilePage() {
     setError('');
     setSuccess(false);
 
+    if (!formData.organization_name?.trim()) {
+      setError('Укажите название организации');
+      setSaving(false);
+      return;
+    }
+    if (!formData.bin_iin?.trim() || !/^\d{12}$/.test(formData.bin_iin.trim())) {
+      setError('БИН/ИИН должен содержать ровно 12 цифр');
+      setSaving(false);
+      return;
+    }
+
     const result = await updateProfile({
       first_name: formData.first_name || null,
       last_name: formData.last_name || null,
@@ -60,8 +71,8 @@ export default function ProfilePage() {
       birth_date: formData.birth_date || null,
       city: formData.city || null,
       address: formData.address || null,
-      organization_name: formData.organization_name || null,
-      bin_iin: formData.bin_iin || null,
+      organization_name: formData.organization_name.trim(),
+      bin_iin: formData.bin_iin.trim(),
     });
 
     if (result.success) {
@@ -200,7 +211,7 @@ export default function ProfilePage() {
           <h2 className="text-lg font-semibold text-[#F5F5F5] mb-4 flex items-center gap-2">
             <Building2 className="w-5 h-5 text-[#D4AF37]" />
             Организация
-            <span className="text-xs text-[#666] font-normal">(необязательно)</span>
+            <span className="text-xs text-red-400 font-normal">*</span>
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

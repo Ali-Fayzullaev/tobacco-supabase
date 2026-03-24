@@ -240,7 +240,7 @@ function PriceListTable({
                   )}
                   <td className="px-4 py-3 text-center">
                     {outOfStock ? (
-                      <span className="text-red-400 text-xs">Нет</span>
+                      <span className="text-red-400 text-xs">Уточнить наличие</span>
                     ) : (
                       <span className="text-green-400 text-xs">В наличии</span>
                     )}
@@ -254,7 +254,7 @@ function PriceListTable({
                         className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-green-600/20 text-green-400 hover:bg-green-600/30 rounded-lg transition-colors"
                       >
                         <MessageCircle className="w-3.5 h-3.5" />
-                        Уточнить
+                        Уточнить наличие
                       </a>
                     ) : canBuy ? (
                       <button
@@ -350,6 +350,7 @@ function CatalogContent() {
 
   // Загрузка товаров — запускаем сразу, без ожидания категорий
   useEffect(() => {
+    console.log('[Catalog] loadProducts triggered, selectedCategory:', selectedCategory, 'sortBy:', sortBy);
     loadProducts();
   }, [selectedCategory, sortBy]);
 

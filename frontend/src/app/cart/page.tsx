@@ -191,7 +191,7 @@ export default function CartPage() {
                           <button
                             onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
                             disabled={isLoading || item.quantity <= 1}
-                            className="p-2 text-[#A0A0A0] hover:text-gold-500 disabled:opacity-50 transition-colors"
+                            className="min-w-[44px] min-h-[44px] flex items-center justify-center text-[#A0A0A0] hover:text-gold-500 disabled:opacity-50 transition-colors"
                           >
                             <Minus className="w-4 h-4" />
                           </button>
@@ -199,7 +199,7 @@ export default function CartPage() {
                           <button
                             onClick={() => updateQuantity(item.id, item.quantity + 1)}
                             disabled={isLoading}
-                            className="p-2 text-[#A0A0A0] hover:text-gold-500 disabled:opacity-50 transition-colors"
+                            className="min-w-[44px] min-h-[44px] flex items-center justify-center text-[#A0A0A0] hover:text-gold-500 disabled:opacity-50 transition-colors"
                           >
                             <Plus className="w-4 h-4" />
                           </button>

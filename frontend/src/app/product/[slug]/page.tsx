@@ -522,7 +522,7 @@ export default function ProductPage() {
                       <div className="flex items-center border border-[#2A2A2A] rounded-xl bg-[#1E1E1E]">
                         <button
                           onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                          className="p-3 hover:bg-[#121212] transition-colors rounded-l-xl"
+                          className="min-w-[44px] min-h-[44px] flex items-center justify-center hover:bg-[#121212] transition-colors rounded-l-xl"
                           disabled={quantity <= 1}
                         >
                           <Minus className="w-4 h-4 text-[#A0A0A0]" />
@@ -530,7 +530,7 @@ export default function ProductPage() {
                         <span className="w-14 text-center font-semibold text-[#F5F5F5]">{quantity}</span>
                         <button
                           onClick={() => setQuantity(q => q + 1)}
-                          className="p-3 hover:bg-[#121212] transition-colors rounded-r-xl"
+                          className="min-w-[44px] min-h-[44px] flex items-center justify-center hover:bg-[#121212] transition-colors rounded-r-xl"
                           disabled={product.stock !== undefined && quantity >= product.stock}
                         >
                           <Plus className="w-4 h-4 text-[#A0A0A0]" />

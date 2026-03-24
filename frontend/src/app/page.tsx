@@ -112,7 +112,7 @@ export default function HomePage() {
             
             <p className="text-base sm:text-lg md:text-xl text-[#A0A0A0] mb-8 sm:mb-10 max-w-2xl mx-auto">
               Ведущий импортер и дистрибьютор премиальной табачной продукции в Республике Казахстан.
-              Прямой импорт и эксклюзивное представительство глобальных табачных производителей.
+              Прямой импорт и эксклюзивное представительство глобальных табачных производителей: высший стандарт качества на рынке Казахстана.
             </p>
 
             {/* Age Warning */}
@@ -320,7 +320,7 @@ export default function HomePage() {
               <AlertTriangle className="h-6 w-6 sm:h-8 sm:w-8 text-red-400 flex-shrink-0" />
               <div>
                 <h3 className="text-red-400 font-bold text-sm sm:text-base md:text-lg mb-2">
-                  ТЕМЕКІНІ ТҰТЫНУ ТӘУЕЛДІКТІ, СОНДАЙ-АҚ АУЫР АУРУЛАРДЫ ТУДЫРАДЫ
+                  ТЕМЕКІНІ ТҰТЫНУ ТӘУЕЛДІЛІКТІ, СОНДАЙ-АҚ АУЫР АУРУЛАРДЫ ТУДЫРАДЫ
                 </h3>
                 <p className="text-red-300/70 mb-2">
                   21 ЖАСҚА ТОЛМАҒАН ТҰЛҒАЛАРҒА САТУҒА ТЫЙЫМ САЛЫНАДЫ.

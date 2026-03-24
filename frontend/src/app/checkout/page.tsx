@@ -42,7 +42,7 @@ const addressSchema = z.object({
 type AddressForm = z.infer<typeof addressSchema>;
 
 type DeliveryMethod = 'courier' | 'pickup' | 'post';
-type PaymentMethod = 'kaspi' | 'card' | 'cash';
+type PaymentMethod = 'invoice';
 
 const deliveryMethods: { id: DeliveryMethod; name: string; price: number; description: string; icon: string; time: string }[] = [
   { id: 'courier', name: 'Курьерская доставка', price: 1500, description: 'До двери', icon: '🚚', time: '1-2 дня' },
@@ -51,9 +51,7 @@ const deliveryMethods: { id: DeliveryMethod; name: string; price: number; descri
 ];
 
 const paymentMethods: { id: PaymentMethod; name: string; description: string; icon: string }[] = [
-  { id: 'kaspi', name: 'Kaspi перевод', description: 'Мгновенная оплата', icon: '🏦' },
-  { id: 'card', name: 'Банковская карта', description: 'Visa, Mastercard', icon: '💳' },
-  { id: 'cash', name: 'Наличными', description: 'При получении', icon: '💵' },
+  { id: 'invoice', name: 'Безналичный расчёт', description: 'Счёт на оплату', icon: '📄' },
 ];
 
 const steps = [
@@ -71,7 +69,7 @@ export default function CheckoutPage() {
 
   const [step, setStep] = useState(1);
   const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>('courier');
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('kaspi');
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('invoice');
   const [addressData, setAddressData] = useState<AddressForm | null>(null);
 
   const isAdult = profile?.birth_date && 

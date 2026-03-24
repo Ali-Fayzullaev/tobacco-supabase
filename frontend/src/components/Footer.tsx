@@ -213,7 +213,7 @@ export function Footer() {
           <div className="flex flex-col items-center gap-1 text-red-300 text-xs sm:text-sm text-center">
             <div className="flex items-start sm:items-center gap-2">
               <AlertTriangle className="h-4 w-4 flex-shrink-0 mt-0.5 sm:mt-0" />
-              <span className="font-semibold">ТЕМЕКІНІ ТҰТЫНУ ТӘУЕЛДІКТІ, СОНДАЙ-АҚ АУЫР АУРУЛАРДЫ ТУДЫРАДЫ. 21 ЖАСҚА ТОЛМАҒАН ТҰЛҒАЛАРҒА САТУҒА ТЫЙЫМ САЛЫНАДЫ.</span>
+              <span className="font-semibold">ТЕМЕКІНІ ТҰТЫНУ ТӘУЕЛДІЛІКТІ, СОНДАЙ-АҚ АУЫР АУРУЛАРДЫ ТУДЫРАДЫ. 21 ЖАСҚА ТОЛМАҒАН ТҰЛҒАЛАРҒА САТУҒА ТЫЙЫМ САЛЫНАДЫ.</span>
             </div>
             <span>Курение вредит вашему здоровью. Продажа лицам до 21 года запрещена.</span>
           </div>

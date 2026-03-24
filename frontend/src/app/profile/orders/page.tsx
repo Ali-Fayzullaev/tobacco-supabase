@@ -94,6 +94,7 @@ const statusConfig: Record<string, {
 };
 
 const paymentMethods: Record<string, { label: string; icon: string }> = {
+  invoice: { label: 'Безналичный расчёт', icon: '📄' },
   kaspi: { label: 'Kaspi', icon: '🏦' },
   card: { label: 'Карта', icon: '💳' },
   cash: { label: 'Наличные', icon: '💵' },

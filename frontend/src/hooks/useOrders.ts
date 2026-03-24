@@ -4,7 +4,7 @@ import { useState, useCallback } from 'react';
 import { getSupabaseBrowserClient } from '@/lib/supabase';
 
 type DeliveryMethod = 'courier' | 'pickup' | 'post';
-type PaymentMethod = 'kaspi' | 'card' | 'cash';
+type PaymentMethod = 'invoice' | 'kaspi' | 'card' | 'cash';
 type OrderStatus = 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
 
 interface OrderItem {

@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
-import { Loader2, AlertTriangle, ArrowLeft, UserPlus, Mail, Lock, Eye, EyeOff, User, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { Loader2, AlertTriangle, ArrowLeft, UserPlus, Mail, Lock, Eye, EyeOff, User, CheckCircle2, ShieldCheck, Building2, Hash } from 'lucide-react';
 import { getSupabaseBrowserClient } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -20,6 +20,8 @@ function RegisterFormContent() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [organizationName, setOrganizationName] = useState('');
+  const [binIin, setBinIin] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
@@ -63,6 +65,8 @@ function RegisterFormContent() {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!firstName.trim() || !lastName.trim()) { toast.error('Введите имя и фамилию'); return; }
+    if (!organizationName.trim()) { toast.error('Укажите название организации (ТОО/ИП)'); return; }
+    if (!binIin.trim() || !/^\d{12}$/.test(binIin.trim())) { toast.error('БИН/ИИН должен содержать ровно 12 цифр'); return; }
     if (!email.trim()) { toast.error('Введите email'); return; }
     if (!isPasswordStrong) { toast.error('Пароль не соответствует требованиям'); return; }
     if (password !== confirmPassword) { toast.error('Пароли не совпадают'); return; }
@@ -74,7 +78,12 @@ function RegisterFormContent() {
       email: email.trim().toLowerCase(),
       password,
       options: {
-        data: { first_name: firstName.trim(), last_name: lastName.trim() },
+        data: {
+          first_name: firstName.trim(),
+          last_name: lastName.trim(),
+          organization_name: organizationName.trim(),
+          bin_iin: binIin.trim(),
+        },
       },
     });
 
@@ -322,6 +331,30 @@ function RegisterFormContent() {
                   <label className="block text-sm font-medium text-[#C0C0C0] mb-1.5">Фамилия</label>
                   <Input value={lastName} onChange={(e) => setLastName(e.target.value)} className="bg-[#121212] border-[#2A2A2A] focus:border-gold-500/40 focus:ring-gold-500/20 h-11" placeholder="Иванов" autoComplete="family-name" />
                 </div>
+              </div>
+
+              {/* B2B поля */}
+              <div>
+                <label className="block text-sm font-medium text-[#C0C0C0] mb-1.5">
+                  Название организации <span className="text-red-400">*</span>
+                </label>
+                <div className="relative">
+                  <Building2 className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#666]" />
+                  <Input value={organizationName} onChange={(e) => setOrganizationName(e.target.value)} className="pl-10 bg-[#121212] border-[#2A2A2A] focus:border-gold-500/40 focus:ring-gold-500/20 h-11" placeholder="ТОО, ИП..." />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-[#C0C0C0] mb-1.5">
+                  БИН / ИИН <span className="text-red-400">*</span>
+                </label>
+                <div className="relative">
+                  <Hash className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#666]" />
+                  <Input value={binIin} onChange={(e) => { const v = e.target.value.replace(/\D/g, '').slice(0, 12); setBinIin(v); }} className="pl-10 bg-[#121212] border-[#2A2A2A] focus:border-gold-500/40 focus:ring-gold-500/20 h-11" placeholder="12 цифр" maxLength={12} inputMode="numeric" />
+                </div>
+                {binIin && binIin.length !== 12 && (
+                  <p className="text-[#666] text-xs mt-1">{binIin.length}/12 цифр</p>
+                )}
               </div>
 
               <div>

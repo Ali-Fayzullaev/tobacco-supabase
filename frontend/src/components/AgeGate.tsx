@@ -105,10 +105,10 @@ export default function AgeGate({ children }: { children: React.ReactNode }) {
               {/* Kazakh text FIRST */}
               <div className="text-center space-y-6">
                 <p className="text-[#A0A0A0] text-sm leading-relaxed">
-                  Жиырма бiр жасқа толмаған тұлғаларға темекi бұйымдарын, оның iшiнде
-                  қыздырылатын темекiсi бар бұйымдарды, қорқорға арналған темекiнi,
-                  қорқор қоспасын, темекiнi қыздыруға арналған жүйелердi сатуға тыйым
-                  салынады. <strong className="text-[#C0C0C0]">Сiз 21 жастасыз ба?</strong>
+                  Жиырма бір жасқа толмаған тұлғаларға темекі бұйымдарын, оның ішінде
+                  қыздырылатын темекісі бар бұйымдарды, қорқорға арналған темекіні,
+                  қорқор қоспасын, темекіні қыздыруға арналған жүйелерді сатуға тыйым
+                  салынады. <strong className="text-[#C0C0C0]">Сіз 21 жастасыз ба?</strong>
                 </p>
 
                 <div className="w-16 h-px bg-[#D4AF37]/30 mx-auto" />

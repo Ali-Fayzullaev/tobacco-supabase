@@ -38,6 +38,7 @@ const statusConfig: Record<string, { label: string; color: string; bgColor: stri
 };
 
 const paymentMethodLabels: Record<string, string> = {
+  invoice: 'Безналичный расчёт (счёт на оплату)',
   cash: 'Наличными при получении',
   card: 'Банковская карта',
   kaspi: 'Kaspi QR / Перевод',

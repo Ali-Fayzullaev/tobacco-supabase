@@ -73,35 +73,53 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     window.location.href = '/login';
   };
 
-  // Единая подписка на авторизацию (без getSession — устраняет Lock broken error)
+  // Единая подписка на авторизацию
   useEffect(() => {
     let cancelled = false;
 
+    // Гарантированный таймаут — если auth не ответит за 5 сек, всё равно убираем загрузку
+    const timeout = setTimeout(() => {
+      if (!cancelled) {
+        // Auth timeout — forcing isLoading=false
+        setIsLoading(false);
+      }
+    }, 5000);
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, newSession) => {
+        console.log('[Auth] event:', event, 'hasSession:', !!newSession, 'cancelled:', cancelled);
         if (cancelled) return;
 
         if ((event === 'INITIAL_SESSION' || event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && newSession?.user) {
           setSession(newSession);
           setUser(newSession.user);
+          
+          // Загружаем профиль, но НЕ блокируем isLoading
+          if (event === 'INITIAL_SESSION') {
+            console.log('[Auth] INITIAL_SESSION with user → setIsLoading(false)');
+            if (!cancelled) setIsLoading(false);
+            clearTimeout(timeout);
+          }
+          
+          // Профиль загружаем в фоне
           const p = await loadProfile(newSession.user.id);
           if (!cancelled) setProfile(p);
         } else if (event === 'INITIAL_SESSION' && !newSession) {
           // Нет сессии при загрузке
+          console.log('[Auth] INITIAL_SESSION no session → setIsLoading(false)');
+          if (!cancelled) setIsLoading(false);
+          clearTimeout(timeout);
         } else if (event === 'SIGNED_OUT') {
           setSession(null);
           setUser(null);
           setProfile(null);
-        }
-
-        if (event === 'INITIAL_SESSION') {
-          if (!cancelled) setIsLoading(false);
         }
       }
     );
 
     return () => {
       cancelled = true;
+      clearTimeout(timeout);
       subscription.unsubscribe();
     };
   }, []);

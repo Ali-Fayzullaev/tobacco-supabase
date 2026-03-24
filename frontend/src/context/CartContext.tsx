@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
 import { getSupabaseBrowserClient } from '@/lib/supabase';
+import { useAuth } from '@/context/AuthContext';
 
 export interface CartItem {
   id: string;
@@ -37,6 +38,7 @@ const CartContext = createContext<CartContextValue | null>(null);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const supabase = getSupabaseBrowserClient();
+  const { user, isLoading: isAuthLoading } = useAuth();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -44,24 +46,23 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [totalItems, setTotalItems] = useState(0);
 
   const loadCart = useCallback(async () => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        setCartItems([]);
-        setIsLoading(false);
-        setError(null);
-        setTotalAmount(0);
-        setTotalItems(0);
-        return;
-      }
+    if (!user) {
+      setCartItems([]);
+      setIsLoading(false);
+      setError(null);
+      setTotalAmount(0);
+      setTotalItems(0);
+      return;
+    }
 
+    try {
       setIsLoading(true);
       setError(null);
 
       const { data: cartData, error: cartError } = await supabase
         .from('cart_items')
         .select('id, product_id, quantity')
-        .eq('user_id', session.user.id);
+        .eq('user_id', user.id);
 
       if (cartError || !cartData || cartData.length === 0) {
         setCartItems([]);
@@ -122,19 +123,19 @@ export function CartProvider({ children }: { children: ReactNode }) {
       setIsLoading(false);
       setError(null);
     }
-  }, [supabase]);
+  }, [supabase, user]);
 
+  // Загружаем только когда auth готов
   useEffect(() => {
-    loadCart();
-  }, [loadCart]);
+    if (!isAuthLoading) loadCart();
+  }, [isAuthLoading, loadCart]);
 
   const addToCart = useCallback(async (productId: string, quantity: number = 1) => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        return { success: false, error: 'Необходимо войти в систему' };
-      }
+    if (!user) {
+      return { success: false, error: 'Необходимо войти в систему' };
+    }
 
+    try {
       setIsLoading(true);
 
       const { data: product } = await supabase
@@ -153,7 +154,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const { data: existing } = await supabase
         .from('cart_items')
         .select('id, quantity')
-        .eq('user_id', session.user.id)
+        .eq('user_id', user.id)
         .eq('product_id', productId)
         .single();
 
@@ -179,7 +180,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         const { error } = await supabase
           .from('cart_items')
           .insert({
-            user_id: session.user.id,
+            user_id: user.id,
             product_id: productId,
             quantity,
           });
@@ -192,7 +193,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       setIsLoading(false);
       return { success: false, error: error.message };
     }
-  }, [supabase, loadCart]);
+  }, [supabase, user, loadCart]);
 
   const updateQuantity = useCallback(async (cartItemId: string, newQuantity: number) => {
     try {
@@ -225,16 +226,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [updateQuantity]);
 
   const clearCart = useCallback(async () => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) return { success: false, error: 'Not authenticated' };
+    if (!user) return { success: false, error: 'Not authenticated' };
 
+    try {
       setIsLoading(true);
 
       const { error } = await supabase
         .from('cart_items')
         .delete()
-        .eq('user_id', session.user.id);
+        .eq('user_id', user.id);
       if (error) throw error;
 
       setCartItems([]);
@@ -248,7 +248,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       setIsLoading(false);
       return { success: false, error: error.message };
     }
-  }, [supabase]);
+  }, [supabase, user]);
 
   const getItemInCart = useCallback((productId: string) => {
     return cartItems.find(item => item.product_id === productId);

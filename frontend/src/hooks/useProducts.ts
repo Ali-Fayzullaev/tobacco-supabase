@@ -96,7 +96,7 @@ export function useProducts() {
   const supabase = getSupabaseBrowserClient();
   const [state, setState] = useState<ProductsState>({
     products: [],
-    isLoading: false,
+    isLoading: true,
     error: null,
     totalCount: 0,
     currentPage: 1,
@@ -171,7 +171,7 @@ export function useProducts() {
 
       const { data, error, count } = await query;
 
-      console.log('[useProducts] Supabase response:', { data: data?.length, error, count });
+      console.log('[useProducts] query result: count=', count, 'data=', data?.length, 'error=', error);
 
       if (error) {
         throw error;

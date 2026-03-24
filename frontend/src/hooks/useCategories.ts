@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { getSupabaseBrowserClient } from '@/lib/supabase';
 import { Category } from '@/lib/types';
 
@@ -11,54 +11,60 @@ interface CategoriesState {
   error: string | null;
 }
 
+// Дедупликация: один fetch на всё приложение (Header + Catalog используют одновременно)
+let _cachedCategories: Category[] | null = null;
+let _fetchPromise: Promise<Category[]> | null = null;
+
+async function fetchCategoriesOnce(supabase: ReturnType<typeof getSupabaseBrowserClient>): Promise<Category[]> {
+  if (_cachedCategories) return _cachedCategories;
+  if (_fetchPromise) return _fetchPromise;
+
+  _fetchPromise = (async () => {
+    const { data, error } = await supabase
+      .from('categories')
+      .select('*')
+      .eq('is_active', true)
+      .order('sort_order');
+
+    if (error) throw error;
+    _cachedCategories = (data || []) as Category[];
+    _fetchPromise = null;
+    return _cachedCategories;
+  })();
+
+  return _fetchPromise;
+}
+
 export function useCategories() {
   const supabase = getSupabaseBrowserClient();
   const [state, setState] = useState<CategoriesState>({
-    categories: [],
-    parentCategories: [],
-    isLoading: true,
+    categories: _cachedCategories || [],
+    parentCategories: _cachedCategories?.filter(c => !c.parent_id) || [],
+    isLoading: !_cachedCategories,
     error: null,
   });
+  const mountedRef = useRef(true);
 
   // Загрузка категорий
   const loadCategories = useCallback(async () => {
     try {
       setState(prev => ({ ...prev, isLoading: true, error: null }));
-
-      const { data, error } = await supabase
-        .from('categories')
-        .select('*')
-        .eq('is_active', true)
-        .order('sort_order');
-
-      if (error) {
-        console.error('[useCategories] error:', error);
-        setState(prev => ({
-          ...prev,
-          isLoading: false,
-          error: error.code === 'PGRST301' ? 'ACCESS_DENIED' : error.message,
-        }));
-        return;
-      }
-
-      const categories = (data || []) as Category[];
+      const categories = await fetchCategoriesOnce(supabase);
+      if (!mountedRef.current) return;
       const parentCategories = categories.filter(c => !c.parent_id);
-
-      setState({
-        categories,
-        parentCategories,
-        isLoading: false,
-        error: null,
-      });
-    } catch (e) {
-      console.error('[useCategories] unexpected error:', e);
-      setState({ categories: [], parentCategories: [], isLoading: false, error: 'Unexpected error' });
+      setState({ categories, parentCategories, isLoading: false, error: null });
+    } catch (e: any) {
+      if (!mountedRef.current) return;
+      console.error('[useCategories] error:', e);
+      setState({ categories: [], parentCategories: [], isLoading: false, error: e.message || 'Unexpected error' });
     }
   }, [supabase]);
 
   // Загрузка при монтировании
   useEffect(() => {
-    loadCategories();
+    mountedRef.current = true;
+    if (!_cachedCategories) loadCategories();
+    return () => { mountedRef.current = false; };
   }, [loadCategories]);
 
   // Получить подкатегории
@@ -95,6 +101,10 @@ export function useCategories() {
     getCategoryBySlug,
     getCategoryById,
     getBreadcrumbs,
-    refreshCategories: loadCategories,
+    refreshCategories: useCallback(async () => {
+      _cachedCategories = null;
+      _fetchPromise = null;
+      await loadCategories();
+    }, [loadCategories]),
   };
 }

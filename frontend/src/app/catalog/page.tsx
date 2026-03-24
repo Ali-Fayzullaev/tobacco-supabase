@@ -288,7 +288,7 @@ function CatalogContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, profile, isLoading: isAuthLoading } = useAuth();
-  const { searchProducts, products, isLoading: isProductsLoading } = useProducts();
+  const { searchProducts, products, isLoading: isProductsLoading, error: productsError } = useProducts();
   const { categories, parentCategories, getSubcategories, getCategoryById, isLoading: isCategoriesLoading } = useCategories();
   const { addToCart } = useCart();
 
@@ -322,16 +322,17 @@ function CatalogContent() {
   }, []);
 
   // Разрешаем категорию из URL slug
+  const [categoryResolved, setCategoryResolved] = useState(false);
   useEffect(() => {
-    if (!isCategoriesLoading && categories.length > 0) {
+    if (!isCategoriesLoading) {
       const catParam = searchParams.get('category');
-      if (catParam) {
+      if (catParam && categories.length > 0) {
         const found = categories.find(c => c.slug === catParam) || categories.find(c => c.id === catParam);
-        if (found) setSelectedCategory(found.id);
-        else setSelectedCategory(null);
+        setSelectedCategory(found ? found.id : null);
       } else {
         setSelectedCategory(null);
       }
+      setCategoryResolved(true);
     }
   }, [isCategoriesLoading, categories, searchParams]);
 
@@ -348,11 +349,16 @@ function CatalogContent() {
     localStorage?.setItem('catalog_view_mode', mode);
   };
 
-  // Загрузка товаров — запускаем сразу, без ожидания категорий
+  // DEBUG: трассировка загрузки
+  console.log('[Catalog] isAuthLoading:', isAuthLoading, 'categoryResolved:', categoryResolved, 'isCategoriesLoading:', isCategoriesLoading, 'isProductsLoading:', isProductsLoading, 'products:', products.length);
+
+  // Загрузка товаров — ждём auth + разрешения категории из URL
   useEffect(() => {
-    console.log('[Catalog] loadProducts triggered, selectedCategory:', selectedCategory, 'sortBy:', sortBy);
+    console.log('[Catalog effect] isAuthLoading:', isAuthLoading, 'categoryResolved:', categoryResolved);
+    if (isAuthLoading || !categoryResolved) return;
+    console.log('[Catalog effect] → calling loadProducts');
     loadProducts();
-  }, [selectedCategory, sortBy]);
+  }, [selectedCategory, sortBy, isAuthLoading, categoryResolved]);
 
   const loadProducts = async () => {
     let categoryIds: string[] | undefined;
@@ -482,7 +488,7 @@ function CatalogContent() {
               )}
             </div>
             <span className="text-sm text-[#666]">
-              {isProductsLoading ? '...' : `${products.length} товаров`}
+              {(isAuthLoading || isProductsLoading) ? '...' : `${products.length} товаров`}
             </span>
           </div>
         </div>
@@ -746,7 +752,7 @@ function CatalogContent() {
             </div>
 
             {/* Товары */}
-            {isProductsLoading ? (
+            {(isAuthLoading || isProductsLoading) ? (
               viewMode === 'list' ? (
                 <div className="space-y-3">
                   {Array.from({ length: 6 }).map((_, i) => (
@@ -768,6 +774,21 @@ function CatalogContent() {
                   ))}
                 </div>
               )
+            ) : productsError ? (
+              <div className="bg-[#1E1E1E] rounded-2xl border border-[#2A2A2A] shadow-sm py-16 text-center">
+                <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <ShoppingCart className="h-8 w-8 text-red-400" />
+                </div>
+                <h3 className="text-xl font-semibold text-[#F5F5F5] mb-2">
+                  Ошибка загрузки
+                </h3>
+                <p className="text-[#666] mb-6 max-w-sm mx-auto">
+                  Не удалось загрузить товары. Попробуйте обновить страницу.
+                </p>
+                <Button onClick={loadProducts} className="bg-gold-500 hover:bg-gold-600 rounded-xl gap-2">
+                  Попробовать снова
+                </Button>
+              </div>
             ) : products.length === 0 ? (
               <div className="bg-[#1E1E1E] rounded-2xl border border-[#2A2A2A] shadow-sm py-16 text-center">
                 <div className="w-16 h-16 bg-[#252525] rounded-full flex items-center justify-center mx-auto mb-4">

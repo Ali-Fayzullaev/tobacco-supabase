@@ -4,9 +4,11 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  // Отключаем webpack cache для избежания OOM при сжатии
-  webpack: (config) => {
-    config.cache = false;
+  // Отключаем webpack cache только при build (dev-серверу кэш нужен!)
+  webpack: (config, { dev }) => {
+    if (!dev) {
+      config.cache = false;
+    }
     return config;
   },
   // Ограничиваем воркеры чтобы не падал из-за нехватки памяти при build

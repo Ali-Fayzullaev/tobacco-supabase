@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
 import { getSupabaseBrowserClient } from '@/lib/supabase';
+import { useAuth } from '@/context/AuthContext';
 
 export interface FavoriteItem {
   id: string;
@@ -35,22 +36,22 @@ const FavoritesContext = createContext<FavoritesContextValue | null>(null);
 
 export function FavoritesProvider({ children }: { children: ReactNode }) {
   const supabase = getSupabaseBrowserClient();
+  const { user, isLoading: isAuthLoading } = useAuth();
   const [favorites, setFavorites] = useState<FavoriteItem[]>([]);
   const [productIds, setProductIds] = useState<Set<string>>(new Set());
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const loadFavorites = useCallback(async () => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        setFavorites([]);
-        setProductIds(new Set());
-        setIsLoading(false);
-        setError(null);
-        return;
-      }
+    if (!user) {
+      setFavorites([]);
+      setProductIds(new Set());
+      setIsLoading(false);
+      setError(null);
+      return;
+    }
 
+    try {
       setIsLoading(true);
       setError(null);
 
@@ -62,7 +63,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
           created_at,
           product:products(id, slug, name, name_kk, price, old_price, in_stock, image_url, brand)
         `)
-        .eq('user_id', session.user.id)
+        .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
       if (favError) {
@@ -86,23 +87,23 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
       setIsLoading(false);
       setError(null);
     }
-  }, [supabase]);
+  }, [supabase, user]);
 
+  // Загружаем только когда auth готов
   useEffect(() => {
-    loadFavorites();
-  }, [loadFavorites]);
+    if (!isAuthLoading) loadFavorites();
+  }, [isAuthLoading, loadFavorites]);
 
   const isFavorite = useCallback((productId: string) => {
     return productIds.has(productId);
   }, [productIds]);
 
   const toggleFavorite = useCallback(async (productId: string) => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        return { success: false, error: 'Not authenticated' };
-      }
+    if (!user) {
+      return { success: false, error: 'Not authenticated' };
+    }
 
+    try {
       const isInFavorites = productIds.has(productId);
 
       // Оптимистичное обновление — мгновенно обновляем UI
@@ -121,11 +122,10 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
         const { error } = await supabase
           .from('favorites')
           .delete()
-          .eq('user_id', session.user.id)
+          .eq('user_id', user.id)
           .eq('product_id', productId);
 
         if (error) {
-          // Откат при ошибке
           await loadFavorites();
           throw error;
         }
@@ -134,23 +134,21 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
         const { error } = await supabase
           .from('favorites')
           .insert({
-            user_id: session.user.id,
+            user_id: user.id,
             product_id: productId,
           });
 
         if (error) {
-          // Откат при ошибке
           await loadFavorites();
           throw error;
         }
-        // Перезагружаем для получения полных данных продукта
         await loadFavorites();
         return { success: true, action: 'added' as const };
       }
     } catch (error: any) {
       return { success: false, error: error.message };
     }
-  }, [supabase, productIds, loadFavorites]);
+  }, [supabase, user, productIds, loadFavorites]);
 
   return (
     <FavoritesContext.Provider value={{

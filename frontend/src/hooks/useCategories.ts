@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { getSupabaseBrowserClient } from '@/lib/supabase';
+import { getPublicSupabaseClient } from '@/lib/supabase';
 import { Category } from '@/lib/types';
 
 interface CategoriesState {
@@ -15,7 +15,7 @@ interface CategoriesState {
 let _cachedCategories: Category[] | null = null;
 let _fetchPromise: Promise<Category[]> | null = null;
 
-async function fetchCategoriesOnce(supabase: ReturnType<typeof getSupabaseBrowserClient>): Promise<Category[]> {
+async function fetchCategoriesOnce(supabase: ReturnType<typeof getPublicSupabaseClient>): Promise<Category[]> {
   if (_cachedCategories) return _cachedCategories;
   if (_fetchPromise) return _fetchPromise;
 
@@ -36,7 +36,8 @@ async function fetchCategoriesOnce(supabase: ReturnType<typeof getSupabaseBrowse
 }
 
 export function useCategories() {
-  const supabase = getSupabaseBrowserClient();
+  // Анонимный клиент — категории публичные, не зависят от авторизации
+  const supabase = getPublicSupabaseClient();
   const [state, setState] = useState<CategoriesState>({
     categories: _cachedCategories || [],
     parentCategories: _cachedCategories?.filter(c => !c.parent_id) || [],

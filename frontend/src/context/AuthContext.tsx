@@ -93,17 +93,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setSession(newSession);
           setUser(newSession.user);
           
-          // Загружаем профиль, но НЕ блокируем isLoading
+          // Всегда убираем загрузку при INITIAL_SESSION (до загрузки профиля)
           if (event === 'INITIAL_SESSION') {
             if (!cancelled) setIsLoading(false);
             clearTimeout(timeout);
           }
           
-          // Профиль загружаем в фоне
-          const p = await loadProfile(newSession.user.id);
-          if (!cancelled) setProfile(p);
-        } else if (event === 'INITIAL_SESSION' && !newSession) {
-          // Нет сессии при загрузке
+          // Профиль загружаем в фоне — не блокируем UI
+          try {
+            const p = await loadProfile(newSession.user.id);
+            if (!cancelled) setProfile(p);
+          } catch {
+            // Профиль не загрузился — не критично
+          }
+        } else if (event === 'INITIAL_SESSION') {
+          // Нет сессии при загрузке (включая edge-case newSession без user)
           if (!cancelled) setIsLoading(false);
           clearTimeout(timeout);
         } else if (event === 'SIGNED_OUT') {

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Search, X, ArrowRight, Clock, Trash2, ShoppingCart, Loader2, TrendingUp } from 'lucide-react';
-import { getSupabaseBrowserClient } from '@/lib/supabase';
+import { getPublicSupabaseClient } from '@/lib/supabase';
 import { formatPrice, cn } from '@/lib/utils';
 
 interface SearchResult {
@@ -49,7 +49,7 @@ function clearHistory() {
 export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
-  const supabase = getSupabaseBrowserClient();
+  const supabase = getPublicSupabaseClient();
 
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);

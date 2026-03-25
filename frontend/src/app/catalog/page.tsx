@@ -346,15 +346,10 @@ function CatalogContent() {
     localStorage?.setItem('catalog_view_mode', mode);
   };
 
-  // Отслеживаем первый запуск загрузки товаров
-  const [initialLoadStarted, setInitialLoadStarted] = useState(false);
-
-  // Загрузка товаров — ждём только auth
+  // Загрузка товаров — НЕ зависит от авторизации (товары публичные)
   useEffect(() => {
-    if (isAuthLoading) return;
-    if (!initialLoadStarted) setInitialLoadStarted(true);
     loadProducts();
-  }, [selectedCategory, sortBy, isAuthLoading]);
+  }, [selectedCategory, sortBy]);
 
   const loadProducts = async () => {
     let categoryIds: string[] | undefined;
@@ -484,7 +479,7 @@ function CatalogContent() {
               )}
             </div>
             <span className="text-sm text-[#666]">
-              {(isAuthLoading || !initialLoadStarted || isProductsLoading) ? '...' : `${products.length} товаров`}
+              {isProductsLoading ? '...' : `${products.length} товаров`}
             </span>
           </div>
         </div>
@@ -748,7 +743,7 @@ function CatalogContent() {
             </div>
 
             {/* Товары */}
-            {(isAuthLoading || !initialLoadStarted || isProductsLoading) ? (
+            {isProductsLoading ? (
               viewMode === 'list' ? (
                 <div className="space-y-3">
                   {Array.from({ length: 6 }).map((_, i) => (

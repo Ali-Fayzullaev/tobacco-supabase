@@ -11,11 +11,6 @@ const nextConfig = {
     }
     return config;
   },
-  // Ограничиваем воркеры чтобы не падал из-за нехватки памяти при build
-  experimental: {
-    workerThreads: false,
-    cpus: 1,
-  },
   images: {
     remotePatterns: [
       {

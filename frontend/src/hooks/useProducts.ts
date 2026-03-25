@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { getSupabaseBrowserClient } from '@/lib/supabase';
+import { getPublicSupabaseClient } from '@/lib/supabase';
 
 export interface ProductSearchResult {
   id: string;
@@ -93,7 +93,8 @@ interface ProductsState {
 }
 
 export function useProducts() {
-  const supabase = getSupabaseBrowserClient();
+  // Анонимный клиент — товары публичные, не зависят от авторизации
+  const supabase = getPublicSupabaseClient();
   const [state, setState] = useState<ProductsState>({
     products: [],
     isLoading: false,
@@ -106,6 +107,11 @@ export function useProducts() {
   // Поиск товаров (простой запрос без RPC)
   const searchProducts = useCallback(async (params: SearchParams = {}) => {
     setState(prev => ({ ...prev, isLoading: true, error: null }));
+
+    // Таймаут 10 сек — если запрос зависнет, userу покажем ошибку
+    const timeout = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error('Таймаут загрузки товаров')), 10000)
+    );
 
     try {
       const pageSize = params.pageSize || 20;
@@ -168,7 +174,7 @@ export function useProducts() {
       // Пагинация
       query = query.range(offset, offset + pageSize - 1);
 
-      const { data, error, count } = await query;
+      const { data, error, count } = await Promise.race([query, timeout]);
 
       if (error) {
         throw error;

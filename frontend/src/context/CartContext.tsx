@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
-import { getSupabaseBrowserClient } from '@/lib/supabase';
+import { getSupabaseBrowserClient, getPublicSupabaseClient } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 
 export interface CartItem {
@@ -38,6 +38,7 @@ const CartContext = createContext<CartContextValue | null>(null);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const supabase = getSupabaseBrowserClient();
+  const publicSupabase = getPublicSupabaseClient();
   const { user, isLoading: isAuthLoading } = useAuth();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -75,7 +76,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
       const productIds = cartData.map(item => item.product_id);
 
-      const { data: productsData, error: productsError } = await supabase
+      // Товары — публичные данные, используем анонимный клиент
+      const { data: productsData, error: productsError } = await publicSupabase
         .from('products')
         .select('id, name, name_kk, price, in_stock, stock, slug, image_url, brand')
         .in('id', productIds);
@@ -138,11 +140,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
     try {
       setIsLoading(true);
 
-      const { data: product } = await supabase
+      // Товары — публичные данные, используем анонимный клиент
+      const { data: product } = await publicSupabase
         .from('products')
         .select('stock, order_step')
         .eq('id', productId)
-        .single();
+        .maybeSingle();
 
       const orderStep = product?.order_step || 1;
 
@@ -156,7 +159,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         .select('id, quantity')
         .eq('user_id', user.id)
         .eq('product_id', productId)
-        .single();
+        .maybeSingle();
 
       const currentInCart = existing?.quantity || 0;
       const requestedTotal = currentInCart + quantity;

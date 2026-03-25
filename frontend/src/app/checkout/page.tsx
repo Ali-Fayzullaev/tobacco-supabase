@@ -72,8 +72,7 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('invoice');
   const [addressData, setAddressData] = useState<AddressForm | null>(null);
 
-  const isAdult = profile?.birth_date && 
-    new Date(profile.birth_date) <= new Date(new Date().setFullYear(new Date().getFullYear() - 21));
+
 
   const {
     register,
@@ -143,7 +142,7 @@ export default function CheckoutPage() {
     );
   }
 
-  if (!user || !isAdult) {
+  if (!user) {
     return (
       <div className="min-h-screen bg-[#121212]">
         <Header />
@@ -154,10 +153,10 @@ export default function CheckoutPage() {
             </div>
             <h1 className="text-2xl font-bold text-[#F5F5F5] mb-3">Доступ ограничен</h1>
             <p className="text-[#A0A0A0] mb-6">
-              Для оформления заказа необходимо войти в аккаунт и подтвердить возраст (21+)
+              Для оформления заказа необходимо войти в аккаунт
             </p>
             <Link 
-              href="/login" 
+              href="/login?redirect=/checkout" 
               className="inline-flex items-center justify-center gap-2 bg-gold-500 hover:bg-gold-600 text-white py-3 px-8 rounded-xl font-medium transition-colors"
             >
               Войти в систему

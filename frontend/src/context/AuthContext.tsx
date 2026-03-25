@@ -87,7 +87,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, newSession) => {
-        console.log('[Auth] event:', event, 'hasSession:', !!newSession, 'cancelled:', cancelled);
         if (cancelled) return;
 
         if ((event === 'INITIAL_SESSION' || event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && newSession?.user) {
@@ -96,7 +95,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           
           // Загружаем профиль, но НЕ блокируем isLoading
           if (event === 'INITIAL_SESSION') {
-            console.log('[Auth] INITIAL_SESSION with user → setIsLoading(false)');
             if (!cancelled) setIsLoading(false);
             clearTimeout(timeout);
           }
@@ -106,7 +104,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           if (!cancelled) setProfile(p);
         } else if (event === 'INITIAL_SESSION' && !newSession) {
           // Нет сессии при загрузке
-          console.log('[Auth] INITIAL_SESSION no session → setIsLoading(false)');
           if (!cancelled) setIsLoading(false);
           clearTimeout(timeout);
         } else if (event === 'SIGNED_OUT') {

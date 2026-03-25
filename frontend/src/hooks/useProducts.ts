@@ -96,7 +96,7 @@ export function useProducts() {
   const supabase = getSupabaseBrowserClient();
   const [state, setState] = useState<ProductsState>({
     products: [],
-    isLoading: true,
+    isLoading: false,
     error: null,
     totalCount: 0,
     currentPage: 1,
@@ -105,7 +105,6 @@ export function useProducts() {
 
   // Поиск товаров (простой запрос без RPC)
   const searchProducts = useCallback(async (params: SearchParams = {}) => {
-    console.log('[useProducts] searchProducts called with:', params);
     setState(prev => ({ ...prev, isLoading: true, error: null }));
 
     try {
@@ -170,8 +169,6 @@ export function useProducts() {
       query = query.range(offset, offset + pageSize - 1);
 
       const { data, error, count } = await query;
-
-      console.log('[useProducts] query result: count=', count, 'data=', data?.length, 'error=', error);
 
       if (error) {
         throw error;

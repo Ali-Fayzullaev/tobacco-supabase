@@ -37,9 +37,6 @@ export default function CartPage() {
     isLoading 
   } = useCart();
 
-  const isAdult = profile?.birth_date && 
-    new Date(profile.birth_date) <= new Date(new Date().setFullYear(new Date().getFullYear() - 21));
-
   if (isAuthLoading) {
     return (
       <div className="min-h-screen bg-[#121212] flex items-center justify-center">
@@ -63,29 +60,6 @@ export default function CartPage() {
             <Link href="/login?redirect=/cart">
               <Button size="lg" className="bg-gold-500 hover:bg-gold-600">
                 Войти
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  if (!isAdult) {
-    return (
-      <div className="min-h-screen bg-[#121212] flex items-center justify-center p-4">
-        <Card className="max-w-md bg-[#1E1E1E] border-[#2A2A2A] shadow-lg">
-          <CardContent className="pt-8 pb-6 text-center">
-            <div className="w-20 h-20 bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
-              <AlertTriangle className="w-10 h-10 text-red-500" />
-            </div>
-            <h1 className="text-2xl font-bold text-[#F5F5F5] mb-4">Доступ запрещён</h1>
-            <p className="text-[#A0A0A0] mb-6">
-              Продажа табачной продукции лицам младше 21 года запрещена.
-            </p>
-            <Link href="/">
-              <Button variant="outline" className="border-[#333]">
-                На главную
               </Button>
             </Link>
           </CardContent>

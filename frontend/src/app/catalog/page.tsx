@@ -321,18 +321,15 @@ function CatalogContent() {
     }
   }, []);
 
-  // Разрешаем категорию из URL slug
-  const [categoryResolved, setCategoryResolved] = useState(false);
+  // Разрешаем категорию из URL slug (когда категории загрузятся)
   useEffect(() => {
-    if (!isCategoriesLoading) {
-      const catParam = searchParams.get('category');
-      if (catParam && categories.length > 0) {
-        const found = categories.find(c => c.slug === catParam) || categories.find(c => c.id === catParam);
-        setSelectedCategory(found ? found.id : null);
-      } else {
-        setSelectedCategory(null);
+    if (isCategoriesLoading) return;
+    const catParam = searchParams.get('category');
+    if (catParam && categories.length > 0) {
+      const found = categories.find(c => c.slug === catParam) || categories.find(c => c.id === catParam);
+      if (found) {
+        setSelectedCategory(found.id);
       }
-      setCategoryResolved(true);
     }
   }, [isCategoriesLoading, categories, searchParams]);
 
@@ -349,16 +346,15 @@ function CatalogContent() {
     localStorage?.setItem('catalog_view_mode', mode);
   };
 
-  // DEBUG: трассировка загрузки
-  console.log('[Catalog] isAuthLoading:', isAuthLoading, 'categoryResolved:', categoryResolved, 'isCategoriesLoading:', isCategoriesLoading, 'isProductsLoading:', isProductsLoading, 'products:', products.length);
+  // Отслеживаем первый запуск загрузки товаров
+  const [initialLoadStarted, setInitialLoadStarted] = useState(false);
 
-  // Загрузка товаров — ждём auth + разрешения категории из URL
+  // Загрузка товаров — ждём только auth
   useEffect(() => {
-    console.log('[Catalog effect] isAuthLoading:', isAuthLoading, 'categoryResolved:', categoryResolved);
-    if (isAuthLoading || !categoryResolved) return;
-    console.log('[Catalog effect] → calling loadProducts');
+    if (isAuthLoading) return;
+    if (!initialLoadStarted) setInitialLoadStarted(true);
     loadProducts();
-  }, [selectedCategory, sortBy, isAuthLoading, categoryResolved]);
+  }, [selectedCategory, sortBy, isAuthLoading]);
 
   const loadProducts = async () => {
     let categoryIds: string[] | undefined;
@@ -488,7 +484,7 @@ function CatalogContent() {
               )}
             </div>
             <span className="text-sm text-[#666]">
-              {(isAuthLoading || isProductsLoading) ? '...' : `${products.length} товаров`}
+              {(isAuthLoading || !initialLoadStarted || isProductsLoading) ? '...' : `${products.length} товаров`}
             </span>
           </div>
         </div>
@@ -752,7 +748,7 @@ function CatalogContent() {
             </div>
 
             {/* Товары */}
-            {(isAuthLoading || isProductsLoading) ? (
+            {(isAuthLoading || !initialLoadStarted || isProductsLoading) ? (
               viewMode === 'list' ? (
                 <div className="space-y-3">
                   {Array.from({ length: 6 }).map((_, i) => (

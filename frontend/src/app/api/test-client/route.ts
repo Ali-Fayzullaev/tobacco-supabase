@@ -124,10 +124,15 @@ export async function GET() {
         var chunks = [];
         for (var i = 0; i < 10; i++) {
           var name = storageKey + '.' + i;
-          var match = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&') + '=([^;]*)'));
-          if (match) {
-            chunks.push(name + '=' + match[1].substring(0, 20) + '...');
-          } else {
+          var found = false;
+          document.cookie.split(';').forEach(function(c) {
+            var pair = c.trim().split('=');
+            if (pair[0] === name) {
+              chunks.push(name + '=' + pair.slice(1).join('=').substring(0, 20) + '...');
+              found = true;
+            }
+          });
+          if (!found) break;
             break;
           }
         }

@@ -108,11 +108,6 @@ export function useProducts() {
   const searchProducts = useCallback(async (params: SearchParams = {}) => {
     setState(prev => ({ ...prev, isLoading: true, error: null }));
 
-    // Таймаут 10 сек — если запрос зависнет, userу покажем ошибку
-    const timeout = new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error('Таймаут загрузки товаров')), 10000)
-    );
-
     try {
       const pageSize = params.pageSize || 20;
       const page = params.page || 1;
@@ -174,7 +169,7 @@ export function useProducts() {
       // Пагинация
       query = query.range(offset, offset + pageSize - 1);
 
-      const { data, error, count } = await Promise.race([query, timeout]);
+      const { data, error, count } = await query;
 
       if (error) {
         throw error;

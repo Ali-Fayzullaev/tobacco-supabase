@@ -8,6 +8,21 @@ export async function middleware(request: NextRequest) {
     },
   });
 
+  const { pathname } = request.nextUrl;
+
+  // Определяем типы маршрутов ДО создания Supabase клиента
+  const authPages = ['/login', '/register'];
+  const isAuthPage = authPages.includes(pathname);
+  const protectedRoutes = ['/cart', '/checkout', '/profile', '/admin'];
+  const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
+
+  // Для публичных страниц (каталог, продукт, главная) — НЕ вызываем getUser()
+  // Это убирает лишний сетевой запрос и ошибки ERR_CONNECTION_CLOSED
+  if (!isAuthPage && !isProtectedRoute) {
+    return response;
+  }
+
+  // Создаём Supabase клиент только когда нужна проверка авторизации
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -31,50 +46,63 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  const { pathname } = request.nextUrl;
+  // Хелпер: создаёт redirect-ответ с сохранением обновлённых auth cookies
+  const redirectWithCookies = (url: URL) => {
+    const redirectResponse = NextResponse.redirect(url);
+    response.cookies.getAll().forEach(cookie => {
+      redirectResponse.cookies.set(cookie.name, cookie.value);
+    });
+    return redirectResponse;
+  };
 
-  // Публичные роуты - не требуют авторизации
-  const publicRoutes = ['/login', '/register', '/verify-email', '/auth', '/catalog', '/product', '/'];
-  const isPublicRoute = publicRoutes.some(route => pathname === route || pathname.startsWith(route + '/')) || pathname === '/';
-
-  // Получаем пользователя один раз (getUser валидирует токен на сервере, надёжнее getSession)
-  const { data: { user } } = await supabase.auth.getUser();
-
-  // Если залогиненный пользователь заходит на /login или /register — редиректим
-  if (pathname === '/login' || pathname === '/register') {
-    if (user) {
-      const redirectTo = request.nextUrl.searchParams.get('redirect') || '/catalog';
-      return NextResponse.redirect(new URL(redirectTo, request.url));
+  // getUser() вызывается ТОЛЬКО для auth-страниц и защищённых маршрутов
+  let user = null;
+  try {
+    const { data } = await supabase.auth.getUser();
+    user = data.user;
+  } catch {
+    // Сеть упала — для защищённых маршрутов редиректим на login,
+    // для auth-страниц просто пропускаем (пусть клиент разберётся)
+    if (isProtectedRoute) {
+      const redirectUrl = new URL('/login', request.url);
+      redirectUrl.searchParams.set('redirect', pathname);
+      return redirectWithCookies(redirectUrl);
     }
     return response;
   }
-  
-  if (isPublicRoute) {
+
+  // Если залогиненный пользователь заходит на /login или /register — редиректим
+  if (isAuthPage) {
+    if (user) {
+      const redirectTo = request.nextUrl.searchParams.get('redirect') || '/catalog';
+      return redirectWithCookies(new URL(redirectTo, request.url));
+    }
     return response;
   }
 
-  // Protected routes that require authentication
-  const protectedRoutes = ['/cart', '/checkout', '/profile', '/admin'];
-  const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
-
-  // Для защищённых роутов проверяем авторизацию
+  // Защищённые маршруты — требуют авторизации
   if (isProtectedRoute) {
     if (!user) {
       const redirectUrl = new URL('/login', request.url);
       redirectUrl.searchParams.set('redirect', pathname);
-      return NextResponse.redirect(redirectUrl);
+      return redirectWithCookies(redirectUrl);
     }
 
     // Admin route protection
     if (pathname.startsWith('/admin')) {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', user.id)
-        .single();
+      try {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', user.id)
+          .single();
 
-      if (profile?.role !== 'admin') {
-        return NextResponse.redirect(new URL('/', request.url));
+        if (profile?.role !== 'admin') {
+          return redirectWithCookies(new URL('/', request.url));
+        }
+      } catch {
+        // Если не удалось проверить роль — не пускаем
+        return redirectWithCookies(new URL('/', request.url));
       }
     }
   }

@@ -4,8 +4,10 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
-// ─── Клиент с авторизацией (для корзины, профиля, заказов) ───
-// Синглтон — ОДИН экземпляр на всё приложение
+// ─── ЕДИНСТВЕННЫЙ браузерный клиент (синглтон) ───
+// ВАЖНО: в браузере допустим только ОДИН GoTrueClient,
+// иначе два экземпляра конкурируют за один storage key
+// и перезаписывают друг другу auth-токен → RLS-ошибки.
 let browserClient: SupabaseClient | null = null;
 
 export const getSupabaseBrowserClient = () => {
@@ -19,24 +21,11 @@ export const getSupabaseBrowserClient = () => {
   return browserClient;
 };
 
-// ─── Анонимный клиент для ПУБЛИЧНЫХ данных (товары, категории) ───
-// Не использует cookie/сессию → запросы никогда не блокируются авторизацией
-let publicClient: SupabaseClient | null = null;
-
-export const getPublicSupabaseClient = () => {
-  if (typeof window === 'undefined') {
-    return createClient(supabaseUrl, supabaseAnonKey, {
-      auth: { persistSession: false, autoRefreshToken: false },
-    });
-  }
-
-  if (!publicClient) {
-    publicClient = createClient(supabaseUrl, supabaseAnonKey, {
-      auth: { persistSession: false, autoRefreshToken: false },
-    });
-  }
-  return publicClient;
-};
+// ─── Публичный клиент = тот же browserClient ───
+// Для публичных данных (товары, категории) RLS разрешает SELECT всем (is_active = true),
+// поэтому отдельный анонимный клиент не нужен. Использование одного клиента
+// гарантирует, что не будет конфликта GoTrueClient.
+export const getPublicSupabaseClient = getSupabaseBrowserClient;
 
 // Алиасы для совместимости
 export const createBrowserSupabaseClient = getSupabaseBrowserClient;

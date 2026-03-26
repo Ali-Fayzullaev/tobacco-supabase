@@ -1,7 +1,7 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
-import { getSupabaseBrowserClient, getPublicSupabaseClient } from '@/lib/supabase';
+import { createContext, useContext, useState, useEffect, useCallback, useRef, type ReactNode } from 'react';
+import { getSupabaseBrowserClient } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 
 export interface CartItem {
@@ -36,18 +36,36 @@ interface CartContextValue {
 
 const CartContext = createContext<CartContextValue | null>(null);
 
+// Повтор запроса при ошибке (обновление токена, сеть)
+async function withRetry<T>(fn: () => Promise<T>, retries = 2, delay = 500): Promise<T> {
+  for (let i = 0; i <= retries; i++) {
+    try {
+      return await fn();
+    } catch (e) {
+      if (i === retries) throw e;
+      await new Promise(r => setTimeout(r, delay * (i + 1)));
+    }
+  }
+  throw new Error('withRetry: unreachable');
+}
+
 export function CartProvider({ children }: { children: ReactNode }) {
   const supabase = getSupabaseBrowserClient();
-  const publicSupabase = getPublicSupabaseClient();
   const { user, isLoading: isAuthLoading } = useAuth();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [totalAmount, setTotalAmount] = useState(0);
   const [totalItems, setTotalItems] = useState(0);
+  // Защита от гонки: отменяем устаревшие загрузки
+  const loadIdRef = useRef(0);
+  // Стабильная ссылка на user.id — не вызывает пересоздание useCallback при TOKEN_REFRESHED
+  const userIdRef = useRef<string | null>(null);
+  userIdRef.current = user?.id ?? null;
 
   const loadCart = useCallback(async () => {
-    if (!user) {
+    const userId = userIdRef.current;
+    if (!userId) {
       setCartItems([]);
       setIsLoading(false);
       setError(null);
@@ -56,16 +74,31 @@ export function CartProvider({ children }: { children: ReactNode }) {
       return;
     }
 
+    const currentLoadId = ++loadIdRef.current;
+
     try {
       setIsLoading(true);
       setError(null);
 
-      const { data: cartData, error: cartError } = await supabase
-        .from('cart_items')
-        .select('id, product_id, quantity')
-        .eq('user_id', user.id);
+      const { data: cartData, error: cartError } = await withRetry(() =>
+        supabase
+          .from('cart_items')
+          .select('id, product_id, quantity')
+          .eq('user_id', userId)
+      );
 
-      if (cartError || !cartData || cartData.length === 0) {
+      // Если запрос устарел (запущен новый loadCart) — игнорируем результат
+      if (currentLoadId !== loadIdRef.current) return;
+
+      if (cartError) {
+        console.warn('[Cart] Ошибка загрузки cart_items:', cartError.message);
+        // НЕ очищаем корзину при ошибке — сохраняем старые данные
+        setIsLoading(false);
+        setError('Не удалось загрузить корзину');
+        return;
+      }
+
+      if (!cartData || cartData.length === 0) {
         setCartItems([]);
         setIsLoading(false);
         setError(null);
@@ -76,18 +109,19 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
       const productIds = cartData.map(item => item.product_id);
 
-      // Товары — публичные данные, используем анонимный клиент
-      const { data: productsData, error: productsError } = await publicSupabase
-        .from('products')
-        .select('id, name, name_kk, price, in_stock, stock, slug, image_url, brand')
-        .in('id', productIds);
+      const { data: productsData, error: productsError } = await withRetry(() =>
+        supabase
+          .from('products')
+          .select('id, name, name_kk, price, in_stock, stock, slug, image_url, brand')
+          .in('id', productIds)
+      );
+
+      if (currentLoadId !== loadIdRef.current) return;
 
       if (productsError) {
-        setCartItems([]);
+        console.warn('[Cart] Ошибка загрузки products:', productsError.message);
         setIsLoading(false);
-        setError(null);
-        setTotalAmount(0);
-        setTotalItems(0);
+        setError('Не удалось загрузить данные товаров');
         return;
       }
 
@@ -121,27 +155,31 @@ export function CartProvider({ children }: { children: ReactNode }) {
       setTotalAmount(items.reduce((sum, item) => sum + item.product.price * item.quantity, 0));
       setTotalItems(items.reduce((sum, item) => sum + item.quantity, 0));
       setIsLoading(false);
-    } catch (e) {
-      setIsLoading(false);
       setError(null);
+    } catch (e: any) {
+      if (currentLoadId !== loadIdRef.current) return;
+      console.warn('[Cart] Исключение при загрузке корзины:', e?.message);
+      // Сохраняем старые данные, не очищаем
+      setIsLoading(false);
+      setError('Ошибка загрузки корзины');
     }
-  }, [supabase, user]);
+  }, [supabase]); // НЕ зависит от user — использует userIdRef
 
-  // Загружаем только когда auth готов
+  // Загружаем когда auth готов или user сменился
   useEffect(() => {
     if (!isAuthLoading) loadCart();
-  }, [isAuthLoading, loadCart]);
+  }, [isAuthLoading, user?.id, loadCart]);
 
   const addToCart = useCallback(async (productId: string, quantity: number = 1) => {
-    if (!user) {
+    const userId = userIdRef.current;
+    if (!userId) {
       return { success: false, error: 'Необходимо войти в систему' };
     }
 
     try {
       setIsLoading(true);
 
-      // Товары — публичные данные, используем анонимный клиент
-      const { data: product } = await publicSupabase
+      const { data: product } = await supabase
         .from('products')
         .select('stock, order_step')
         .eq('id', productId)
@@ -157,7 +195,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const { data: existing } = await supabase
         .from('cart_items')
         .select('id, quantity')
-        .eq('user_id', user.id)
+        .eq('user_id', userId)
         .eq('product_id', productId)
         .maybeSingle();
 
@@ -183,7 +221,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         const { error } = await supabase
           .from('cart_items')
           .insert({
-            user_id: user.id,
+            user_id: userId,
             product_id: productId,
             quantity,
           });
@@ -196,7 +234,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       setIsLoading(false);
       return { success: false, error: error.message };
     }
-  }, [supabase, user, loadCart]);
+  }, [supabase, loadCart]);
 
   const updateQuantity = useCallback(async (cartItemId: string, newQuantity: number) => {
     try {
@@ -229,7 +267,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [updateQuantity]);
 
   const clearCart = useCallback(async () => {
-    if (!user) return { success: false, error: 'Not authenticated' };
+    const userId = userIdRef.current;
+    if (!userId) return { success: false, error: 'Not authenticated' };
 
     try {
       setIsLoading(true);
@@ -237,7 +276,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const { error } = await supabase
         .from('cart_items')
         .delete()
-        .eq('user_id', user.id);
+        .eq('user_id', userId);
       if (error) throw error;
 
       setCartItems([]);
@@ -251,7 +290,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       setIsLoading(false);
       return { success: false, error: error.message };
     }
-  }, [supabase, user]);
+  }, [supabase]);
 
   const getItemInCart = useCallback((productId: string) => {
     return cartItems.find(item => item.product_id === productId);

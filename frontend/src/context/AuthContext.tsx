@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, useRef, useCallback, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { getSupabaseBrowserClient } from '@/lib/supabase';
 import { Profile } from '@/lib/types';
@@ -25,9 +25,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Стабилизация: запоминаем текущий user.id чтобы не пересоздавать объект user
+  // при TOKEN_REFRESHED (тот же пользователь, просто обновился токен)
+  const userIdRef = useRef<string | null>(null);
+
   const supabase = getSupabaseBrowserClient();
 
-  const loadProfile = async (userId: string) => {
+  const loadProfile = useCallback(async (userId: string) => {
     try {
       const { data } = await supabase
         .from('profiles')
@@ -38,23 +42,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch {
       return null;
     }
-  };
+  }, [supabase]);
 
-  const refreshProfile = async () => {
-    if (user) {
-      const p = await loadProfile(user.id);
+  const refreshProfile = useCallback(async () => {
+    if (userIdRef.current) {
+      const p = await loadProfile(userIdRef.current);
       setProfile(p);
     }
-  };
+  }, [loadProfile]);
 
-  const updateProfile = async (data: Partial<Profile>) => {
-    if (!user) return { success: false, error: 'Не авторизован' };
+  const updateProfile = useCallback(async (data: Partial<Profile>) => {
+    if (!userIdRef.current) return { success: false, error: 'Не авторизован' };
     
     try {
       const { error } = await supabase
         .from('profiles')
         .update(data)
-        .eq('id', user.id);
+        .eq('id', userIdRef.current);
       
       if (error) return { success: false, error: error.message };
       
@@ -63,15 +67,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (e: any) {
       return { success: false, error: e.message };
     }
-  };
+  }, [supabase, refreshProfile]);
 
-  const signOut = async () => {
+  const signOut = useCallback(async () => {
     await supabase.auth.signOut();
+    userIdRef.current = null;
     setUser(null);
     setProfile(null);
     setSession(null);
     window.location.href = '/login';
-  };
+  }, [supabase]);
 
   // Единая подписка на авторизацию
   useEffect(() => {
@@ -80,7 +85,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Гарантированный таймаут — если auth не ответит за 5 сек, всё равно убираем загрузку
     const timeout = setTimeout(() => {
       if (!cancelled) {
-        // Auth timeout — forcing isLoading=false
         setIsLoading(false);
       }
     }, 5000);
@@ -90,27 +94,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (cancelled) return;
 
         if ((event === 'INITIAL_SESSION' || event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && newSession?.user) {
+          // Обновляем сессию всегда (новый токен)
           setSession(newSession);
-          setUser(newSession.user);
+
+          // Обновляем user ТОЛЬКО если сменился пользователь (другой id)
+          // При TOKEN_REFRESHED тот же user — не пересоздаём объект,
+          // чтобы не вызывать каскадную перезагрузку корзины/избранного
+          const newUserId = newSession.user.id;
+          if (userIdRef.current !== newUserId) {
+            userIdRef.current = newUserId;
+            setUser(newSession.user);
+            
+            // Профиль загружаем только при смене пользователя
+            try {
+              const p = await loadProfile(newUserId);
+              if (!cancelled) setProfile(p);
+            } catch {
+              // Профиль не загрузился — не критично
+            }
+          }
           
-          // Всегда убираем загрузку при INITIAL_SESSION (до загрузки профиля)
+          // Убираем загрузку при INITIAL_SESSION
           if (event === 'INITIAL_SESSION') {
             if (!cancelled) setIsLoading(false);
             clearTimeout(timeout);
           }
-          
-          // Профиль загружаем в фоне — не блокируем UI
-          try {
-            const p = await loadProfile(newSession.user.id);
-            if (!cancelled) setProfile(p);
-          } catch {
-            // Профиль не загрузился — не критично
-          }
         } else if (event === 'INITIAL_SESSION') {
-          // Нет сессии при загрузке (включая edge-case newSession без user)
+          // Нет сессии при загрузке
+          userIdRef.current = null;
           if (!cancelled) setIsLoading(false);
           clearTimeout(timeout);
         } else if (event === 'SIGNED_OUT') {
+          userIdRef.current = null;
           setSession(null);
           setUser(null);
           setProfile(null);
@@ -123,7 +138,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       clearTimeout(timeout);
       subscription.unsubscribe();
     };
-  }, []);
+  }, [supabase, loadProfile]);
 
   return (
     <AuthContext.Provider

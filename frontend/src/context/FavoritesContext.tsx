@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, useRef, type ReactNode } from 'react';
 import { getSupabaseBrowserClient } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 
@@ -34,6 +34,19 @@ interface FavoritesContextValue {
 
 const FavoritesContext = createContext<FavoritesContextValue | null>(null);
 
+// Повтор запроса при ошибке (обновление токена, сеть)
+async function withRetry<T>(fn: () => Promise<T>, retries = 2, delay = 500): Promise<T> {
+  for (let i = 0; i <= retries; i++) {
+    try {
+      return await fn();
+    } catch (e) {
+      if (i === retries) throw e;
+      await new Promise(r => setTimeout(r, delay * (i + 1)));
+    }
+  }
+  throw new Error('withRetry: unreachable');
+}
+
 export function FavoritesProvider({ children }: { children: ReactNode }) {
   const supabase = getSupabaseBrowserClient();
   const { user, isLoading: isAuthLoading } = useAuth();
@@ -41,9 +54,15 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
   const [productIds, setProductIds] = useState<Set<string>>(new Set());
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Защита от гонки: отменяем устаревшие загрузки
+  const loadIdRef = useRef(0);
+  // Стабильная ссылка на user.id — не вызывает пересоздание useCallback при TOKEN_REFRESHED
+  const userIdRef = useRef<string | null>(null);
+  userIdRef.current = user?.id ?? null;
 
   const loadFavorites = useCallback(async () => {
-    if (!user) {
+    const userId = userIdRef.current;
+    if (!userId) {
       setFavorites([]);
       setProductIds(new Set());
       setIsLoading(false);
@@ -51,26 +70,33 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
       return;
     }
 
+    const currentLoadId = ++loadIdRef.current;
+
     try {
       setIsLoading(true);
       setError(null);
 
-      const { data: favData, error: favError } = await supabase
-        .from('favorites')
-        .select(`
-          id,
-          product_id,
-          created_at,
-          product:products(id, slug, name, name_kk, price, old_price, in_stock, image_url, brand)
-        `)
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
+      const { data: favData, error: favError } = await withRetry(() =>
+        supabase
+          .from('favorites')
+          .select(`
+            id,
+            product_id,
+            created_at,
+            product:products(id, slug, name, name_kk, price, old_price, in_stock, image_url, brand)
+          `)
+          .eq('user_id', userId)
+          .order('created_at', { ascending: false })
+      );
+
+      // Если запрос устарел (запущен новый loadFavorites) — игнорируем
+      if (currentLoadId !== loadIdRef.current) return;
 
       if (favError) {
-        setFavorites([]);
-        setProductIds(new Set());
+        console.warn('[Favorites] Ошибка загрузки:', favError.message);
+        // НЕ очищаем избранное при ошибке — сохраняем старые данные
         setIsLoading(false);
-        setError(null);
+        setError('Не удалось загрузить избранное');
         return;
       }
 
@@ -83,23 +109,28 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
       setFavorites(items);
       setProductIds(idSet);
       setIsLoading(false);
-    } catch (e) {
-      setIsLoading(false);
       setError(null);
+    } catch (e: any) {
+      if (currentLoadId !== loadIdRef.current) return;
+      console.warn('[Favorites] Исключение при загрузке:', e?.message);
+      // Сохраняем старые данные, не очищаем
+      setIsLoading(false);
+      setError('Ошибка загрузки избранного');
     }
-  }, [supabase, user]);
+  }, [supabase]); // НЕ зависит от user — использует userIdRef
 
-  // Загружаем только когда auth готов
+  // Загружаем когда auth готов или user сменился
   useEffect(() => {
     if (!isAuthLoading) loadFavorites();
-  }, [isAuthLoading, loadFavorites]);
+  }, [isAuthLoading, user?.id, loadFavorites]);
 
   const isFavorite = useCallback((productId: string) => {
     return productIds.has(productId);
   }, [productIds]);
 
   const toggleFavorite = useCallback(async (productId: string) => {
-    if (!user) {
+    const userId = userIdRef.current;
+    if (!userId) {
       return { success: false, error: 'Not authenticated' };
     }
 
@@ -122,7 +153,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
         const { error } = await supabase
           .from('favorites')
           .delete()
-          .eq('user_id', user.id)
+          .eq('user_id', userId)
           .eq('product_id', productId);
 
         if (error) {
@@ -134,7 +165,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
         const { error } = await supabase
           .from('favorites')
           .insert({
-            user_id: user.id,
+            user_id: userId,
             product_id: productId,
           });
 
@@ -148,7 +179,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
     } catch (error: any) {
       return { success: false, error: error.message };
     }
-  }, [supabase, user, productIds, loadFavorites]);
+  }, [supabase, productIds, loadFavorites]);
 
   return (
     <FavoritesContext.Provider value={{

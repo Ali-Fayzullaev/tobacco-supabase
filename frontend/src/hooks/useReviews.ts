@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { getSupabaseBrowserClient } from '@/lib/supabase';
+import { getSupabaseBrowserClient, getPublicSupabaseClient } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 
 export interface ProductReview {
@@ -46,7 +46,8 @@ export interface CreateReviewData {
 
 export function useReviews(productId?: string) {
   const { user } = useAuth();
-  const supabase = getSupabaseBrowserClient();
+  const supabase = getSupabaseBrowserClient();   // для записи (нужна авторизация)
+  const publicSupabase = getPublicSupabaseClient(); // для чтения (публичные данные)
   const [reviews, setReviews] = useState<ProductReview[]>([]);
   const [stats, setStats] = useState<ReviewStats | null>(null);
   const [userReview, setUserReview] = useState<ProductReview | null>(null);
@@ -62,7 +63,7 @@ export function useReviews(productId?: string) {
     setError(null);
 
     try {
-      const { data, error: fetchError } = await supabase
+      const { data, error: fetchError } = await publicSupabase
         .from('product_reviews')
         .select(`
           *,

@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, useCallback, useRef, type ReactNode } from 'react';
-import { getSupabaseBrowserClient } from '@/lib/supabase';
+import { getSupabaseBrowserClient, getPublicSupabaseClient } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 
 export interface CartItem {
@@ -37,7 +37,7 @@ interface CartContextValue {
 const CartContext = createContext<CartContextValue | null>(null);
 
 // Повтор запроса при ошибке (обновление токена, сеть)
-async function withRetry<T>(fn: () => Promise<T>, retries = 2, delay = 500): Promise<T> {
+async function withRetry<T>(fn: () => PromiseLike<T>, retries = 2, delay = 500): Promise<T> {
   for (let i = 0; i <= retries; i++) {
     try {
       return await fn();
@@ -51,6 +51,7 @@ async function withRetry<T>(fn: () => Promise<T>, retries = 2, delay = 500): Pro
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const supabase = getSupabaseBrowserClient();
+  const publicSupabase = getPublicSupabaseClient();
   const { user, isLoading: isAuthLoading } = useAuth();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -109,8 +110,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
       const productIds = cartData.map(item => item.product_id);
 
+      // Товары — публичные данные, загружаем через анонимный клиент
+      // (авторизованный может не отдавать products при проблемах с JWT)
       const { data: productsData, error: productsError } = await withRetry(() =>
-        supabase
+        publicSupabase
           .from('products')
           .select('id, name, name_kk, price, in_stock, stock, slug, image_url, brand')
           .in('id', productIds)
@@ -163,7 +166,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       setIsLoading(false);
       setError('Ошибка загрузки корзины');
     }
-  }, [supabase]); // НЕ зависит от user — использует userIdRef
+  }, [supabase, publicSupabase]); // НЕ зависит от user — использует userIdRef
 
   // Загружаем когда auth готов или user сменился
   useEffect(() => {
@@ -179,7 +182,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
     try {
       setIsLoading(true);
 
-      const { data: product } = await supabase
+      // Товары — публичные данные, загружаем через анонимный клиент
+      const { data: product } = await publicSupabase
         .from('products')
         .select('stock, order_step')
         .eq('id', productId)

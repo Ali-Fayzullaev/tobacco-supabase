@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, useCallback, useRef, type ReactNode } from 'react';
-import { getSupabaseBrowserClient } from '@/lib/supabase';
+import { getSupabaseBrowserClient, getPublicSupabaseClient } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 
 export interface FavoriteItem {
@@ -35,7 +35,7 @@ interface FavoritesContextValue {
 const FavoritesContext = createContext<FavoritesContextValue | null>(null);
 
 // Повтор запроса при ошибке (обновление токена, сеть)
-async function withRetry<T>(fn: () => Promise<T>, retries = 2, delay = 500): Promise<T> {
+async function withRetry<T>(fn: () => PromiseLike<T>, retries = 2, delay = 500): Promise<T> {
   for (let i = 0; i <= retries; i++) {
     try {
       return await fn();
@@ -49,6 +49,7 @@ async function withRetry<T>(fn: () => Promise<T>, retries = 2, delay = 500): Pro
 
 export function FavoritesProvider({ children }: { children: ReactNode }) {
   const supabase = getSupabaseBrowserClient();
+  const publicSupabase = getPublicSupabaseClient();
   const { user, isLoading: isAuthLoading } = useAuth();
   const [favorites, setFavorites] = useState<FavoriteItem[]>([]);
   const [productIds, setProductIds] = useState<Set<string>>(new Set());
@@ -79,12 +80,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
       const { data: favData, error: favError } = await withRetry(() =>
         supabase
           .from('favorites')
-          .select(`
-            id,
-            product_id,
-            created_at,
-            product:products(id, slug, name, name_kk, price, old_price, in_stock, image_url, brand)
-          `)
+          .select('id, product_id, created_at')
           .eq('user_id', userId)
           .order('created_at', { ascending: false })
       );
@@ -100,10 +96,49 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
         return;
       }
 
-      const items = ((favData || []) as unknown as FavoriteItem[]).map(item => ({
-        ...item,
-        product: Array.isArray(item.product) ? item.product[0] : item.product,
-      }));
+      if (!favData || favData.length === 0) {
+        setFavorites([]);
+        setProductIds(new Set());
+        setIsLoading(false);
+        setError(null);
+        return;
+      }
+
+      const favProductIds = favData.map(f => f.product_id);
+
+      // Товары — публичные данные, загружаем через анонимный клиент
+      const { data: productsData, error: productsError } = await withRetry(() =>
+        publicSupabase
+          .from('products')
+          .select('id, slug, name, name_kk, price, old_price, in_stock, image_url, brand')
+          .in('id', favProductIds)
+      );
+
+      if (currentLoadId !== loadIdRef.current) return;
+
+      if (productsError) {
+        console.warn('[Favorites] Ошибка загрузки товаров:', productsError.message);
+        setIsLoading(false);
+        setError('Не удалось загрузить данные товаров');
+        return;
+      }
+
+      const productsMap = new Map(
+        (productsData || []).map((p: any) => [p.id, p])
+      );
+
+      const items: FavoriteItem[] = favData
+        .map(fav => {
+          const product = productsMap.get(fav.product_id);
+          if (!product) return null;
+          return {
+            id: fav.id,
+            product_id: fav.product_id,
+            created_at: fav.created_at,
+            product,
+          };
+        })
+        .filter((item): item is FavoriteItem => item !== null);
       const idSet = new Set(items.map(f => f.product_id));
 
       setFavorites(items);
@@ -117,7 +152,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
       setIsLoading(false);
       setError('Ошибка загрузки избранного');
     }
-  }, [supabase]); // НЕ зависит от user — использует userIdRef
+  }, [supabase, publicSupabase]); // НЕ зависит от user — использует userIdRef
 
   // Загружаем когда auth готов или user сменился
   useEffect(() => {

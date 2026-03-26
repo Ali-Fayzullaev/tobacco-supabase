@@ -2,16 +2,25 @@
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { ShoppingBag, Search, ShoppingCart, MessageCircle } from 'lucide-react';
-import { useState, useEffect, useRef } from 'react';
+import { ShoppingBag, Search, ShoppingCart, Package, MessageCircle } from 'lucide-react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useCart } from '@/hooks/useCart';
+import { useStoreSettings } from '@/hooks/useStoreSettings';
 import { SearchOverlay } from '@/components/SearchOverlay';
 import { cn } from '@/lib/utils';
 
 export function MobileTabBar() {
   const pathname = usePathname();
   const { totalItems } = useCart();
+  const { settings } = useStoreSettings();
   const [searchOpen, setSearchOpen] = useState(false);
+
+  // Формируем WhatsApp URL из номера в настройках
+  const whatsappUrl = useMemo(() => {
+    const raw = settings.store_phone || '+77008001800';
+    const digits = raw.replace(/\D/g, '');
+    return `https://wa.me/${digits}`;
+  }, [settings.store_phone]);
 
   // Анимация бейджа корзины при добавлении товара
   const [cartBounce, setCartBounce] = useState(false);
@@ -35,8 +44,6 @@ export function MobileTabBar() {
   ) {
     return null;
   }
-
-  const whatsappUrl = 'https://wa.me/77008001800';
 
   type TabDef = {
     key: string;
@@ -77,6 +84,15 @@ export function MobileTabBar() {
       isActive: pathname === '/cart' || pathname === '/checkout',
       badge: totalItems,
       bounce: cartBounce,
+    },
+    {
+      key: 'orders',
+      href: '/profile/orders',
+      label: 'Заказы',
+      icon: Package,
+      isActive: pathname.startsWith('/profile/orders'),
+      badge: 0,
+      bounce: false,
     },
     {
       key: 'whatsapp',

@@ -329,7 +329,7 @@ function OrderCard({ order }: { order: any }) {
 
   // Проверяем есть ли удалённые товары
   const deletedItems = order.items?.filter((item: any) => 
-    item.product_deleted || !item.products
+    item.product_deleted || !item.product
   ) || [];
   const hasDeletedProducts = deletedItems.length > 0;
   const deletedCount = deletedItems.length;
@@ -487,9 +487,9 @@ function OrderCard({ order }: { order: any }) {
             </h3>
             <div className="space-y-3">
               {order.items?.map((item: any) => {
-                const isDeleted = item.product_deleted || !item.products;
-                const productName = item.products?.name || item.product_name_snapshot || 'Товар удалён';
-                const productImage = item.products?.image_url;
+                const isDeleted = item.product_deleted || !item.product;
+                const productName = item.product?.name || item.product_name_snapshot || 'Товар удалён';
+                const productImage = item.product?.image_url;
 
                 return (
                   <div 
@@ -553,7 +553,7 @@ function OrderCard({ order }: { order: any }) {
                       ) : (
                         <>
                           <Link 
-                            href={`/product/${item.products?.slug || item.product_id}`}
+                            href={`/product/${item.product?.slug || item.product_id}`}
                             className="font-medium text-[#F5F5F5] hover:text-gold-500 transition-colors"
                           >
                             {productName}
@@ -678,7 +678,7 @@ function OrderCard({ order }: { order: any }) {
                 setIsReordering(true);
                 try {
                   const activeItems = (order.items || []).filter(
-                    (item: any) => !item.product_deleted && item.products
+                    (item: any) => !item.product_deleted && item.product
                   );
                   if (activeItems.length === 0) {
                     const { toast } = await import('sonner');

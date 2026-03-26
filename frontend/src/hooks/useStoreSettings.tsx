@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { createBrowserSupabaseClient } from '@/lib/supabase';
+import { getPublicSupabaseClient } from '@/lib/supabase';
 
 export interface StoreSettings {
   store_name: string;
@@ -59,7 +59,7 @@ export function StoreSettingsProvider({ children }: { children: ReactNode }) {
 
   const fetchSettings = async () => {
     try {
-      const supabase = createBrowserSupabaseClient();
+      const supabase = getPublicSupabaseClient();
       const { data, error } = await supabase
         .from('store_settings')
         .select('key, value');

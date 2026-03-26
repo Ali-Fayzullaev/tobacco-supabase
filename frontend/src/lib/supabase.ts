@@ -21,11 +21,25 @@ export const getSupabaseBrowserClient = () => {
   return browserClient;
 };
 
-// ─── Публичный клиент = тот же browserClient ───
-// Для публичных данных (товары, категории) RLS разрешает SELECT всем (is_active = true),
-// поэтому отдельный анонимный клиент не нужен. Использование одного клиента
-// гарантирует, что не будет конфликта GoTrueClient.
-export const getPublicSupabaseClient = getSupabaseBrowserClient;
+// ─── Публичный клиент для товаров/категорий (без авторизации) ───
+// Отдельный клиент для публичных данных: НЕ отправляет JWT-токен,
+// НЕ пытается обновить сессию, НЕ конфликтует с основным GoTrueClient
+// (persistSession: false → не трогает localStorage/cookies).
+// Без этого при протухшем токене запрос продуктов зависает.
+let publicClient: SupabaseClient | null = null;
+
+export const getPublicSupabaseClient = () => {
+  if (!publicClient) {
+    publicClient = createClient(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+        detectSessionInUrl: false,
+      },
+    });
+  }
+  return publicClient;
+};
 
 // Алиасы для совместимости
 export const createBrowserSupabaseClient = getSupabaseBrowserClient;

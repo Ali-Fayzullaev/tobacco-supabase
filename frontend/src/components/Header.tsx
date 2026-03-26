@@ -483,7 +483,7 @@ export function Header() {
                     Профиль
                   </Link>
                   <Link
-                    href="/profile?tab=orders"
+                    href="/profile/orders"
                     onClick={() => setMobileMenuOpen(false)}
                     className="flex items-center gap-3 px-4 py-3 text-sm text-[#A0A0A0] hover:text-gold-500 hover:bg-gold-500/10 rounded-lg"
                   >

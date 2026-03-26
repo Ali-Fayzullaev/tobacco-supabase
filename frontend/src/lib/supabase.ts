@@ -23,9 +23,15 @@ export const getSupabaseBrowserClient = () => {
 
 // ─── Публичный клиент для товаров/категорий (без авторизации) ───
 // Отдельный клиент для публичных данных: НЕ отправляет JWT-токен,
-// НЕ пытается обновить сессию, НЕ конфликтует с основным GoTrueClient
-// (persistSession: false → не трогает localStorage/cookies).
-// Без этого при протухшем токене запрос продуктов зависает.
+// НЕ пытается обновить сессию, НЕ конфликтует с основным GoTrueClient.
+//
+// КРИТИЧНО: storageKey ОБЯЗАТЕЛЬНО должен быть уникальным!
+// Иначе два GoTrueClient с одним ключом общаются через BroadcastChannel,
+// публичный клиент транслирует "сессии нет" → основной теряет авторизацию.
+// Это и было причиной потери auth на production (HTTPS).
+//
+// global.headers.Authorization фиксирует anon-key → клиент НИКОГДА
+// не подставит пользовательский JWT, даже если каким-то образом получит его.
 let publicClient: SupabaseClient | null = null;
 
 export const getPublicSupabaseClient = () => {
@@ -35,6 +41,12 @@ export const getPublicSupabaseClient = () => {
         persistSession: false,
         autoRefreshToken: false,
         detectSessionInUrl: false,
+        storageKey: 'sb-public-anon-readonly',
+      },
+      global: {
+        headers: {
+          Authorization: `Bearer ${supabaseAnonKey}`,
+        },
       },
     });
   }

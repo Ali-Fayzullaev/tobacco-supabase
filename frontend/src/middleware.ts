@@ -91,6 +91,19 @@ export async function middleware(request: NextRequest) {
   // Логируем в консоль сервера для SSH диагностики
   if (pathname === '/catalog' || pathname === '/api/debug-auth') {
     console.log(`[MW] ${pathname} | proto=${request.headers.get('x-forwarded-proto')} | user=${user?.id?.substring(0, 8) || 'anon'} | cookies=${allCookies.length} sb=${sbCookies.length} | ${cookieDetails || 'no sb cookies'}`);
+    
+    // Проверяем Set-Cookie заголовки в ответе
+    const setCookieHeaders = response.headers.getSetCookie?.() || [];
+    if (setCookieHeaders.length > 0) {
+      setCookieHeaders.forEach((sc: string) => {
+        // Логируем только атрибуты (без значения) для безопасности
+        const parts = sc.split(';').map((p: string) => p.trim());
+        const nameVal = parts[0]?.split('=');
+        const name = nameVal?.[0] || 'unknown';
+        const attrs = parts.slice(1).join('; ');
+        console.log(`[MW-SET-COOKIE] ${name} | attrs: ${attrs}`);
+      });
+    }
   }
   // --- END DEBUG ---
 

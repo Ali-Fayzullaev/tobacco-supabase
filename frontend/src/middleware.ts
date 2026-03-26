@@ -10,19 +10,15 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
-  // Определяем типы маршрутов ДО создания Supabase клиента
+  // Определяем типы маршрутов
   const authPages = ['/login', '/register'];
   const isAuthPage = authPages.includes(pathname);
   const protectedRoutes = ['/cart', '/checkout', '/profile', '/admin'];
   const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
 
-  // Для публичных страниц (каталог, продукт, главная) — НЕ вызываем getUser()
-  // Это убирает лишний сетевой запрос и ошибки ERR_CONNECTION_CLOSED
-  if (!isAuthPage && !isProtectedRoute) {
-    return response;
-  }
-
-  // Создаём Supabase клиент только когда нужна проверка авторизации
+  // Supabase SSR клиент создаётся ВСЕГДА — он обновляет auth-куки
+  // (обновление JWT-токенов передаётся через cookies).
+  // Без этого токен в куке протухнет и клиентский JS не восстановит сессию.
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -55,19 +51,27 @@ export async function middleware(request: NextRequest) {
     return redirectResponse;
   };
 
-  // getUser() вызывается ТОЛЬКО для auth-страниц и защищённых маршрутов
+  // getUser() обновляет сессию/куки и проверяет авторизацию.
+  // Для ВСЕХ страниц вызываем getUser() чтобы обновить JWT в куке —
+  // иначе при переходе на публичные страницы (каталог) куки протухнут
+  // и клиентский JS потеряет авторизацию.
   let user = null;
   try {
     const { data } = await supabase.auth.getUser();
     user = data.user;
   } catch {
     // Сеть упала — для защищённых маршрутов редиректим на login,
-    // для auth-страниц просто пропускаем (пусть клиент разберётся)
+    // для остальных просто пропускаем (пусть клиент разберётся)
     if (isProtectedRoute) {
       const redirectUrl = new URL('/login', request.url);
       redirectUrl.searchParams.set('redirect', pathname);
       return redirectWithCookies(redirectUrl);
     }
+    return response;
+  }
+
+  // Для публичных страниц — просто возвращаем response с обновлёнными cookies
+  if (!isAuthPage && !isProtectedRoute) {
     return response;
   }
 

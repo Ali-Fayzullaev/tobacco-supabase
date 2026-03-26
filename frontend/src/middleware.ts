@@ -28,12 +28,6 @@ export async function middleware(request: NextRequest) {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet: { name: string; value: string; options?: Record<string, any> }[]) {
-          // DEBUG: логируем опции кук
-          cookiesToSet.forEach(({ name, options }) => {
-            if (name.startsWith('sb-')) {
-              console.log(`[MW-COOKIE] setAll: ${name} | httpOnly=${options?.httpOnly} secure=${options?.secure} sameSite=${options?.sameSite} path=${options?.path} maxAge=${options?.maxAge}`);
-            }
-          });
           cookiesToSet.forEach(({ name, value }) => {
             request.cookies.set(name, value);
           });
@@ -75,37 +69,6 @@ export async function middleware(request: NextRequest) {
     }
     return response;
   }
-
-  // --- DEBUG: диагностика cookie/auth в заголовке ответа ---
-  const allCookies = request.cookies.getAll();
-  const sbCookies = allCookies.filter(c => c.name.startsWith('sb-'));
-  const cookieDetails = sbCookies.map(c => `${c.name}(${c.value.length}ch)`).join(', ');
-  response.headers.set('x-debug-auth', JSON.stringify({
-    user: user ? user.id.substring(0, 8) : null,
-    cookies: allCookies.length,
-    sbCookies: sbCookies.length,
-    sbDetails: cookieDetails || 'none',
-    proto: request.headers.get('x-forwarded-proto') || 'unknown',
-  }));
-
-  // Логируем в консоль сервера для SSH диагностики
-  if (pathname === '/catalog' || pathname === '/api/debug-auth') {
-    console.log(`[MW] ${pathname} | proto=${request.headers.get('x-forwarded-proto')} | user=${user?.id?.substring(0, 8) || 'anon'} | cookies=${allCookies.length} sb=${sbCookies.length} | ${cookieDetails || 'no sb cookies'}`);
-    
-    // Проверяем Set-Cookie заголовки в ответе
-    const setCookieHeaders = response.headers.getSetCookie?.() || [];
-    if (setCookieHeaders.length > 0) {
-      setCookieHeaders.forEach((sc: string) => {
-        // Логируем только атрибуты (без значения) для безопасности
-        const parts = sc.split(';').map((p: string) => p.trim());
-        const nameVal = parts[0]?.split('=');
-        const name = nameVal?.[0] || 'unknown';
-        const attrs = parts.slice(1).join('; ');
-        console.log(`[MW-SET-COOKIE] ${name} | attrs: ${attrs}`);
-      });
-    }
-  }
-  // --- END DEBUG ---
 
   // Для публичных страниц — просто возвращаем response с обновлёнными cookies
   if (!isAuthPage && !isProtectedRoute) {

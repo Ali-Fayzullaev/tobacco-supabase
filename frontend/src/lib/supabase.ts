@@ -16,7 +16,21 @@ export const getSupabaseBrowserClient = () => {
   }
   
   if (!browserClient) {
-    browserClient = createBrowserClient(supabaseUrl, supabaseAnonKey);
+    browserClient = createBrowserClient(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        // navigator.locks доступен ТОЛЬКО на HTTPS (secure context).
+        // На HTTP его нет → GoTrueClient использует fallback → всё OK.
+        // На HTTPS navigator.locks.request() с exclusive-блокировкой
+        // может дедлочиться при навигации (предыдущая страница не успевает
+        // отпустить lock до загрузки новой). Результат: getSession() зависает
+        // на неопределённое время, auth не инициализируется, корзина/избранное/
+        // админка не работают.
+        // Решение: no-op lock (безопасно для single-tab, для multi-tab
+        // в худшем случае concurrent refresh — один из них не пройдёт).
+        // @ts-ignore — тип lock существует в gotrue-js, но может отсутствовать в @supabase/ssr
+        lock: async (_name: string, _acquireTimeout: number, fn: () => Promise<any>) => fn(),
+      },
+    });
   }
   return browserClient;
 };

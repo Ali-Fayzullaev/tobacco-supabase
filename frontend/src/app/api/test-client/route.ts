@@ -133,8 +133,6 @@ export async function GET() {
             }
           });
           if (!found) break;
-            break;
-          }
         }
         add(chunks.length > 0 ? 'ok' : 'warn', '   Cookie chunks found: ' + (chunks.length > 0 ? chunks.join(', ') : 'NONE'));
         

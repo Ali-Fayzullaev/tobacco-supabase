@@ -9,6 +9,7 @@ import { FavoritesProvider } from '@/context/FavoritesContext';
 import { StoreSettingsProvider } from '@/hooks/useStoreSettings';
 import AgeGate from '@/components/AgeGate';
 import { MobileTabBar } from '@/components/MobileTabBar';
+import { ClientDiag } from '@/components/ClientDiag';
 
 const montserrat = Montserrat({ 
   subsets: ['latin', 'cyrillic'],
@@ -48,6 +49,7 @@ export default function RootLayout({
           </CartProvider>
         </AuthProvider>
         <Toaster position="top-right" richColors />
+        <ClientDiag />
       </body>
     </html>
   );

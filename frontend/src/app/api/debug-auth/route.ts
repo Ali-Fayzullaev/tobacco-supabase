@@ -1,6 +1,17 @@
 import { createServerClient } from '@supabase/ssr';
 import { cookies, headers } from 'next/headers';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+
+// POST: принимает клиентскую диагностику и логирует
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    console.log('[CLIENT-DIAG]', JSON.stringify(body));
+    return NextResponse.json({ ok: true });
+  } catch {
+    return NextResponse.json({ error: 'bad json' }, { status: 400 });
+  }
+}
 
 export async function GET() {
   const cookieStore = await cookies();

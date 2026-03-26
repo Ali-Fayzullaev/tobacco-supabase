@@ -43,7 +43,7 @@ import { cn, formatPrice } from '@/lib/utils';
 import type { Category } from '@/lib/types';
 
 type SortOption = 'newest' | 'price_asc' | 'price_desc' | 'popular';
-type GridSize = '2' | '3' | '4' | '5' | '6';
+type GridSize = '1' | '2' | '3' | '4' | '5' | '6';
 type CardSize = 'compact' | 'normal' | 'comfortable';
 
 const sortOptions: { value: SortOption; label: string }[] = [
@@ -61,6 +61,12 @@ const gridOptions: { value: GridSize; label: string; cols: number }[] = [
   { value: '6', label: '6', cols: 6 },
 ];
 
+// Мобильные опции — только 1 и 2 колонки
+const mobileGridOptions: { value: GridSize; label: string }[] = [
+  { value: '1' as GridSize, label: '1' },
+  { value: '2', label: '2' },
+];
+
 const cardSizeOptions: { value: CardSize; label: string }[] = [
   { value: 'compact', label: 'Компактные' },
   { value: 'normal', label: 'Стандартные' },
@@ -69,7 +75,8 @@ const cardSizeOptions: { value: CardSize; label: string }[] = [
 
 function getGridClass(gridSize: GridSize): string {
   switch (gridSize) {
-    case '2': return 'grid-cols-1 sm:grid-cols-2';
+    case '1': return 'grid-cols-1';
+    case '2': return 'grid-cols-2';
     case '3': return 'grid-cols-2 sm:grid-cols-2 md:grid-cols-3';
     case '4': return 'grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4';
     case '5': return 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5';
@@ -296,7 +303,7 @@ function CatalogContent() {
   const canBuy = !!user;
   
   const [viewMode, setViewMode] = useState<'grid' | 'list' | 'table'>('grid');
-  const [gridSize, setGridSize] = useState<GridSize>('4');
+  const [gridSize, setGridSize] = useState<GridSize>('2');
   const [cardSize, setCardSize] = useState<CardSize>('normal');
   const [showFilters, setShowFilters] = useState(false);
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
@@ -315,7 +322,7 @@ function CatalogContent() {
       const savedGridSize = localStorage.getItem('catalog_grid_size') as GridSize;
       const savedCardSize = localStorage.getItem('catalog_card_size') as CardSize;
       const savedViewMode = localStorage.getItem('catalog_view_mode') as 'grid' | 'list' | 'table';
-      if (savedGridSize && ['2', '3', '4', '5', '6'].includes(savedGridSize)) setGridSize(savedGridSize);
+      if (savedGridSize && ['1', '2', '3', '4', '5', '6'].includes(savedGridSize)) setGridSize(savedGridSize);
       if (savedCardSize && ['compact', 'normal', 'comfortable'].includes(savedCardSize)) setCardSize(savedCardSize);
       if (savedViewMode && ['grid', 'list', 'table'].includes(savedViewMode)) setViewMode(savedViewMode);
     }
@@ -637,19 +644,19 @@ function CatalogContent() {
           {/* ═══ MAIN CONTENT ═══ */}
           <main className="flex-1 min-w-0">
             {/* Панель управления */}
-            <div className="bg-[#1E1E1E] rounded-2xl border border-[#2A2A2A] shadow-sm p-3 sm:p-4 mb-6">
-              <div className="flex flex-wrap items-center gap-3">
+            <div className="bg-[#1E1E1E] rounded-2xl border border-[#2A2A2A] shadow-sm p-2.5 sm:p-4 mb-4 sm:mb-6">
+              <div className="flex items-center gap-2 sm:gap-3">
                 {/* Мобильные фильтры */}
                 <Button
                   onClick={() => setShowFilters(true)}
                   variant="outline"
                   size="sm"
-                  className="lg:hidden gap-2 border-[#2A2A2A] rounded-xl"
+                  className="lg:hidden gap-1.5 border-[#2A2A2A] rounded-xl h-9 px-3"
                 >
                   <SlidersHorizontal className="h-4 w-4" />
-                  Фильтры
+                  <span className="hidden xs:inline">Фильтры</span>
                   {activeFiltersCount > 0 && (
-                    <Badge className="ml-1 bg-gold-500 h-5 w-5 p-0 flex items-center justify-center text-[10px]">
+                    <Badge className="bg-gold-500 h-5 min-w-[20px] p-0 flex items-center justify-center text-[10px]">
                       {activeFiltersCount}
                     </Badge>
                   )}
@@ -659,7 +666,7 @@ function CatalogContent() {
                 <div className="flex items-center gap-2">
                   <ArrowUpDown className="h-4 w-4 text-[#666] hidden sm:block" />
                   <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortOption)}>
-                    <SelectTrigger className="w-[140px] sm:w-[160px] bg-[#1E1E1E] border-[#2A2A2A] h-9 text-sm rounded-xl">
+                    <SelectTrigger className="w-[130px] sm:w-[160px] bg-[#1E1E1E] border-[#2A2A2A] h-9 text-xs sm:text-sm rounded-xl">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-[#1E1E1E] border-[#2A2A2A]">
@@ -823,76 +830,97 @@ function CatalogContent() {
 
       {/* ═══ MOBILE FILTERS MODAL ═══ */}
       {showFilters && (
-        <div className="fixed inset-0 z-50 lg:hidden">
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowFilters(false)} />
-          <div className="absolute right-0 top-0 bottom-0 w-[85vw] max-w-80 bg-[#1E1E1E] shadow-xl overflow-y-auto">
-            {/* Шапка */}
-            <div className="sticky top-0 bg-[#1E1E1E] border-b border-[#2A2A2A] px-5 py-4 flex items-center justify-between z-10">
+        <div className="fixed inset-0 z-[60] lg:hidden">
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowFilters(false)} />
+          <div className="absolute right-0 top-0 bottom-0 w-[85vw] max-w-80 bg-[#1A1A1A] shadow-2xl flex flex-col">
+            {/* Шапка — sticky */}
+            <div className="bg-[#1A1A1A] border-b border-[#2A2A2A] px-5 py-4 flex items-center justify-between flex-shrink-0">
               <h2 className="font-semibold text-[#F5F5F5] flex items-center gap-2">
                 <Filter className="h-4 w-4 text-gold-500" />
                 Фильтры
+                {activeFiltersCount > 0 && (
+                  <Badge className="bg-gold-500 text-white text-[10px] h-5 min-w-[20px] px-1.5">
+                    {activeFiltersCount}
+                  </Badge>
+                )}
               </h2>
-              <button onClick={() => setShowFilters(false)} className="p-1.5 text-[#666] hover:text-[#A0A0A0] hover:bg-[#252525] rounded-lg transition-colors">
+              <button onClick={() => setShowFilters(false)} className="p-2 text-[#666] hover:text-[#A0A0A0] hover:bg-[#252525] rounded-xl transition-colors">
                 <X className="h-5 w-5" />
               </button>
             </div>
 
-            <div className="p-5 space-y-6">
-              {/* Отображение */}
+            {/* Скроллируемое содержимое */}
+            <div className="flex-1 overflow-y-auto p-5 space-y-5">
+              {/* Вид отображения */}
               <div>
-                <h3 className="font-semibold text-[#F5F5F5] mb-3 text-sm uppercase tracking-wide">Отображение</h3>
-                <div className="space-y-3">
-                  <div>
-                    <label className="text-sm text-[#A0A0A0] mb-1 block">Колонок</label>
-                    <Select value={gridSize} onValueChange={(v) => handleGridSizeChange(v as GridSize)}>
-                      <SelectTrigger className="w-full bg-[#121212] border-[#2A2A2A] rounded-xl"><SelectValue /></SelectTrigger>
-                      <SelectContent className="bg-[#1E1E1E] border-[#2A2A2A]">
-                        {gridOptions.map((o) => (
-                          <SelectItem key={o.value} value={o.value} className="text-[#C0C0C0]">{o.cols} колонок</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <label className="text-sm text-[#A0A0A0] mb-1 block">Размер карточек</label>
-                    <Select value={cardSize} onValueChange={(v) => handleCardSizeChange(v as CardSize)}>
-                      <SelectTrigger className="w-full bg-[#121212] border-[#2A2A2A] rounded-xl"><SelectValue /></SelectTrigger>
-                      <SelectContent className="bg-[#1E1E1E] border-[#2A2A2A]">
-                        {cardSizeOptions.map((o) => (
-                          <SelectItem key={o.value} value={o.value} className="text-[#C0C0C0]">{o.label}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                <h3 className="font-semibold text-[#F5F5F5] mb-3 text-sm uppercase tracking-wide">Вид</h3>
+                <div className="flex items-center gap-1.5 bg-[#121212] rounded-xl p-1 border border-[#2A2A2A]">
+                  <button
+                    onClick={() => handleViewModeChange('grid')}
+                    className={cn(
+                      "flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-medium transition-all",
+                      viewMode === 'grid' ? "bg-gold-500/15 text-gold-500" : "text-[#666] hover:text-[#A0A0A0]"
+                    )}
+                  >
+                    <Grid2X2 className="h-3.5 w-3.5" />
+                    Сетка
+                  </button>
+                  <button
+                    onClick={() => handleViewModeChange('list')}
+                    className={cn(
+                      "flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-medium transition-all",
+                      viewMode === 'list' ? "bg-gold-500/15 text-gold-500" : "text-[#666] hover:text-[#A0A0A0]"
+                    )}
+                  >
+                    <LayoutList className="h-3.5 w-3.5" />
+                    Список
+                  </button>
+                  <button
+                    onClick={() => handleViewModeChange('table')}
+                    className={cn(
+                      "flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-medium transition-all",
+                      viewMode === 'table' ? "bg-gold-500/15 text-gold-500" : "text-[#666] hover:text-[#A0A0A0]"
+                    )}
+                  >
+                    <Table2 className="h-3.5 w-3.5" />
+                    Прайс
+                  </button>
                 </div>
               </div>
 
-              <Separator className="bg-[#252525]" />
-
-              {/* Поиск */}
-              <div>
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#666]" />
-                  <Input
-                    type="text"
-                    placeholder="Поиск..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 bg-[#121212] border-[#2A2A2A] rounded-xl"
-                  />
+              {/* Колонки — только для grid, мобильные 1 и 2 */}
+              {viewMode === 'grid' && (
+                <div>
+                  <h3 className="font-semibold text-[#F5F5F5] mb-3 text-sm uppercase tracking-wide">Колонки</h3>
+                  <div className="flex items-center gap-1.5 bg-[#121212] rounded-xl p-1 border border-[#2A2A2A]">
+                    {mobileGridOptions.map((o) => (
+                      <button
+                        key={o.value}
+                        onClick={() => handleGridSizeChange(o.value)}
+                        className={cn(
+                          "flex-1 py-2.5 rounded-lg text-sm font-medium transition-all",
+                          gridSize === o.value || (gridSize !== '1' && gridSize !== '2' && o.value === '2')
+                            ? "bg-gold-500/15 text-gold-500"
+                            : "text-[#666] hover:text-[#A0A0A0]"
+                        )}
+                      >
+                        {o.value === '1' ? '1 колонка' : '2 колонки'}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
               <Separator className="bg-[#252525]" />
 
               {/* Категории */}
               <div>
                 <h3 className="font-semibold text-[#F5F5F5] mb-3 text-sm uppercase tracking-wide">Категории</h3>
-                <div className="space-y-0.5">
+                <div className="space-y-0.5 max-h-[280px] overflow-y-auto hide-scrollbar">
                   <button
-                    onClick={() => { setSelectedCategory(null); setShowFilters(false); router.push('/catalog', { scroll: false }); }}
+                    onClick={() => { setSelectedCategory(null); router.push('/catalog', { scroll: false }); }}
                     className={cn(
-                      "w-full text-left px-3 py-2 rounded-xl text-sm transition-all",
+                      "w-full text-left px-3 py-2.5 rounded-xl text-sm transition-all",
                       !selectedCategory ? "bg-gold-500/10 text-gold-600 font-semibold" : "text-[#A0A0A0] hover:bg-[#121212]"
                     )}
                   >
@@ -905,22 +933,28 @@ function CatalogContent() {
                     return (
                       <div key={cat.id}>
                         <button
-                          onClick={() => { handleSelectCategory(cat.id); if (subs.length === 0) setShowFilters(false); }}
+                          onClick={() => handleSelectCategory(cat.id)}
                           className={cn(
-                            "w-full text-left px-3 py-2 rounded-xl text-sm transition-all",
+                            "w-full text-left px-3 py-2.5 rounded-xl text-sm transition-all flex items-center justify-between",
                             isExpanded ? "bg-gold-500/10 text-gold-600 font-semibold" : "text-[#A0A0A0] hover:bg-[#121212]"
                           )}
                         >
-                          {cat.name}
+                          <span>{cat.name}</span>
+                          {subs.length > 0 && (
+                            <ChevronRight className={cn(
+                              "w-4 h-4 transition-transform duration-200",
+                              isExpanded && "rotate-90"
+                            )} />
+                          )}
                         </button>
                         {isExpanded && subs.length > 0 && (
                           <div className="ml-3 mt-1 mb-1 space-y-0.5 border-l-2 border-gold-500/30 pl-3">
                             {subs.map(sub => (
                               <button
                                 key={sub.id}
-                                onClick={() => { handleSelectCategory(sub.id); setShowFilters(false); }}
+                                onClick={() => handleSelectCategory(sub.id)}
                                 className={cn(
-                                  "w-full text-left px-3 py-1.5 rounded-lg text-sm transition-all",
+                                  "w-full text-left px-3 py-2 rounded-lg text-sm transition-all",
                                   selectedCategory === sub.id ? "text-gold-600 font-semibold bg-gold-500/10" : "text-[#A0A0A0] hover:bg-[#121212]"
                                 )}
                               >
@@ -942,24 +976,32 @@ function CatalogContent() {
                 <h3 className="font-semibold text-[#F5F5F5] mb-3 text-sm uppercase tracking-wide">Цена, ₸</h3>
                 <div className="flex items-center gap-2">
                   <Input type="number" placeholder="От" value={priceRange.min} onChange={(e) => setPriceRange({ ...priceRange, min: e.target.value })} className="bg-[#121212] border-[#2A2A2A] rounded-xl" />
-                  <span className="text-gray-300">—</span>
+                  <span className="text-[#666]">—</span>
                   <Input type="number" placeholder="До" value={priceRange.max} onChange={(e) => setPriceRange({ ...priceRange, max: e.target.value })} className="bg-[#121212] border-[#2A2A2A] rounded-xl" />
                 </div>
               </div>
 
-              {/* Кнопки */}
-              <div className="flex gap-3 pt-2">
-                <Button onClick={clearFilters} variant="outline" className="flex-1 border-[#2A2A2A] rounded-xl">
+              {/* Нижний отступ под sticky кнопки */}
+              <div className="h-4" />
+            </div>
+
+            {/* Sticky кнопки внизу — выше MobileTabBar */}
+            <div className="flex-shrink-0 bg-[#1A1A1A] border-t border-[#2A2A2A] px-5 pt-4 pb-6">
+              <div className="flex gap-3">
+                <Button onClick={() => { clearFilters(); setShowFilters(false); }} variant="outline" className="flex-1 h-11 border-[#2A2A2A] rounded-xl text-[#A0A0A0]">
                   Сбросить
                 </Button>
-                <Button onClick={() => { loadProducts(); setShowFilters(false); }} className="flex-1 bg-gold-500 hover:bg-gold-600 rounded-xl">
-                  Применить
+                <Button onClick={() => { loadProducts(); setShowFilters(false); }} className="flex-1 h-11 bg-gold-500 hover:bg-gold-600 rounded-xl font-semibold">
+                  Показать товары
                 </Button>
               </div>
             </div>
           </div>
         </div>
       )}
+
+      {/* Нижний отступ для MobileTabBar */}
+      <div className="h-16 lg:hidden" />
 
       <Footer />
     </div>

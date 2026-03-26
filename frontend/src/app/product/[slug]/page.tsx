@@ -136,7 +136,7 @@ export default function ProductPage() {
     return (
       <div className="min-h-screen bg-[#121212]">
         <Header />
-        <div className="container mx-auto px-4 py-16 lg:py-24">
+        <div className="container mx-auto px-4 py-8 sm:py-16 lg:py-24">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
             {/* Image skeleton */}
             <div className="bg-[#1E1E1E] rounded-xl border border-[#2A2A2A] shadow-sm overflow-hidden">
@@ -275,16 +275,16 @@ export default function ProductPage() {
 
       {/* Breadcrumb */}
       <div className="bg-[#1E1E1E] border-b border-[#2A2A2A]">
-        <div className="container mx-auto px-4 py-3">
-          <nav className="flex items-center gap-2 text-sm">
-            <Link href="/" className="text-[#A0A0A0] hover:text-gold-600 transition-colors">
+        <div className="container mx-auto px-4 py-2 sm:py-3">
+          <nav className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm overflow-x-auto hide-scrollbar">
+            <Link href="/" className="text-[#A0A0A0] hover:text-gold-600 transition-colors flex-shrink-0">
               Главная
             </Link>
-            <ChevronRight className="h-4 w-4 text-[#666]" />
-            <Link href="/catalog" className="text-[#A0A0A0] hover:text-gold-600 transition-colors">
+            <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4 text-[#666] flex-shrink-0" />
+            <Link href="/catalog" className="text-[#A0A0A0] hover:text-gold-600 transition-colors flex-shrink-0">
               Каталог
             </Link>
-            <ChevronRight className="h-4 w-4 text-[#666]" />
+            <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4 text-[#666] flex-shrink-0" />
             <span className="text-[#F5F5F5] font-medium truncate">{product.name}</span>
           </nav>
         </div>
@@ -296,7 +296,7 @@ export default function ProductPage() {
           <div className="space-y-4">
             {/* Main Image */}
             <Card className="bg-[#1E1E1E] border-[#2A2A2A] shadow-sm overflow-hidden">
-              <div className="relative aspect-square">
+              <div className="relative aspect-[4/3] sm:aspect-square">
                 {/* Badges */}
                 <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
                   {product.is_new && (
@@ -517,7 +517,7 @@ export default function ProductPage() {
                       </div>
                     )}
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center justify-between gap-3 sm:gap-4">
                       {/* Quantity Selector */}
                       <div className="flex items-center border border-[#2A2A2A] rounded-xl bg-[#1E1E1E]">
                         <button
@@ -547,11 +547,11 @@ export default function ProductPage() {
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="flex gap-3">
+                    <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                       <Button
                         onClick={handleAddToCart}
                         disabled={isCartLoading || !product.in_stock}
-                        className="flex-1 h-12 bg-gold-500 hover:bg-gold-600 text-white font-semibold text-base"
+                        className="flex-1 h-11 sm:h-12 bg-gold-500 hover:bg-gold-600 text-white font-semibold text-sm sm:text-base"
                       >
                         {isCartLoading ? (
                           <Loader2 className="w-5 h-5 animate-spin" />
@@ -564,7 +564,7 @@ export default function ProductPage() {
                         onClick={handleQuickBuy}
                         disabled={!product.in_stock}
                         variant="outline"
-                        className="flex-1 h-12 border-gold-500/40 text-gold-600 hover:bg-gold-500/10 font-semibold text-base"
+                        className="flex-1 h-11 sm:h-12 border-gold-500/40 text-gold-600 hover:bg-gold-500/10 font-semibold text-sm sm:text-base"
                       >
                         <Zap className="w-5 h-5 mr-2" />
                         Купить сейчас
@@ -608,22 +608,22 @@ export default function ProductPage() {
         {/* Tabs Section */}
         <div className="mt-8 lg:mt-10">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="w-full justify-start bg-[#1E1E1E] border border-[#2A2A2A] rounded-xl p-1 h-auto flex-wrap gap-1">
+            <TabsList className="w-full bg-[#1E1E1E] border border-[#2A2A2A] rounded-xl p-1 h-auto gap-1">
               <TabsTrigger 
                 value="description" 
-                className="data-[state=active]:bg-gold-500 data-[state=active]:text-white rounded-lg px-4 sm:px-6 py-2 sm:py-2.5 text-sm"
+                className="flex-1 data-[state=active]:bg-gold-500 data-[state=active]:text-white rounded-lg px-2 sm:px-6 py-2 sm:py-2.5 text-xs sm:text-sm"
               >
                 Описание
               </TabsTrigger>
               <TabsTrigger 
                 value="specs" 
-                className="data-[state=active]:bg-gold-500 data-[state=active]:text-white rounded-lg px-4 sm:px-6 py-2 sm:py-2.5 text-sm"
+                className="flex-1 data-[state=active]:bg-gold-500 data-[state=active]:text-white rounded-lg px-2 sm:px-6 py-2 sm:py-2.5 text-xs sm:text-sm"
               >
                 Характеристики
               </TabsTrigger>
               <TabsTrigger 
                 value="reviews" 
-                className="data-[state=active]:bg-gold-500 data-[state=active]:text-white rounded-lg px-4 sm:px-6 py-2 sm:py-2.5 text-sm"
+                className="flex-1 data-[state=active]:bg-gold-500 data-[state=active]:text-white rounded-lg px-2 sm:px-6 py-2 sm:py-2.5 text-xs sm:text-sm"
               >
                 Отзывы ({reviewsCount})
               </TabsTrigger>
@@ -814,7 +814,38 @@ export default function ProductPage() {
             </TabsContent>
           </Tabs>
         </div>
+
+        {/* Mobile bottom spacer for sticky bar + tab bar */}
+        <div className="h-28 lg:hidden" />
       </div>
+
+      {/* Mobile Sticky Buy Bar */}
+      {canBuy && product.in_stock && (
+        <div className="fixed bottom-[60px] left-0 right-0 z-40 lg:hidden bg-[#1A1A1A]/95 backdrop-blur-xl border-t border-[#2A2A2A] px-4 py-2.5">
+          <div className="flex items-center gap-3">
+            <div className="flex-shrink-0">
+              <p className="text-lg font-bold text-gold-600">{formatPrice(product.price)}</p>
+              {product.old_price && (
+                <p className="text-xs text-[#666] line-through">{formatPrice(product.old_price)}</p>
+              )}
+            </div>
+            <Button
+              onClick={handleAddToCart}
+              disabled={isCartLoading}
+              className="flex-1 h-10 bg-gold-500 hover:bg-gold-600 text-white font-semibold text-sm"
+            >
+              {isCartLoading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <>
+                  <ShoppingCart className="w-4 h-4 mr-1.5" />
+                  В корзину
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
+      )}
 
       <Footer />
     </div>

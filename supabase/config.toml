@@ -27,8 +27,8 @@ file_size_limit = "50MiB"
 
 [auth]
 enabled = true
-site_url = "http://localhost:3000"
-additional_redirect_urls = ["http://localhost:3000/auth/callback"]
+site_url = "https://t.raycon.kz"
+additional_redirect_urls = ["https://t.raycon.kz/auth/callback", "http://localhost:3000/auth/callback"]
 jwt_expiry = 86400
 enable_refresh_token_rotation = true
 refresh_token_reuse_interval = 10

@@ -1,9 +1,10 @@
 import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
   const cookieStore = await cookies();
+  const headerStore = await headers();
   const allCookies = cookieStore.getAll();
   
   // Показываем имена и длины куков (НЕ значения — безопасность)
@@ -58,6 +59,14 @@ export async function GET() {
 
   return NextResponse.json({
     timestamp: new Date().toISOString(),
+    requestHeaders: {
+      host: headerStore.get('host'),
+      'x-forwarded-proto': headerStore.get('x-forwarded-proto'),
+      'x-forwarded-for': headerStore.get('x-forwarded-for'),
+      'x-real-ip': headerStore.get('x-real-ip'),
+      cookie: headerStore.get('cookie') ? `[present, length=${headerStore.get('cookie')!.length}]` : '[missing]',
+      'user-agent': headerStore.get('user-agent')?.substring(0, 80),
+    },
     cookies: cookieInfo,
     cookieCount: allCookies.length,
     supabaseCookies: allCookies.filter(c => c.name.startsWith('sb-')).length,

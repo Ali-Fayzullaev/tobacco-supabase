@@ -43,7 +43,8 @@ import type { ProductFull, ProductImage, ProductAttribute } from '@/lib/types';
 
 export default function ProductPage() {
   const params = useParams();
-  const slug = params.slug as string;
+  const rawSlug = (params.slug as string) || '';
+  const slug = rawSlug ? decodeURIComponent(rawSlug) : '';
   
   const { user, profile, isLoading: isAuthLoading } = useAuth();
   const { getFullProduct, isLoading: isProductLoading } = useProducts();
@@ -75,7 +76,7 @@ export default function ProductPage() {
 
   useEffect(() => {
     if (!isAuthLoading && slug) {
-      loadProduct();
+      loadProduct(slug);
     }
   }, [slug, isAuthLoading]);
 
@@ -86,9 +87,9 @@ export default function ProductPage() {
     }
   }, [product?.id]);
 
-  const loadProduct = async () => {
+  const loadProduct = async (currentSlug: string) => {
     setProductLoading(true);
-    const result = await getFullProduct(slug);
+    const result = await getFullProduct(currentSlug);
     if (result.success && result.data) {
       setProduct(result.data as unknown as ProductFull);
     }

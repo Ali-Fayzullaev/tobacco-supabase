@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef, type ReactNode } from 'react';
 import { getSupabaseBrowserClient, getPublicSupabaseClient } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
+import { withRetry } from '@/lib/utils';
 
 export interface CartItem {
   id: string;
@@ -35,19 +36,6 @@ interface CartContextValue {
 }
 
 const CartContext = createContext<CartContextValue | null>(null);
-
-// Повтор запроса при ошибке (обновление токена, сеть)
-async function withRetry<T>(fn: () => PromiseLike<T>, retries = 2, delay = 500): Promise<T> {
-  for (let i = 0; i <= retries; i++) {
-    try {
-      return await fn();
-    } catch (e) {
-      if (i === retries) throw e;
-      await new Promise(r => setTimeout(r, delay * (i + 1)));
-    }
-  }
-  throw new Error('withRetry: unreachable');
-}
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const supabase = getSupabaseBrowserClient();
@@ -159,9 +147,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
       setTotalItems(items.reduce((sum, item) => sum + item.quantity, 0));
       setIsLoading(false);
       setError(null);
-    } catch (e: any) {
+    } catch (e: unknown) {
       if (currentLoadId !== loadIdRef.current) return;
-      console.warn('[Cart] Исключение при загрузке корзины:', e?.message);
+      console.warn('[Cart] Исключение при загрузке корзины:', e instanceof Error ? e.message : e);
       // Сохраняем старые данные, не очищаем
       setIsLoading(false);
       setError('Ошибка загрузки корзины');
@@ -234,9 +222,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
       await loadCart();
       return { success: true, message: 'Товар добавлен в корзину' };
-    } catch (error: any) {
+    } catch (error: unknown) {
       setIsLoading(false);
-      return { success: false, error: error.message };
+      return { success: false, error: error instanceof Error ? error.message : 'Неизвестная ошибка' };
     }
   }, [supabase, loadCart]);
 
@@ -260,9 +248,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
       await loadCart();
       return { success: true };
-    } catch (error: any) {
+    } catch (error: unknown) {
       setIsLoading(false);
-      return { success: false, error: error.message };
+      return { success: false, error: error instanceof Error ? error.message : 'Неизвестная ошибка' };
     }
   }, [supabase, loadCart]);
 
@@ -290,9 +278,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
       setTotalItems(0);
 
       return { success: true };
-    } catch (error: any) {
+    } catch (error: unknown) {
       setIsLoading(false);
-      return { success: false, error: error.message };
+      return { success: false, error: error instanceof Error ? error.message : 'Неизвестная ошибка' };
     }
   }, [supabase]);
 

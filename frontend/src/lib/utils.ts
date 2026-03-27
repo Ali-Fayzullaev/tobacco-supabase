@@ -187,3 +187,18 @@ export function getStatusColor(status: string): string {
   };
   return colors[status] || 'bg-[#252525] text-[#C0C0C0]';
 }
+
+/**
+ * Повтор запроса при ошибке (обновление токена, сеть)
+ */
+export async function withRetry<T>(fn: () => PromiseLike<T>, retries = 2, delay = 500): Promise<T> {
+  for (let i = 0; i <= retries; i++) {
+    try {
+      return await fn();
+    } catch (e) {
+      if (i === retries) throw e;
+      await new Promise(r => setTimeout(r, delay * (i + 1)));
+    }
+  }
+  throw new Error('withRetry: unreachable');
+}

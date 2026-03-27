@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
 import { v2 as cloudinary } from 'cloudinary';
 import { uploadLimiter, getClientIP } from '@/lib/rate-limit';
+import { getAuthAdmin } from '@/lib/api-auth';
 
 // ─── Ограничения загрузки ───
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
@@ -13,29 +12,6 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
-
-async function getAuthUser() {
-  const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-      },
-    }
-  );
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return null;
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .single();
-  return profile?.role === 'admin' ? user : null;
-}
 
 export async function POST(request: NextRequest) {
   try {
@@ -49,7 +25,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const admin = await getAuthUser();
+    const admin = await getAuthAdmin();
     if (!admin) {
       return NextResponse.json({ error: 'Нет доступа' }, { status: 403 });
     }
@@ -155,7 +131,7 @@ export async function POST(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
-    const admin = await getAuthUser();
+    const admin = await getAuthAdmin();
     if (!admin) {
       return NextResponse.json({ error: 'Нет доступа' }, { status: 403 });
     }

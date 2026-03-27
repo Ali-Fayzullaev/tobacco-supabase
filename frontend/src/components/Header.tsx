@@ -53,7 +53,18 @@ export function Header() {
   const [searchOpen, setSearchOpen] = useState(false);
   
   // Уведомления
-  const [notifications, setNotifications] = useState<any[]>([]);
+  interface Notification {
+    id: string;
+    user_id: string;
+    type: 'info' | 'warning' | 'success' | 'error' | 'product_deleted';
+    title: string;
+    message: string;
+    data: Record<string, unknown>;
+    is_read: boolean;
+    created_at: string;
+  }
+
+  const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
 

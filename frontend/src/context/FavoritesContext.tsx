@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef, type ReactNode } from 'react';
 import { getSupabaseBrowserClient, getPublicSupabaseClient } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
+import { withRetry } from '@/lib/utils';
 
 export interface FavoriteItem {
   id: string;
@@ -33,19 +34,6 @@ interface FavoritesContextValue {
 }
 
 const FavoritesContext = createContext<FavoritesContextValue | null>(null);
-
-// Повтор запроса при ошибке (обновление токена, сеть)
-async function withRetry<T>(fn: () => PromiseLike<T>, retries = 2, delay = 500): Promise<T> {
-  for (let i = 0; i <= retries; i++) {
-    try {
-      return await fn();
-    } catch (e) {
-      if (i === retries) throw e;
-      await new Promise(r => setTimeout(r, delay * (i + 1)));
-    }
-  }
-  throw new Error('withRetry: unreachable');
-}
 
 export function FavoritesProvider({ children }: { children: ReactNode }) {
   const supabase = getSupabaseBrowserClient();
@@ -124,7 +112,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
       }
 
       const productsMap = new Map(
-        (productsData || []).map((p: any) => [p.id, p])
+        (productsData || []).map((p: FavoriteItem['product']) => [p.id, p])
       );
 
       const items: FavoriteItem[] = favData
@@ -145,9 +133,9 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
       setProductIds(idSet);
       setIsLoading(false);
       setError(null);
-    } catch (e: any) {
+    } catch (e: unknown) {
       if (currentLoadId !== loadIdRef.current) return;
-      console.warn('[Favorites] Исключение при загрузке:', e?.message);
+      console.warn('[Favorites] Исключение при загрузке:', e instanceof Error ? e.message : e);
       // Сохраняем старые данные, не очищаем
       setIsLoading(false);
       setError('Ошибка загрузки избранного');
@@ -211,8 +199,8 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
         await loadFavorites();
         return { success: true, action: 'added' as const };
       }
-    } catch (error: any) {
-      return { success: false, error: error.message };
+    } catch (error: unknown) {
+      return { success: false, error: error instanceof Error ? error.message : 'Неизвестная ошибка' };
     }
   }, [supabase, productIds, loadFavorites]);
 

@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from '@supabase/ssr';
 import { createClient } from '@supabase/supabase-js';
-import { cookies } from 'next/headers';
 import { changePasswordLimiter, getClientIP, rateLimitKey } from '@/lib/rate-limit';
+import { getAuthUser } from '@/lib/api-auth';
 
 // ─── Валидация силы пароля ───
 function validatePasswordStrength(password: string): string | null {
@@ -12,23 +11,6 @@ function validatePasswordStrength(password: string): string | null {
   if (!/[a-zа-яё]/.test(password)) return 'Пароль должен содержать хотя бы одну строчную букву';
   if (!/\d/.test(password)) return 'Пароль должен содержать хотя бы одну цифру';
   return null;
-}
-
-async function getAuthUser() {
-  const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-      },
-    }
-  );
-  const { data: { user } } = await supabase.auth.getUser();
-  return user;
 }
 
 export async function POST(request: NextRequest) {

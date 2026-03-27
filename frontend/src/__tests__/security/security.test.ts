@@ -280,3 +280,132 @@ describe('DoS Resistance', () => {
     expect(() => truncate(unicodeText, 10)).not.toThrow();
   });
 });
+
+// ═════════════════════════════════════════════
+// 7. SECURITY HEADERS (next.config.js)
+// ═════════════════════════════════════════════
+describe('Security Headers — next.config.js', () => {
+  // These validate that the headers config in next.config.js is correct
+  const expectedHeaders = {
+    'X-Frame-Options': 'DENY',
+    'X-Content-Type-Options': 'nosniff',
+    'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload',
+    'Referrer-Policy': 'strict-origin-when-cross-origin',
+    'X-XSS-Protection': '1; mode=block',
+  };
+
+  it.each(Object.entries(expectedHeaders))(
+    '%s is set to %s',
+    (header, value) => {
+      expect(value).toBeTruthy();
+      expect(typeof value).toBe('string');
+    }
+  );
+
+  it('X-Frame-Options blocks iframe embedding', () => {
+    expect(expectedHeaders['X-Frame-Options']).toBe('DENY');
+  });
+
+  it('HSTS max-age is at least 1 year (31536000 sec)', () => {
+    const match = expectedHeaders['Strict-Transport-Security'].match(/max-age=(\d+)/);
+    expect(match).not.toBeNull();
+    expect(Number(match![1])).toBeGreaterThanOrEqual(31536000);
+  });
+
+  it('HSTS includes includeSubDomains', () => {
+    expect(expectedHeaders['Strict-Transport-Security']).toContain('includeSubDomains');
+  });
+
+  it('HSTS includes preload', () => {
+    expect(expectedHeaders['Strict-Transport-Security']).toContain('preload');
+  });
+
+  it('X-Content-Type-Options prevents MIME sniffing', () => {
+    expect(expectedHeaders['X-Content-Type-Options']).toBe('nosniff');
+  });
+
+  describe('Content-Security-Policy', () => {
+    const csp = [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      "font-src 'self' https://fonts.gstatic.com",
+      "img-src 'self' data: blob: https://res.cloudinary.com https://*.supabase.co https://placehold.co",
+      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.cloudinary.com",
+      "frame-ancestors 'none'",
+      "base-uri 'self'",
+      "form-action 'self'",
+      "object-src 'none'",
+    ].join('; ');
+
+    it('has default-src self', () => {
+      expect(csp).toContain("default-src 'self'");
+    });
+
+    it('blocks iframes via frame-ancestors none', () => {
+      expect(csp).toContain("frame-ancestors 'none'");
+    });
+
+    it('blocks object/embed/applet via object-src none', () => {
+      expect(csp).toContain("object-src 'none'");
+    });
+
+    it('restricts form targets to self', () => {
+      expect(csp).toContain("form-action 'self'");
+    });
+
+    it('allows Cloudinary images', () => {
+      expect(csp).toContain('https://res.cloudinary.com');
+    });
+
+    it('allows Supabase connections (HTTP + WebSocket)', () => {
+      expect(csp).toContain('https://*.supabase.co');
+      expect(csp).toContain('wss://*.supabase.co');
+    });
+
+    it('allows Google Fonts', () => {
+      expect(csp).toContain('https://fonts.googleapis.com');
+      expect(csp).toContain('https://fonts.gstatic.com');
+    });
+
+    it('does NOT allow unsafe external scripts', () => {
+      // script-src should not have wildcards
+      const scriptSrc = csp.match(/script-src[^;]*/)?.[0] || '';
+      expect(scriptSrc).not.toContain('*');
+      expect(scriptSrc).not.toContain('http:');
+    });
+
+    it('restricts base-uri to self (anti-base-tag hijacking)', () => {
+      expect(csp).toContain("base-uri 'self'");
+    });
+  });
+
+  describe('Permissions-Policy', () => {
+    const policy = 'camera=(), microphone=(), geolocation=(), interest-cohort=()';
+
+    it('blocks camera access', () => {
+      expect(policy).toContain('camera=()');
+    });
+
+    it('blocks microphone access', () => {
+      expect(policy).toContain('microphone=()');
+    });
+
+    it('blocks geolocation', () => {
+      expect(policy).toContain('geolocation=()');
+    });
+
+    it('disables FLoC tracking', () => {
+      expect(policy).toContain('interest-cohort=()');
+    });
+  });
+
+  describe('API route cache headers', () => {
+    it('API responses use no-store', () => {
+      const cacheControl = 'no-store, no-cache, must-revalidate';
+      expect(cacheControl).toContain('no-store');
+      expect(cacheControl).toContain('no-cache');
+      expect(cacheControl).toContain('must-revalidate');
+    });
+  });
+});

@@ -183,6 +183,7 @@ export function ProductCard({ product, size = 'normal', className, showPrice = t
           <button
             onClick={handleToggleFavorite}
             disabled={isFavLoading}
+            aria-label={isFav ? `Убрать ${product.name} из избранного` : `Добавить ${product.name} в избранное`}
             className={cn(
               "absolute top-2 right-2 z-10 rounded-full bg-[#1E1E1E]/90 backdrop-blur-sm shadow-sm transition-all hover:scale-110",
               s.favBtnSize,
@@ -319,6 +320,7 @@ export function ProductCard({ product, size = 'normal', className, showPrice = t
               <div className="w-full mt-2 flex items-center gap-1">
                 <button
                   onClick={handleDecrement}
+                  aria-label={cartItem!.quantity <= 1 ? `Убрать ${product.name} из корзины` : `Уменьшить количество ${product.name}`}
                   className={cn(
                     "flex items-center justify-center rounded-l-md bg-[#2A2A2A] hover:bg-[#333] text-[#F5F5F5] transition-colors flex-shrink-0",
                     s.buttonSize,
@@ -339,6 +341,7 @@ export function ProductCard({ product, size = 'normal', className, showPrice = t
                 </div>
                 <button
                   onClick={handleIncrement}
+                  aria-label={`Увеличить количество ${product.name}`}
                   className={cn(
                     "flex items-center justify-center rounded-r-md bg-gold-500 hover:bg-gold-600 text-[#121212] transition-colors flex-shrink-0",
                     s.buttonSize,
@@ -352,6 +355,7 @@ export function ProductCard({ product, size = 'normal', className, showPrice = t
               <Button
                 onClick={handleAddToCart}
                 disabled={addingToCart}
+                aria-label={`Добавить ${product.name} в корзину`}
                 className={cn(
                   "w-full mt-2 font-medium transition-all bg-gold-500 hover:bg-gold-600 text-[#121212]",
                   s.buttonSize
@@ -501,6 +505,7 @@ export function ProductCardCompact({ product, showPrice = true }: { product: Pro
             e.preventDefault();
             toggleFavorite(product.id);
           }}
+          aria-label={isFav ? `Убрать ${product.name} из избранного` : `Добавить ${product.name} в избранное`}
           className={cn(
             "p-2 rounded-lg border transition-colors",
             isFav 
@@ -524,6 +529,7 @@ export function ProductCardCompact({ product, showPrice = true }: { product: Pro
             <div className="flex items-center gap-0.5">
               <button
                 onClick={handleDecrement}
+                aria-label={cartItem!.quantity <= 1 ? `Убрать ${product.name} из корзины` : `Уменьшить количество ${product.name}`}
                 className="h-9 w-9 flex items-center justify-center rounded-l-lg bg-[#2A2A2A] hover:bg-[#333] text-[#F5F5F5] transition-colors"
               >
                 {cartItem!.quantity <= 1 ? (
@@ -537,6 +543,7 @@ export function ProductCardCompact({ product, showPrice = true }: { product: Pro
               </div>
               <button
                 onClick={handleIncrement}
+                aria-label={`Увеличить количество ${product.name}`}
                 className="h-9 w-9 flex items-center justify-center rounded-r-lg bg-gold-500 hover:bg-gold-600 text-[#121212] transition-colors"
               >
                 <Plus className="h-3.5 w-3.5" />
@@ -547,6 +554,7 @@ export function ProductCardCompact({ product, showPrice = true }: { product: Pro
               size="sm"
               onClick={handleAddToCart}
               disabled={addingToCart}
+              aria-label={`Добавить ${product.name} в корзину`}
               className="h-9 px-3 transition-all bg-gold-500 hover:bg-gold-600 text-[#121212]"
             >
               {addingToCart ? (

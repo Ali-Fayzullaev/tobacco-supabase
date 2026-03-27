@@ -157,6 +157,7 @@ export function MobileTabBar() {
                 <button
                   key={tab.key}
                   onClick={tab.action}
+                  aria-label={tab.label}
                   className="flex flex-1 flex-col items-center justify-center gap-0.5 py-2 min-h-[44px] relative transition-colors text-[#666] active:text-[#999]"
                 >
                   {content}
@@ -172,6 +173,7 @@ export function MobileTabBar() {
                   href={tab.href}
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label={tab.label}
                   className="flex flex-1 flex-col items-center justify-center gap-0.5 py-2 min-h-[44px] relative transition-colors text-[#666] active:text-[#999]"
                 >
                   {content}
@@ -184,6 +186,7 @@ export function MobileTabBar() {
               <Link
                 key={tab.key}
                 href={tab.href!}
+                aria-label={tab.badge > 0 ? `${tab.label} (${tab.badge})` : tab.label}
                 className={cn(
                   'flex flex-1 flex-col items-center justify-center gap-0.5 py-2 min-h-[44px] relative transition-colors',
                   tab.isActive

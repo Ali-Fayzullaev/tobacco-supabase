@@ -1,6 +1,6 @@
 ﻿'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, Suspense, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
@@ -23,6 +23,7 @@ function ResetPasswordContent() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
   const [resetSuccess, setResetSuccess] = useState(false);
+  const [showEmailHelp, setShowEmailHelp] = useState(false);
 
   useEffect(() => {
     // Если в URL есть code + type=recovery — пользователь пришёл по ссылке из письма
@@ -153,11 +154,41 @@ function ResetPasswordContent() {
               </div>
               <h2 className="text-xl font-bold text-[#F5F5F5] mb-2">Проверьте почту</h2>
               <p className="text-[#A0A0A0] mb-1">Ссылка для сброса пароля отправлена на</p>
-              <p className="text-gold-500 font-medium mb-6">{email}</p>
-              <p className="text-[#666] text-sm mb-6">
-                Нажмите на ссылку в письме, чтобы задать новый пароль.
-                Если не нашли — проверьте «Спам».
-              </p>
+              <p className="text-gold-500 font-medium mb-4">{email}</p>
+
+              <div className="mb-6 p-3 bg-[#121212] rounded-lg border border-[#2A2A2A] text-left">
+                <p className="text-[#A0A0A0] text-sm">
+                  Нажмите на ссылку в письме для сброса пароля.
+                </p>
+                <button
+                  onClick={() => setShowEmailHelp(!showEmailHelp)}
+                  className="mt-2 text-gold-500 hover:text-gold-400 text-xs font-medium transition-colors inline-flex items-center gap-1"
+                >
+                  {showEmailHelp ? 'Скрыть' : 'Не получили письмо?'}
+                  <svg className={`w-3 h-3 transition-transform ${showEmailHelp ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                </button>
+                {showEmailHelp && (
+                  <ul className="mt-3 space-y-2 text-[#888] text-xs">
+                    <li className="flex items-start gap-2">
+                      <span className="text-gold-500 mt-0.5">1.</span>
+                      Проверьте папку <strong className="text-[#A0A0A0]">«Спам»</strong> или <strong className="text-[#A0A0A0]">«Промоакции»</strong>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-gold-500 mt-0.5">2.</span>
+                      Убедитесь, что адрес <strong className="text-[#A0A0A0]">{email}</strong> указан верно
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-gold-500 mt-0.5">3.</span>
+                      Письмо может идти до 5 минут — подождите немного
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-gold-500 mt-0.5">4.</span>
+                      Добавьте <strong className="text-[#A0A0A0]">noreply@t.raycon.kz</strong> в контакты для надёжной доставки
+                    </li>
+                  </ul>
+                )}
+              </div>
+
               <Link href="/login">
                 <Button variant="outline" className="border-[#2A2A2A] text-[#F5F5F5]">
                   Вернуться ко входу

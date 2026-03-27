@@ -31,6 +31,7 @@ function RegisterFormContent() {
   const [otpCode, setOtpCode] = useState(['', '', '', '', '', '']);
   const [isVerifying, setIsVerifying] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(0);
+  const [showEmailHelp, setShowEmailHelp] = useState(false);
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
@@ -266,10 +267,34 @@ function RegisterFormContent() {
                 )}
               </div>
 
-              <div className="mt-6 p-3 bg-[#121212] rounded-lg border border-[#2A2A2A]">
-                <p className="text-[#666] text-xs text-center">
-                  Проверьте папку «Спам», если письмо не приходит. Код действителен 60 минут.
-                </p>
+              <div className="mt-6 p-3 bg-[#121212] rounded-lg border border-[#2A2A2A] text-left">
+                <button
+                  onClick={() => setShowEmailHelp(!showEmailHelp)}
+                  className="w-full flex items-center justify-between text-[#888] hover:text-gold-500 text-xs font-medium transition-colors"
+                >
+                  <span>Не получили код?</span>
+                  <svg className={`w-3 h-3 transition-transform ${showEmailHelp ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                </button>
+                {showEmailHelp && (
+                  <ul className="mt-3 space-y-2 text-[#888] text-xs">
+                    <li className="flex items-start gap-2">
+                      <span className="text-gold-500 mt-0.5">1.</span>
+                      Проверьте папку <strong className="text-[#A0A0A0]">«Спам»</strong> или <strong className="text-[#A0A0A0]">«Промоакции»</strong>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-gold-500 mt-0.5">2.</span>
+                      Письмо может идти до 5 минут
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-gold-500 mt-0.5">3.</span>
+                      Добавьте <strong className="text-[#A0A0A0]">noreply@t.raycon.kz</strong> в контакты
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-gold-500 mt-0.5">4.</span>
+                      Код действителен <strong className="text-[#A0A0A0]">60 минут</strong>
+                    </li>
+                  </ul>
+                )}
               </div>
             </CardContent>
           </Card>

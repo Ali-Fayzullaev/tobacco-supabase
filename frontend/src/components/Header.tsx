@@ -62,14 +62,43 @@ export function Header() {
   const storePhone = settings.store_phone || '+7 (700) 800-18-00';
   const freeDeliveryAmount = settings.free_delivery_threshold || '200000';
 
-  // Загрузка уведомлений
+  // Загрузка уведомлений (пауза на неактивной вкладке)
   useEffect(() => {
-    if (isAuthenticated && user) {
-      loadNotifications();
-      // Обновляем каждые 30 секунд
-      const interval = setInterval(loadNotifications, 30000);
-      return () => clearInterval(interval);
-    }
+    if (!isAuthenticated || !user) return;
+
+    loadNotifications();
+
+    let interval: ReturnType<typeof setInterval> | null = null;
+
+    const startPolling = () => {
+      if (!interval) {
+        interval = setInterval(loadNotifications, 30000);
+      }
+    };
+
+    const stopPolling = () => {
+      if (interval) {
+        clearInterval(interval);
+        interval = null;
+      }
+    };
+
+    const handleVisibility = () => {
+      if (document.hidden) {
+        stopPolling();
+      } else {
+        loadNotifications(); // сразу обновляем при возврате
+        startPolling();
+      }
+    };
+
+    startPolling();
+    document.addEventListener('visibilitychange', handleVisibility);
+
+    return () => {
+      stopPolling();
+      document.removeEventListener('visibilitychange', handleVisibility);
+    };
   }, [isAuthenticated, user]);
 
   const loadNotifications = async () => {
@@ -157,6 +186,7 @@ export function Header() {
             <button
               onClick={() => setSearchOpen(true)}
               className="flex-1 min-w-0 max-w-xl"
+              aria-label="Поиск товаров"
             >
               <div className="relative flex items-center h-11 bg-[#121212] border border-[#2A2A2A] rounded-md px-3 gap-2 hover:border-gold-500/40 transition-colors cursor-pointer">
                 <Search className="h-5 w-5 text-[#A0A0A0] flex-shrink-0" />
@@ -182,6 +212,9 @@ export function Header() {
                         setShowNotifications(!showNotifications);
                         setShowUserMenu(false);
                       }}
+                      aria-label={`Уведомления${unreadCount > 0 ? ` (${unreadCount} непрочитанных)` : ''}`}
+                      aria-haspopup="true"
+                      aria-expanded={showNotifications}
                     >
                       <Bell className="h-5 w-5" />
                       {unreadCount > 0 && (
@@ -287,7 +320,7 @@ export function Header() {
 
                   {/* Favorites — скрыто на мобилке (есть в MobileTabBar) */}
                   <Link href="/profile/favorites" className="hidden lg:block">
-                    <Button variant="ghost" size="icon" className="relative text-[#A0A0A0] hover:text-gold-500 hover:bg-gold-500/10">
+                    <Button variant="ghost" size="icon" className="relative text-[#A0A0A0] hover:text-gold-500 hover:bg-gold-500/10" aria-label={`Избранное${favorites.length > 0 ? ` (${favorites.length})` : ''}`}>
                       <Heart className="h-5 w-5" />
                       {favorites.length > 0 && (
                         <span className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
@@ -299,7 +332,7 @@ export function Header() {
 
                   {/* Cart — скрыто на мобилке (есть в MobileTabBar) */}
                   <Link href="/cart" className="hidden lg:block">
-                    <Button variant="ghost" size="icon" className={cn("relative text-[#A0A0A0] hover:text-gold-500 hover:bg-gold-500/10", cartBounce && "animate-cart-pop")}>
+                    <Button variant="ghost" size="icon" className={cn("relative text-[#A0A0A0] hover:text-gold-500 hover:bg-gold-500/10", cartBounce && "animate-cart-pop")} aria-label={`Корзина${totalItems > 0 ? ` (${totalItems})` : ''}`}>
                       <ShoppingCart className="h-5 w-5" />
                       {totalItems > 0 && (
                         <span className={cn("absolute -top-1 -right-1 h-5 w-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center", cartBounce && "animate-cart-pop")}>
@@ -322,6 +355,9 @@ export function Header() {
                         setShowUserMenu(!showUserMenu);
                         setShowNotifications(false);
                       }}
+                      aria-label="Профиль"
+                      aria-haspopup="true"
+                      aria-expanded={showUserMenu}
                     >
                       <User className="h-5 w-5" />
                     </Button>
@@ -438,6 +474,8 @@ export function Header() {
                 size="icon"
                 className="lg:hidden text-[#A0A0A0]"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                aria-label={mobileMenuOpen ? 'Закрыть меню' : 'Открыть меню'}
+                aria-expanded={mobileMenuOpen}
               >
                 {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
               </Button>

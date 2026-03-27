@@ -4,11 +4,7 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  // Отключаем webpack cache только при build (dev-серверу кэш нужен!)
-  webpack: (config, { dev }) => {
-    if (!dev) {
-      config.cache = false;
-    }
+  webpack: (config) => {
     return config;
   },
   images: {

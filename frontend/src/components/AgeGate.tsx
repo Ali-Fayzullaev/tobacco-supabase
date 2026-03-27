@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const AGE_GATE_KEY = 'age_verified_21';
@@ -26,6 +26,47 @@ export default function AgeGate({ children }: { children: React.ReactNode }) {
     window.location.href = 'https://google.com';
   }, []);
 
+  // Focus trap for age gate dialog
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const confirmBtnRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (verified === false && confirmBtnRef.current) {
+      confirmBtnRef.current.focus();
+    }
+  }, [verified]);
+
+  useEffect(() => {
+    if (verified !== false) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab' || !dialogRef.current) return;
+
+      const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [verified]);
+
   // Initial load — show nothing until localStorage is checked
   if (verified === null) {
     return (
@@ -48,6 +89,10 @@ export default function AgeGate({ children }: { children: React.ReactNode }) {
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="age-gate-title"
+            ref={dialogRef}
           >
             {/* Background */}
             <div className="absolute inset-0 bg-[#0A0A0A]" />
@@ -113,7 +158,7 @@ export default function AgeGate({ children }: { children: React.ReactNode }) {
 
                 <div className="w-16 h-px bg-[#D4AF37]/30 mx-auto" />
 
-                <p className="text-[#C0C0C0] text-sm leading-relaxed">
+                <p className="text-[#C0C0C0] text-sm leading-relaxed" id="age-gate-title">
                   Запрещается продажа табачных изделий, в том числе изделий с нагреваемым
                   табаком, табака для кальяна, кальянной смеси, систем для нагрева табака
                   лицам в возрасте до двадцати одного года.{' '}
@@ -126,6 +171,7 @@ export default function AgeGate({ children }: { children: React.ReactNode }) {
                 <button
                   onClick={handleConfirm}
                   disabled={isAnimating}
+                  ref={confirmBtnRef}
                   className="px-10 py-3.5 bg-[#D4AF37] text-[#0A0A0A] font-semibold rounded-xl
                     hover:bg-[#C4A030] active:scale-[0.97] transition-all duration-200
                     disabled:opacity-70 disabled:cursor-not-allowed

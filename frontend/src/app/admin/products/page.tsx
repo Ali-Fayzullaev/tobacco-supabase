@@ -32,7 +32,9 @@ import {
   Users,
   Send,
   MessageSquare,
-  Truck
+  Truck,
+  Grid,
+  List
 } from 'lucide-react';
 import { TableSkeleton } from '@/components/Skeleton';
 import { createBrowserSupabaseClient } from '@/lib/supabase';
@@ -48,6 +50,7 @@ export default function AdminProductsPage() {
   const [categoryFilter, setCategoryFilter] = useState<string>('');
   const [stockFilter, setStockFilter] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('all'); // По умолчанию все товары
+  const [viewMode, setViewMode] = useState<'auto' | 'table' | 'cards'>('auto');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
@@ -630,6 +633,25 @@ export default function AdminProductsPage() {
         </div>
       </div>
 
+      {/* View Mode */}
+      <div className="mt-4 flex items-center gap-2">
+        <span className="text-[#A0A0A0] text-sm">Вид:</span>
+        {(['auto', 'table', 'cards'] as const).map((mode) => (
+          <button
+            key={mode}
+            onClick={() => setViewMode(mode)}
+            className={cn(
+              'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
+              viewMode === mode
+                ? 'bg-gold-500 text-[#121212]'
+                : 'bg-[#252525] text-[#A0A0A0] hover:bg-[#2A2A2A]'
+            )}
+          >
+            {mode === 'auto' ? 'Авто' : mode === 'table' ? 'Таблица' : 'Карточки'}
+          </button>
+        ))}
+      </div>
+
       {/* Products Table */}
       <div className="bg-[#1E1E1E] rounded-2xl shadow-sm border border-[#2A2A2A] overflow-hidden">
         {/* Bulk Actions Bar */}
@@ -986,7 +1008,139 @@ export default function AdminProductsPage() {
           </div>
         ) : (
           <>
-            <div className="overflow-x-auto">
+            {/* Mobile Cards */}
+            <div className={cn(
+              viewMode === 'table' ? 'hidden' : viewMode === 'cards' ? 'block' : 'lg:hidden',
+              'divide-y divide-[#2A2A2A]'
+            )}>
+              {filteredProducts.map((product) => (
+                <div
+                  key={product.id}
+                  className={cn(
+                    "p-4 transition-colors",
+                    selectedIds.has(product.id) && "bg-gold-500/10"
+                  )}
+                >
+                  <div className="flex gap-3">
+                    {/* Checkbox + Image */}
+                    <div className="flex flex-col items-center gap-2 flex-shrink-0">
+                      <button
+                        onClick={() => toggleSelect(product.id)}
+                        className="p-0.5"
+                      >
+                        {selectedIds.has(product.id) ? (
+                          <CheckSquare className="w-5 h-5 text-gold-500" />
+                        ) : (
+                          <Square className="w-5 h-5 text-[#666]" />
+                        )}
+                      </button>
+                      <div className="relative w-14 h-14 bg-[#252525] rounded-xl overflow-hidden ring-1 ring-gray-200">
+                        {product.image_url ? (
+                          <Image
+                            src={product.image_url}
+                            alt={product.name}
+                            fill
+                            className="object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-gray-300">
+                            <Package className="w-6 h-6" />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    {/* Info */}
+                    <div className="flex-1 min-w-0">
+                      <Link
+                        href={`/admin/products/${product.id}`}
+                        className="font-semibold text-[#F5F5F5] hover:text-gold-600 line-clamp-2 text-sm transition-colors"
+                      >
+                        {product.name}
+                      </Link>
+                      <div className="flex items-center gap-2 mt-1 flex-wrap">
+                        {product.brand && (
+                          <span className="text-xs bg-[#252525] text-[#A0A0A0] px-2 py-0.5 rounded-full">
+                            {product.brand}
+                          </span>
+                        )}
+                        <span className="text-xs text-[#A0A0A0] bg-[#252525] px-2 py-0.5 rounded-full">
+                          {(product as any).category?.name || 'Без категории'}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-3 mt-2">
+                        <span className="font-bold text-gold-500 text-sm">{formatPrice(product.price)}</span>
+                        {product.old_price && (
+                          <span className="text-xs text-[#666] line-through">{formatPrice(product.old_price)}</span>
+                        )}
+                        {(product as any).stock > 0 ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-green-900/30 text-green-400 text-xs font-semibold rounded-full">
+                            <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                            {(product as any).stock} шт.
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-red-900/30 text-red-400 text-xs font-semibold rounded-full">
+                            <span className="w-1.5 h-1.5 bg-red-500 rounded-full"></span>
+                            Нет
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  {/* Actions row */}
+                  <div className="flex items-center justify-between mt-3 pt-2 border-t border-[#2A2A2A]">
+                    <button
+                      onClick={() => toggleProductStatus(product.id, product.is_active)}
+                      className={cn(
+                        "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all",
+                        product.is_active
+                          ? 'bg-green-900/30 text-green-400'
+                          : 'bg-[#252525] text-[#A0A0A0]'
+                      )}
+                    >
+                      {product.is_active ? (
+                        <><Eye className="w-3.5 h-3.5" /> Активен</>
+                      ) : (
+                        <><EyeOff className="w-3.5 h-3.5" /> Скрыт</>
+                      )}
+                    </button>
+                    <div className="flex items-center gap-1">
+                      <Link
+                        href={`/product/${product.slug}`}
+                        target="_blank"
+                        className="p-2 text-[#666] hover:text-blue-400 hover:bg-blue-900/20 rounded-lg transition-colors"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                      </Link>
+                      <Link
+                        href={`/admin/products/${product.id}`}
+                        className="p-2 text-[#666] hover:text-gold-600 hover:bg-gold-500/10 rounded-lg transition-colors"
+                      >
+                        <Pencil className="w-4 h-4" />
+                      </Link>
+                      <button
+                        onClick={() => deleteProduct(product.id)}
+                        className="p-2 text-[#666] hover:text-red-500 hover:bg-red-900/20 rounded-lg transition-colors"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {filteredProducts.length === 0 && (
+                <div className="px-6 py-16 text-center">
+                  <Package className="w-12 h-12 text-gray-200 mx-auto mb-3" />
+                  <p className="text-[#A0A0A0] font-medium">Товары не найдены</p>
+                  <p className="text-[#666] text-sm mt-1">Попробуйте изменить фильтры</p>
+                </div>
+              )}
+            </div>
+
+            {/* Desktop Table */}
+            <div className={cn(
+              viewMode === 'cards' ? 'hidden' : viewMode === 'table' ? 'block' : 'hidden lg:block',
+              'overflow-x-auto'
+            )}>
               <table className="w-full">
                 <thead className="bg-[#121212]">
                   <tr>

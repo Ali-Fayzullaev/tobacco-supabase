@@ -41,9 +41,20 @@ interface DashboardStats {
 export default function AdminDashboard() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [viewMode, setViewMode] = useState<'auto' | 'table' | 'cards'>('auto');
 
   useEffect(() => {
     loadStats();
+  }, []);
+
+  useEffect(() => {
+    const media = window.matchMedia('(min-width: 1024px)');
+    const handleChange = (event: MediaQueryListEvent | MediaQueryList) => {
+      setViewMode(event.matches ? 'table' : 'cards');
+    };
+    handleChange(media);
+    media.addEventListener('change', handleChange);
+    return () => media.removeEventListener('change', handleChange);
   }, []);
 
   const loadStats = async () => {
@@ -172,6 +183,24 @@ export default function AdminDashboard() {
             <ArrowUpRight className="w-4 h-4" />
           </Link>
         ) : null}
+
+        <div className="flex items-center gap-2">
+          <span className="text-[#A0A0A0] text-sm">Вид:</span>
+          {(['auto', 'table', 'cards'] as const).map((mode) => (
+            <button
+              key={mode}
+              onClick={() => setViewMode(mode)}
+              className={cn(
+                'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
+                viewMode === mode
+                  ? 'bg-gold-500 text-[#121212]'
+                  : 'bg-[#252525] text-[#A0A0A0] hover:bg-[#2A2A2A]'
+              )}
+            >
+              {mode === 'auto' ? 'Авто' : mode === 'table' ? 'Таблица' : 'Карточки'}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Stats Grid */}
@@ -246,7 +275,35 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="overflow-x-auto">
+        <div className={cn(
+          viewMode === 'cards' ? 'block' : viewMode === 'table' ? 'hidden' : 'lg:hidden',
+          'divide-y divide-[#2A2A2A]'
+        )}>
+          {stats?.recentOrders.map((order) => (
+            <Link
+              key={order.id}
+              href={`/admin/orders/${order.id}`}
+              className="block p-4 border-b border-[#2A2A2A] hover:bg-gold-500/5 transition-colors"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <span className="font-bold text-[#F5F5F5]">#{order.order_number}</span>
+                <span className="text-xs text-[#A0A0A0]">{new Date(order.created_at).toLocaleDateString('ru-RU')}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-[#A0A0A0]">{order.profile?.first_name || 'Клиент'}</span>
+                <span className="text-sm font-semibold text-[#F5F5F5]">{formatPrice(order.total_amount)}</span>
+              </div>
+            </Link>
+          ))}
+          {!stats?.recentOrders.length && (
+            <div className="p-6 text-center text-[#A0A0A0]">Нет недавних заказов</div>
+          )}
+        </div>
+
+        <div className={cn(
+          viewMode === 'cards' ? 'hidden' : viewMode === 'table' ? 'block' : 'hidden lg:block',
+          'overflow-x-auto'
+        )}>
           <table className="w-full">
             <thead className="bg-[#121212]">
               <tr>

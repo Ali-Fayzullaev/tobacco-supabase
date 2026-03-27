@@ -22,11 +22,13 @@ import {
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { cn } from '@/lib/utils';
+import { useStoreSettings } from '@/hooks/useStoreSettings';
 
 // Динамический импорт конфетти без SSR
 const Confetti = dynamic(() => import('react-confetti'), { ssr: false });
 
 function OrderSuccessContent() {
+  const { settings } = useStoreSettings();
   const searchParams = useSearchParams();
   const orderNumber = searchParams.get('number');
   const [copied, setCopied] = useState(false);
@@ -239,12 +241,12 @@ function OrderSuccessContent() {
             {/* Support Info */}
             <div className="mt-8 text-center">
               <p className="text-[#A0A0A0] text-sm mb-2">Возникли вопросы?</p>
-              <a 
-                href="tel:+77771234567" 
+              <a
+                href={`tel:${settings.store_phone.replace(/[^\d+]/g, '')}`}
                 className="inline-flex items-center gap-2 text-gold-600 hover:text-gold-700 font-medium"
               >
                 <Phone className="w-4 h-4" />
-                +7 777 123 45 67
+                {settings.store_phone}
               </a>
             </div>
           </div>

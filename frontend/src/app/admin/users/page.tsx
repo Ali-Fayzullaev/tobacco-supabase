@@ -1,3 +1,4 @@
+// frontend/src/app/admin/users/page.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -17,7 +18,9 @@ import {
   MoreVertical,
   Crown,
   UserCheck,
-  UserX
+  UserX,
+  Grid,
+  List
 } from 'lucide-react';
 import { createBrowserSupabaseClient } from '@/lib/supabase';
 import { TableSkeleton } from '@/components/Skeleton';
@@ -39,6 +42,7 @@ export default function AdminUsersPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [roleFilter, setRoleFilter] = useState<string>('');
+  const [viewMode, setViewMode] = useState<'auto' | 'table' | 'cards'>('auto');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
@@ -241,6 +245,25 @@ export default function AdminUsersPage() {
               <option value="user">Пользователи</option>
             </select>
           </div>
+
+          {/* View Mode */}
+          <div className="mt-4 flex items-center gap-2">
+            <span className="text-[#A0A0A0] text-sm">Вид:</span>
+            {(['auto', 'table', 'cards'] as const).map((mode) => (
+              <button
+                key={mode}
+                onClick={() => setViewMode(mode)}
+                className={cn(
+                  'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
+                  viewMode === mode
+                    ? 'bg-gold-500 text-[#121212]'
+                    : 'bg-[#252525] text-[#A0A0A0] hover:bg-[#2A2A2A]'
+                )}
+              >
+                {mode === 'auto' ? 'Авто' : mode === 'table' ? 'Таблица' : 'Карточки'}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -252,7 +275,79 @@ export default function AdminUsersPage() {
           </div>
         ) : (
           <>
-            <div className="overflow-x-auto">
+            {/* Mobile Cards */}
+            <div className={cn(
+              viewMode === 'table' ? 'hidden' : viewMode === 'cards' ? 'block' : 'lg:hidden',
+              'divide-y divide-[#2A2A2A]'
+            )}>
+              {filteredUsers.map((user) => (
+                <div key={user.id} className="p-4 space-y-3">
+                  <div className="flex items-center gap-3">
+                    <div className={cn(
+                      "w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold text-sm flex-shrink-0",
+                      user.role === 'admin' 
+                        ? "bg-gradient-to-br from-gold-500 to-red-600" 
+                        : "bg-gradient-to-br from-blue-400 to-blue-600"
+                    )}>
+                      {user.first_name?.[0] || user.email?.[0]?.toUpperCase() || '?'}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-semibold text-[#F5F5F5] truncate">
+                        {user.first_name || user.last_name 
+                          ? `${user.first_name || ''} ${user.last_name || ''}`.trim()
+                          : 'Без имени'
+                        }
+                      </p>
+                      <p className="text-xs text-[#666] truncate">{user.email}</p>
+                    </div>
+                    <select
+                      value={user.role}
+                      onChange={(e) => updateUserRole(user.id, e.target.value)}
+                      className={cn(
+                        "px-3 py-1.5 rounded-full text-xs font-semibold border-0 cursor-pointer flex-shrink-0",
+                        user.role === 'admin' 
+                          ? "bg-gold-500/15 text-gold-700" 
+                          : "bg-blue-900/30 text-blue-400"
+                      )}
+                    >
+                      <option value="user">Пользователь</option>
+                      <option value="admin">Администратор</option>
+                    </select>
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-[#666]">
+                    <div className="flex items-center gap-3">
+                      {user.phone && (
+                        <span className="flex items-center gap-1">
+                          <Phone className="w-3 h-3" />
+                          {user.phone}
+                        </span>
+                      )}
+                      <span className="flex items-center gap-1">
+                        <ShoppingBag className="w-3 h-3" />
+                        {user.orders_count || 0} заказов
+                      </span>
+                    </div>
+                    <span className="flex items-center gap-1">
+                      <Calendar className="w-3 h-3" />
+                      {new Date(user.created_at).toLocaleDateString('ru-RU')}
+                    </span>
+                  </div>
+                </div>
+              ))}
+              {filteredUsers.length === 0 && (
+                <div className="px-6 py-16 text-center">
+                  <Users className="w-12 h-12 text-gray-200 mx-auto mb-3" />
+                  <p className="text-[#A0A0A0] font-medium">Пользователи не найдены</p>
+                  <p className="text-[#666] text-sm mt-1">Попробуйте изменить фильтры</p>
+                </div>
+              )}
+            </div>
+
+            {/* Desktop Table */}
+            <div className={cn(
+              viewMode === 'cards' ? 'hidden' : viewMode === 'table' ? 'block' : 'hidden lg:block',
+              'overflow-x-auto'
+            )}>
               <table className="w-full">
                 <thead className="bg-[#121212]">
                   <tr>

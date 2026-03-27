@@ -1,3 +1,4 @@
+// frontend/src/app/admin/orders/page.tsx
 'use client';
 
 import { useEffect, useState, Suspense } from 'react';
@@ -17,7 +18,9 @@ import {
   Package,
   XCircle,
   MoreHorizontal,
-  RefreshCw
+  RefreshCw,
+  Grid,
+  List
 } from 'lucide-react';
 import { createBrowserSupabaseClient } from '@/lib/supabase';
 import { TableSkeleton } from '@/components/Skeleton';
@@ -72,6 +75,7 @@ function AdminOrdersContent() {
   const [statusFilter, setStatusFilter] = useState<OrderStatus | ''>(
     (searchParams.get('status') as OrderStatus) || ''
   );
+  const [viewMode, setViewMode] = useState<'auto' | 'table' | 'cards'>('auto');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
@@ -238,6 +242,25 @@ function AdminOrdersContent() {
               ))}
             </select>
           </div>
+
+          {/* View Mode */}
+          <div className="mt-4 flex items-center gap-2">
+            <span className="text-[#A0A0A0] text-sm">Вид:</span>
+            {(['auto', 'table', 'cards'] as const).map((mode) => (
+              <button
+                key={mode}
+                onClick={() => setViewMode(mode)}
+                className={cn(
+                  'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
+                  viewMode === mode
+                    ? 'bg-gold-500 text-[#121212]'
+                    : 'bg-[#252525] text-[#A0A0A0] hover:bg-[#2A2A2A]'
+                )}
+              >
+                {mode === 'auto' ? 'Авто' : mode === 'table' ? 'Таблица' : 'Карточки'}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -249,7 +272,60 @@ function AdminOrdersContent() {
           </div>
         ) : (
           <>
-            <div className="overflow-x-auto">
+            {/* Cards */}
+            <div className={cn(
+              viewMode === 'table' ? 'hidden' : viewMode === 'cards' ? 'block' : 'lg:hidden',
+              'divide-y divide-[#2A2A2A]'
+            )}>
+              {filteredOrders.map((order) => (
+                <Link
+                  key={order.id}
+                  href={`/admin/orders/${order.id}`}
+                  className="block p-4 hover:bg-gold-500/5 transition-colors"
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="font-bold text-[#F5F5F5]">#{order.order_number}</span>
+                    <StatusSelect
+                      value={order.status}
+                      onChange={(status) => { updateOrderStatus(order.id, status); }}
+                    />
+                  </div>
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-8 h-8 bg-gradient-to-br from-gold-400 to-gold-600 rounded-full flex items-center justify-center text-white font-semibold text-xs flex-shrink-0">
+                      {order.profile?.first_name?.[0] || '?'}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-medium text-[#F5F5F5] truncate">
+                        {order.profile?.first_name} {order.profile?.last_name}
+                      </p>
+                      {order.profile?.phone && (
+                        <p className="text-xs text-gold-500 truncate">{order.profile.phone}</p>
+                      )}
+                    </div>
+                    <span className="font-bold text-gold-500 text-sm whitespace-nowrap">
+                      {formatPrice(order.total_amount)}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-[#666]">
+                    <span>{order.items?.length || 0} товаров</span>
+                    <span>{new Date(order.created_at).toLocaleDateString('ru-RU')} {new Date(order.created_at).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}</span>
+                  </div>
+                </Link>
+              ))}
+              {filteredOrders.length === 0 && (
+                <div className="px-6 py-16 text-center">
+                  <ShoppingBag className="w-12 h-12 text-gray-200 mx-auto mb-3" />
+                  <p className="text-[#A0A0A0] font-medium">Заказы не найдены</p>
+                  <p className="text-[#666] text-sm mt-1">Попробуйте изменить фильтры</p>
+                </div>
+              )}
+            </div>
+
+            {/* Desktop Table */}
+            <div className={cn(
+              viewMode === 'cards' ? 'hidden' : viewMode === 'table' ? 'block' : 'hidden lg:block',
+              'overflow-x-auto'
+            )}>
               <table className="w-full">
                 <thead className="bg-[#121212]">
                   <tr>

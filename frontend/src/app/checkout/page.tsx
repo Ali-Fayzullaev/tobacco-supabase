@@ -71,6 +71,7 @@ export default function CheckoutPage() {
   const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>('courier');
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('invoice');
   const [addressData, setAddressData] = useState<AddressForm | null>(null);
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
 
 
@@ -123,6 +124,7 @@ export default function CheckoutPage() {
     });
 
     if (result.success && result.order_number) {
+      setIsRedirecting(true);
       await clearCart();
       router.push(`/order-success?number=${result.order_number}`);
     } else {
@@ -165,6 +167,21 @@ export default function CheckoutPage() {
           </div>
         </div>
         <Footer />
+      </div>
+    );
+  }
+
+  if (isRedirecting) {
+    return (
+      <div className="min-h-screen bg-[#121212] flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
+            <CheckCircle className="w-10 h-10 text-green-500" />
+          </div>
+          <h2 className="text-xl font-bold text-[#F5F5F5] mb-2">Заказ оформлен!</h2>
+          <p className="text-[#A0A0A0] mb-4">Перенаправляем...</p>
+          <Loader2 className="w-6 h-6 text-gold-500 animate-spin mx-auto" />
+        </div>
       </div>
     );
   }

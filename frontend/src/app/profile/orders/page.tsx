@@ -677,20 +677,59 @@ function OrderCard({ order }: { order: any }) {
                 e.stopPropagation();
                 setIsReordering(true);
                 try {
+                  const { toast } = await import('sonner');
+                  const supabase = (await import('@/lib/supabase')).getPublicSupabaseClient();
+
                   const activeItems = (order.items || []).filter(
                     (item: any) => !item.product_deleted && item.product
                   );
                   if (activeItems.length === 0) {
-                    const { toast } = await import('sonner');
                     toast.error('Нет доступных товаров для повтора');
                     return;
                   }
+
+                  // Проверяем наличие всех товаров на складе
+                  const productIds = activeItems.map((item: any) => item.product_id);
+                  const { data: products } = await supabase
+                    .from('products')
+                    .select('id, name, stock, in_stock')
+                    .in('id', productIds);
+
+                  const stockMap = new Map(
+                    (products || []).map((p: any) => [p.id, p])
+                  );
+
+                  const added: string[] = [];
+                  const skipped: string[] = [];
+
                   for (const item of activeItems) {
-                    await addToCart(item.product_id, item.quantity);
+                    const product = stockMap.get(item.product_id);
+                    if (!product || !product.in_stock || (product.stock ?? 0) < 1) {
+                      skipped.push(item.product?.name || 'Товар');
+                      continue;
+                    }
+                    // Ограничиваем количество доступным остатком
+                    const qty = Math.min(item.quantity, product.stock ?? item.quantity);
+                    const result = await addToCart(item.product_id, qty);
+                    if (result.success) {
+                      added.push(item.product?.name || 'Товар');
+                    } else {
+                      skipped.push(item.product?.name || 'Товар');
+                    }
                   }
-                  const { toast } = await import('sonner');
-                  toast.success(`${activeItems.length} товар(ов) добавлено в корзину`);
-                  router.push('/cart');
+
+                  if (added.length > 0 && skipped.length === 0) {
+                    toast.success(`${added.length} товар(ов) добавлено в корзину`);
+                    router.push('/cart');
+                  } else if (added.length > 0 && skipped.length > 0) {
+                    toast.warning(
+                      `Добавлено: ${added.length}. Нет в наличии: ${skipped.join(', ')}`,
+                      { duration: 5000 }
+                    );
+                    router.push('/cart');
+                  } else {
+                    toast.error('Все товары из заказа сейчас отсутствуют на складе');
+                  }
                 } catch {
                   const { toast } = await import('sonner');
                   toast.error('Ошибка при повторе заказа');

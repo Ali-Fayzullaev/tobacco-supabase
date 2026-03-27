@@ -90,7 +90,7 @@ function AdminOrdersContent() {
         .from('orders')
         .select(`
           *,
-          profile:profiles(first_name, last_name, email, phone),
+          profile:profiles(first_name, last_name, email, phone, organization_name, bin_iin),
           items:order_items(
             id,
             quantity,
@@ -144,7 +144,10 @@ function AdminOrdersContent() {
       order.order_number?.toLowerCase().includes(query) ||
       order.profile?.first_name?.toLowerCase().includes(query) ||
       order.profile?.last_name?.toLowerCase().includes(query) ||
-      order.profile?.email?.toLowerCase().includes(query)
+      order.profile?.email?.toLowerCase().includes(query) ||
+      order.profile?.phone?.toLowerCase().includes(query) ||
+      order.profile?.bin_iin?.toLowerCase().includes(query) ||
+      order.profile?.organization_name?.toLowerCase().includes(query)
     );
   });
 
@@ -293,7 +296,23 @@ function AdminOrdersContent() {
                             <p className="font-medium text-[#F5F5F5] truncate">
                               {order.profile?.first_name} {order.profile?.last_name}
                             </p>
-                            <p className="text-xs text-[#666] truncate">{order.profile?.email}</p>
+                            {order.profile?.organization_name && (
+                              <p className="text-xs text-gold-500 truncate font-medium">{order.profile.organization_name}</p>
+                            )}
+                            {order.profile?.bin_iin && (
+                              <p className="text-xs text-[#A0A0A0] truncate">БИН: {order.profile.bin_iin}</p>
+                            )}
+                            {order.profile?.phone ? (
+                              <a
+                                href={`tel:${order.profile.phone}`}
+                                onClick={(e) => e.stopPropagation()}
+                                className="text-xs text-gold-500 hover:text-gold-400 hover:underline transition-colors truncate block"
+                              >
+                                {order.profile.phone}
+                              </a>
+                            ) : (
+                              <p className="text-xs text-[#666] truncate">{order.profile?.email}</p>
+                            )}
                           </div>
                         </div>
                       </td>

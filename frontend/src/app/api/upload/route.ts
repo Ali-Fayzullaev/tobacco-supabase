@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { v2 as cloudinary } from 'cloudinary';
+import { uploadLimiter, getClientIP } from '@/lib/rate-limit';
+
+// ─── Ограничения загрузки ───
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -34,6 +39,16 @@ async function getAuthUser() {
 
 export async function POST(request: NextRequest) {
   try {
+    // ─── Rate Limiting: 20 загрузок / 5 мин ───
+    const clientIP = getClientIP(request);
+    const rl = uploadLimiter.check(clientIP);
+    if (!rl.allowed) {
+      return NextResponse.json(
+        { error: `Слишком много загрузок. Повторите через ${Math.ceil(rl.retryAfterMs / 1000)} сек.` },
+        { status: 429, headers: rl.headers }
+      );
+    }
+
     const admin = await getAuthUser();
     if (!admin) {
       return NextResponse.json({ error: 'Нет доступа' }, { status: 403 });
@@ -46,6 +61,20 @@ export async function POST(request: NextRequest) {
     let result;
 
     if (file) {
+      // ─── Валидация файла: размер и тип ───
+      if (file.size > MAX_FILE_SIZE) {
+        return NextResponse.json(
+          { error: `Файл слишком большой. Максимум ${MAX_FILE_SIZE / 1024 / 1024} MB` },
+          { status: 400 }
+        );
+      }
+      if (!ALLOWED_MIME_TYPES.includes(file.type)) {
+        return NextResponse.json(
+          { error: `Недопустимый тип файла. Разрешены: JPEG, PNG, WebP, GIF` },
+          { status: 400 }
+        );
+      }
+
       // Загрузка файла с компьютера
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
@@ -68,6 +97,31 @@ export async function POST(request: NextRequest) {
         ).end(buffer);
       });
     } else if (url) {
+      // ─── SSRF Protection: проверяем URL ───
+      try {
+        const parsed = new URL(url);
+        if (parsed.protocol !== 'https:') {
+          return NextResponse.json(
+            { error: 'Разрешены только HTTPS-ссылки' },
+            { status: 400 }
+          );
+        }
+        // Блокируем приватные IP (SSRF)
+        const hostname = parsed.hostname;
+        const blocked = /^(localhost|127\.|10\.|172\.(1[6-9]|2\d|3[01])\.|192\.168\.|169\.254\.|0\.|\[::1\]|\[fc|\[fd)/i;
+        if (blocked.test(hostname)) {
+          return NextResponse.json(
+            { error: 'Недопустимый URL' },
+            { status: 400 }
+          );
+        }
+      } catch {
+        return NextResponse.json(
+          { error: 'Некорректный URL' },
+          { status: 400 }
+        );
+      }
+
       // Загрузка по URL
       result = await cloudinary.uploader.upload(url, {
         folder: 'tobacco-shop',

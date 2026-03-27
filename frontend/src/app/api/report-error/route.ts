@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { errorReportLimiter, getClientIP } from '@/lib/rate-limit';
 
 // Серверный API-роут для приёма отчётов об ошибках
 // Используем Service Role key (из env) — НЕ выставляем его в клиенте
@@ -31,6 +32,16 @@ function validatePayload(payload: any): payload is ErrorPayload {
 
 export async function POST(req: NextRequest) {
   try {
+    // ─── Rate Limiting: 10 запросов / мин ───
+    const clientIP = getClientIP(req);
+    const rl = errorReportLimiter.check(clientIP);
+    if (!rl.allowed) {
+      return NextResponse.json(
+        { error: 'Too many error reports. Try later.' },
+        { status: 429, headers: rl.headers }
+      );
+    }
+
     // Проверяем env на ранней стадии и возвращаем понятную ошибку
     if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE) {
       console.error('Missing SUPABASE_SERVICE_ROLE_KEY or NEXT_PUBLIC_SUPABASE_URL in env');
@@ -65,9 +76,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'DB error', details: msg }, { status: 500 });
     }
 
-    return NextResponse.json({ success: true }, { status: 201 });
+    return NextResponse.json({ success: true }, { status: 201, headers: rl.headers });
   } catch (err: any) {
     console.error('report-error handler failed:', err);
-    return NextResponse.json({ error: 'Internal server error', details: String(err?.message || err) }, { status: 500 });
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

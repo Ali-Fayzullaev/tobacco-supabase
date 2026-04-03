@@ -338,7 +338,7 @@ function RegisterFormContent() {
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-gold-500 mt-0.5">3.</span>
-                      Добавьте <strong className="text-[#A0A0A0]">noreply@t.raycon.kz</strong> в контакты
+                      Добавьте <strong className="text-[#A0A0A0]">noreply@tobaccotrade.kz</strong> в контакты
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-gold-500 mt-0.5">4.</span>

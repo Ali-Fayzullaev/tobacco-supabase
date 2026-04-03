@@ -18,7 +18,6 @@ const montserrat = Montserrat({
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com';
 const googleVerification = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION;
-const yandexVerification = process.env.NEXT_PUBLIC_YANDEX_VERIFICATION;
 
 export const metadata: Metadata = {
   title: 'Premium Tobacco - Премиальные табачные изделия',
@@ -33,7 +32,6 @@ export const metadata: Metadata = {
   },
   verification: {
     google: googleVerification,
-    yandex: yandexVerification,
   },
 };
 

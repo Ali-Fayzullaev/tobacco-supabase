@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { Loader2, AlertTriangle, ArrowLeft, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { getSupabaseBrowserClient } from '@/lib/supabase';
+import { logSecurityEvent } from '@/lib/security-client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -19,6 +20,8 @@ function LoginFormContent() {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [websiteField, setWebsiteField] = useState('');
+  const formStartedAt = useRef(Date.now());
 
   useEffect(() => {
     const check = async () => {
@@ -36,6 +39,19 @@ function LoginFormContent() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (websiteField.trim().length > 0) {
+      await logSecurityEvent({
+        eventType: 'bot_honeypot_triggered',
+        outcome: 'blocked',
+        email: email.trim().toLowerCase(),
+        reason: 'login_honeypot_filled',
+        path: '/login',
+        honeypotFilled: true,
+      });
+      toast.error('Не удалось выполнить вход');
+      return;
+    }
+
     if (!email.trim()) {
       toast.error('Введите email');
       return;
@@ -47,6 +63,18 @@ function LoginFormContent() {
 
     setIsSubmitting(true);
     const supabase = getSupabaseBrowserClient();
+    const elapsedMs = Date.now() - formStartedAt.current;
+
+    await logSecurityEvent({
+      eventType: 'login_attempt',
+      outcome: 'success',
+      email: email.trim().toLowerCase(),
+      path: '/login',
+      meta: {
+        elapsedMs,
+        webdriver: typeof navigator !== 'undefined' ? Boolean((navigator as Navigator & { webdriver?: boolean }).webdriver) : false,
+      },
+    });
 
     const { error } = await supabase.auth.signInWithPassword({
       email: email.trim().toLowerCase(),
@@ -56,6 +84,14 @@ function LoginFormContent() {
     setIsSubmitting(false);
 
     if (error) {
+      await logSecurityEvent({
+        eventType: 'login_failed',
+        outcome: 'failed',
+        email: email.trim().toLowerCase(),
+        reason: error.message,
+        path: '/login',
+      });
+
       if (error.message === 'Invalid login credentials') {
         toast.error('Неверный email или пароль');
       } else if (error.message === 'Email not confirmed') {
@@ -65,6 +101,13 @@ function LoginFormContent() {
       }
       return;
     }
+
+    await logSecurityEvent({
+      eventType: 'login_success',
+      outcome: 'success',
+      email: email.trim().toLowerCase(),
+      path: '/login',
+    });
 
     toast.success('Добро пожаловать!');
     window.location.href = redirectTo;
@@ -120,6 +163,17 @@ function LoginFormContent() {
 
           <CardContent>
             <form onSubmit={handleLogin} className="space-y-5">
+              <input
+                type="text"
+                name="website"
+                tabIndex={-1}
+                autoComplete="off"
+                value={websiteField}
+                onChange={(e) => setWebsiteField(e.target.value)}
+                className="hidden"
+                aria-hidden="true"
+              />
+
               {/* Email */}
               <div>
                 <label className="block text-sm font-medium text-[#C0C0C0] mb-2">Email</label>

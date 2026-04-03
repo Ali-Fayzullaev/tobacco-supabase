@@ -9,6 +9,12 @@ export async function middleware(request: NextRequest) {
   });
 
   const { pathname } = request.nextUrl;
+  const noIndexPrefixes = ['/login', '/register', '/cart', '/checkout', '/profile', '/admin', '/debug-auth', '/auth', '/verify-email', '/order-success'];
+  const shouldNoIndex = noIndexPrefixes.some(prefix => pathname.startsWith(prefix));
+
+  if (shouldNoIndex) {
+    response.headers.set('X-Robots-Tag', 'noindex, nofollow, noarchive');
+  }
 
   // Определяем типы маршрутов
   const authPages = ['/login', '/register'];

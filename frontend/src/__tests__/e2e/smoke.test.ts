@@ -105,10 +105,10 @@ describe('E2E Smoke: Root Layout', () => {
     expect(lang).toBe('ru');
   });
 
-  it('meta robots is noindex, nofollow (tobacco restrictions)', () => {
-    const robotsMeta = { index: false, follow: false };
-    expect(robotsMeta.index).toBe(false);
-    expect(robotsMeta.follow).toBe(false);
+  it('meta robots allows indexing for public SEO pages', () => {
+    const robotsMeta = { index: true, follow: true };
+    expect(robotsMeta.index).toBe(true);
+    expect(robotsMeta.follow).toBe(true);
   });
 
   it('page title contains Premium Tobacco', () => {

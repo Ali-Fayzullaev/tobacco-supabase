@@ -175,6 +175,12 @@ export const authLimiter = createRateLimiter({
   windowMs: 15 * 60 * 1000,
 });
 
+/** Security events (bot/fraud logs): 30 / 5 мин */
+export const securityEventLimiter = createRateLimiter({
+  maxRequests: 30,
+  windowMs: 5 * 60 * 1000,
+});
+
 // ─── Хелпер: извлечь IP из NextRequest ───
 
 import { NextRequest } from 'next/server';

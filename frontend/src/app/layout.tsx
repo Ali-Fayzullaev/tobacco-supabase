@@ -16,12 +16,24 @@ const montserrat = Montserrat({
   variable: '--font-montserrat',
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com';
+const googleVerification = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION;
+const yandexVerification = process.env.NEXT_PUBLIC_YANDEX_VERIFICATION;
+
 export const metadata: Metadata = {
   title: 'Premium Tobacco - Премиальные табачные изделия',
   description: 'Интернет-магазин табачных изделий в Казахстане. Только для лиц старше 21 года.',
+  metadataBase: new URL(siteUrl),
   robots: {
-    index: false,
-    follow: false,
+    index: true,
+    follow: true,
+  },
+  alternates: {
+    canonical: '/',
+  },
+  verification: {
+    google: googleVerification,
+    yandex: yandexVerification,
   },
 };
 

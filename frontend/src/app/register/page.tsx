@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { toast } from 'sonner';
 import { Loader2, AlertTriangle, ArrowLeft, UserPlus, Mail, Lock, Eye, EyeOff, User, CheckCircle2, ShieldCheck, Building2, Hash } from 'lucide-react';
 import { getSupabaseBrowserClient } from '@/lib/supabase';
+import { logSecurityEvent } from '@/lib/security-client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -25,6 +26,8 @@ function RegisterFormContent() {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [websiteField, setWebsiteField] = useState('');
+  const formStartedAt = useRef(Date.now());
 
   // OTP verification
   const [step, setStep] = useState<'form' | 'verify' | 'success'>('form');
@@ -65,6 +68,20 @@ function RegisterFormContent() {
   // Step 1: Register
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (websiteField.trim().length > 0) {
+      await logSecurityEvent({
+        eventType: 'bot_honeypot_triggered',
+        outcome: 'blocked',
+        email: email.trim().toLowerCase(),
+        reason: 'register_honeypot_filled',
+        path: '/register',
+        honeypotFilled: true,
+      });
+      toast.error('Не удалось выполнить регистрацию');
+      return;
+    }
+
     if (!firstName.trim() || !lastName.trim()) { toast.error('Введите имя и фамилию'); return; }
     if (!organizationName.trim()) { toast.error('Укажите название организации (ТОО/ИП)'); return; }
     if (!binIin.trim() || !/^\d{12}$/.test(binIin.trim())) { toast.error('БИН/ИИН должен содержать ровно 12 цифр'); return; }
@@ -74,6 +91,18 @@ function RegisterFormContent() {
 
     setIsSubmitting(true);
     const supabase = getSupabaseBrowserClient();
+    const elapsedMs = Date.now() - formStartedAt.current;
+
+    await logSecurityEvent({
+      eventType: 'register_attempt',
+      outcome: 'success',
+      email: email.trim().toLowerCase(),
+      path: '/register',
+      meta: {
+        elapsedMs,
+        webdriver: typeof navigator !== 'undefined' ? Boolean((navigator as Navigator & { webdriver?: boolean }).webdriver) : false,
+      },
+    });
 
     const { data, error } = await supabase.auth.signUp({
       email: email.trim().toLowerCase(),
@@ -91,6 +120,14 @@ function RegisterFormContent() {
     setIsSubmitting(false);
 
     if (error) {
+      await logSecurityEvent({
+        eventType: 'register_failed',
+        outcome: 'failed',
+        email: email.trim().toLowerCase(),
+        reason: error.message,
+        path: '/register',
+      });
+
       if (error.message.includes('already registered') || error.message.includes('already exists')) {
         toast.error('Этот email уже зарегистрирован. Попробуйте войти.');
       } else {
@@ -102,9 +139,23 @@ function RegisterFormContent() {
     // Supabase возвращает фейковый успех для существующих email (защита от перебора).
     // Если identities пустой — значит email уже занят.
     if (data?.user?.identities?.length === 0) {
+      await logSecurityEvent({
+        eventType: 'register_failed',
+        outcome: 'failed',
+        email: email.trim().toLowerCase(),
+        reason: 'email_already_registered_or_enumeration_protection',
+        path: '/register',
+      });
       toast.error('Этот email уже зарегистрирован. Попробуйте войти.');
       return;
     }
+
+    await logSecurityEvent({
+      eventType: 'register_success',
+      outcome: 'success',
+      email: email.trim().toLowerCase(),
+      path: '/register',
+    });
 
     setStep('verify');
     setResendCooldown(60);
@@ -344,6 +395,17 @@ function RegisterFormContent() {
 
           <CardContent>
             <form onSubmit={handleRegister} className="space-y-4">
+              <input
+                type="text"
+                name="website"
+                tabIndex={-1}
+                autoComplete="off"
+                value={websiteField}
+                onChange={(e) => setWebsiteField(e.target.value)}
+                className="hidden"
+                aria-hidden="true"
+              />
+
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-sm font-medium text-[#C0C0C0] mb-1.5">Имя</label>
